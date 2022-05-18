@@ -16,7 +16,7 @@ type TaskEither[R any] struct {
 	Task[R]
 }
 
-// OrElse returns value if task succeded or default value.
+// OrElse returns value if task succeeded or default value.
 func (t TaskEither[R]) OrElse(fallback R) R {
 	either := t.Run().Either()
 
@@ -28,7 +28,7 @@ func (t TaskEither[R]) OrElse(fallback R) R {
 	return right
 }
 
-// Match executes the first function if task succeded and second function if task failed.
+// Match executes the first function if task succeeded and second function if task failed.
 // It returns a new Option.
 func (t TaskEither[R]) Match(onLeft func(error) Either[error, R], onRight func(R) Either[error, R]) Either[error, R] {
 	either := t.Run().Either()
