@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  dev:
+    build: .
+    volumes:
+      - ./:/go/src/github.com/samber/mo
+    working_dir: /go/src/github.com/samber/mo
+    command: bash -c 'make tools ; make watch-test'
