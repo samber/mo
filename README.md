@@ -6,7 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/samber/mo?status.svg)](https://pkg.go.dev/github.com/samber/mo)
 [![Go report](https://goreportcard.com/badge/github.com/samber/mo)](https://goreportcard.com/report/github.com/samber/mo)
 
-✨ **`samber/mo` brings monads and populars FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
+🦄 **`samber/mo` brings monads and populars FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
 
 **Inspired by:**
 
@@ -85,11 +85,11 @@ option2.OrElse(1234)
 option3 := option1.Match(
     func(i int) (int, bool) {
         // when value is present
-		return i * 2, true
+        return i * 2, true
 	},
     func() (int, bool) {
         // when value is absent
-		return 0, false
+        return 0, false
 	}
 )
 // Some(42)
