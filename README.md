@@ -6,7 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/samber/mo?status.svg)](https://pkg.go.dev/github.com/samber/mo)
 [![Go report](https://goreportcard.com/badge/github.com/samber/mo)](https://goreportcard.com/report/github.com/samber/mo)
 
-✨ **`mo` brings monads and populars FP abstractions to Go projects. `mo` uses the recent Go 1.18+ Generics.**
+✨ **`samber/mo` brings monads and populars FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
 
 **Inspired by:**
 
@@ -19,7 +19,7 @@
 - [samber/lo](https://github.com/samber/lo): A Lodash-style Go library based on Go 1.18+ Generics
 - [samber/do](https://github.com/samber/do): A dependency injection toolkit based on Go 1.18+ Generics
 
-***Why this name?***
+**Why this name?**
 
 I love **short name** for such utility library. This name is similar to "Monad Go" and no Go package currently uses this name.
 
