@@ -19,9 +19,9 @@
 - [samber/lo](https://github.com/samber/lo): A Lodash-style Go library based on Go 1.18+ Generics
 - [samber/do](https://github.com/samber/do): A dependency injection toolkit based on Go 1.18+ Generics
 
-### Why this name?
+***Why this name?***
 
-I love **short name** for such utility library. This name is similar to "functional Go" and no Go package currently uses this name.
+I love **short name** for such utility library. This name is similar to "Monad Go" and no Go package currently uses this name.
 
 ## 💡 Features
 
