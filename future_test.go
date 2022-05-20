@@ -19,7 +19,7 @@ func assertAndIncrement(is *assert.Assertions, expected int, i *int32) {
 func TestFuture(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		resolve(42)
 	}).Then(func(value int) (int, error) {
 		is.Equal(42, value)
@@ -39,7 +39,7 @@ func TestFuture(t *testing.T) {
 func TestFutureSimpleResolve(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		resolve(42)
 	}).Collect()
 
@@ -50,7 +50,7 @@ func TestFutureSimpleResolve(t *testing.T) {
 func TestFutureSimpleReject(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Collect()
 
@@ -62,7 +62,7 @@ func TestFutureSimpleReject(t *testing.T) {
 func TestFutureMultipleResolve(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		resolve(42)
 	}).Then(func(value int) (int, error) {
 		is.Equal(42, value)
@@ -79,7 +79,7 @@ func TestFutureMultipleResolve(t *testing.T) {
 func TestFutureMultipleReject(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		resolve(42)
 	}).Catch(func(err error) (int, error) {
 		is.Fail("should not enter here")
@@ -99,7 +99,7 @@ func TestFutureMultipleReject(t *testing.T) {
 func TestFutureSingleReject(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Catch(func(err error) (int, error) {
 		is.Equal(assert.AnError, err)
@@ -113,7 +113,7 @@ func TestFutureSingleReject(t *testing.T) {
 func TestFutureErrorResult(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Collect()
 
@@ -125,7 +125,7 @@ func TestFutureErrorResult(t *testing.T) {
 func TestFutureFinallyResolve(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		resolve(21)
 	}).Finally(func(value int, err error) (int, error) {
 		is.Equal(21, value)
@@ -141,7 +141,7 @@ func TestFutureFinallyResolve(t *testing.T) {
 func TestFutureFinallyReject(t *testing.T) {
 	is := assert.New(t)
 
-	result, err := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result, err := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Finally(func(value int, err error) (int, error) {
 		is.Equal(0, value)
@@ -160,7 +160,7 @@ func TestFutureOrder(t *testing.T) {
 
 	var i int32 = 0
 
-	_ = NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	_ = NewFuture[int](func(resolve func(int), reject func(error)) {
 		assertAndIncrement(is, 1, &i)
 
 		resolve(42)
@@ -186,7 +186,7 @@ func TestFutureOrderCollect(t *testing.T) {
 
 	var i int32 = 0
 
-	_, _ = NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	_, _ = NewFuture[int](func(resolve func(int), reject func(error)) {
 		assertAndIncrement(is, 0, &i)
 
 		resolve(42)
@@ -212,7 +212,7 @@ func TestFutureCancel(t *testing.T) {
 
 	var i int32 = 0
 
-	future := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	future := NewFuture[int](func(resolve func(int), reject func(error)) {
 		assertAndIncrement(is, 0, &i)
 
 		time.Sleep(5 * time.Millisecond)
@@ -238,7 +238,7 @@ func TestFutureCancelDelayed(t *testing.T) {
 
 	var i int32 = 0
 
-	future := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	future := NewFuture[int](func(resolve func(int), reject func(error)) {
 		time.Sleep(1 * time.Millisecond)
 		assertAndIncrement(is, 1, &i)
 
@@ -263,7 +263,7 @@ func TestFutureCancelTerminated(t *testing.T) {
 
 	var i int32 = 0
 
-	future := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	future := NewFuture[int](func(resolve func(int), reject func(error)) {
 		time.Sleep(1 * time.Millisecond)
 		assertAndIncrement(is, 1, &i)
 
@@ -288,7 +288,7 @@ func TestFutureCancelTerminated(t *testing.T) {
 func TestFutureResultResult(t *testing.T) {
 	is := assert.New(t)
 
-	result := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	result := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Result()
 
@@ -300,7 +300,7 @@ func TestFutureResultResult(t *testing.T) {
 func TestFutureResultEither(t *testing.T) {
 	is := assert.New(t)
 
-	either := NewFuture[int](func(resolve Resolver[int], reject Rejection) {
+	either := NewFuture[int](func(resolve func(int), reject func(error)) {
 		reject(assert.AnError)
 	}).Either()
 

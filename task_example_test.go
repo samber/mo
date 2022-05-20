@@ -7,7 +7,7 @@ import (
 
 func ExampleTask() {
 	task := NewTask(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(time.Now().Year())
 		})
 	})

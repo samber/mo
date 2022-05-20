@@ -4,14 +4,8 @@ import (
 	"sync"
 )
 
-type Resolver[T any] func(T)
-type Rejection func(error)
-type ThenCb[T any] func(T) (T, error)
-type CatchCb[T any] func(error) (T, error)
-type FinalCb[T any] func(T, error) (T, error)
-
 // NewFuture instanciate a new future.
-func NewFuture[T any](cb func(resolve Resolver[T], reject Rejection)) *Future[T] {
+func NewFuture[T any](cb func(resolve func(T), reject func(error))) *Future[T] {
 	future := Future[T]{
 		mu:       sync.RWMutex{},
 		next:     nil,
@@ -53,7 +47,7 @@ func (f *Future[T]) reject(err error) {
 }
 
 // Catch is called when Future is resolved. It returns a new Future.
-func (f *Future[T]) Then(cb ThenCb[T]) *Future[T] {
+func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
@@ -84,7 +78,7 @@ func (f *Future[T]) Then(cb ThenCb[T]) *Future[T] {
 }
 
 // Catch is called when Future is rejected. It returns a new Future.
-func (f *Future[T]) Catch(cb CatchCb[T]) *Future[T] {
+func (f *Future[T]) Catch(cb func(error) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
@@ -115,7 +109,7 @@ func (f *Future[T]) Catch(cb CatchCb[T]) *Future[T] {
 }
 
 // Finally is called when Future is processed either resolved or rejected. It returns a new Future.
-func (f *Future[T]) Finally(cb FinalCb[T]) *Future[T] {
+func (f *Future[T]) Finally(cb func(T, error) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 

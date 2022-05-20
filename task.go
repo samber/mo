@@ -11,7 +11,7 @@ func NewTask[R any](f ff0[R]) Task[R] {
 func NewTaskFromIO[R any](io IO[R]) Task[R] {
 	return Task[R]{
 		unsafePerform: func() *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform())
 			})
 		},
@@ -40,7 +40,7 @@ func NewTask1[R any, A any](f ff1[R, A]) Task1[R, A] {
 func NewTaskFromIO1[R any, A any](io IO1[R, A]) Task1[R, A] {
 	return Task1[R, A]{
 		unsafePerform: func(a A) *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform(a))
 			})
 		},
@@ -69,7 +69,7 @@ func NewTask2[R any, A any, B any](f ff2[R, A, B]) Task2[R, A, B] {
 func NewTaskFromIO2[R any, A any, B any](io IO2[R, A, B]) Task2[R, A, B] {
 	return Task2[R, A, B]{
 		unsafePerform: func(a A, b B) *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform(a, b))
 			})
 		},
@@ -98,7 +98,7 @@ func NewTask3[R any, A any, B any, C any](f ff3[R, A, B, C]) Task3[R, A, B, C] {
 func NewTaskFromIO3[R any, A any, B any, C any](io IO3[R, A, B, C]) Task3[R, A, B, C] {
 	return Task3[R, A, B, C]{
 		unsafePerform: func(a A, b B, c C) *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform(a, b, c))
 			})
 		},
@@ -127,7 +127,7 @@ func NewTask4[R any, A any, B any, C any, D any](f ff4[R, A, B, C, D]) Task4[R, 
 func NewTaskFromIO4[R any, A any, B any, C any, D any](io IO4[R, A, B, C, D]) Task4[R, A, B, C, D] {
 	return Task4[R, A, B, C, D]{
 		unsafePerform: func(a A, b B, c C, d D) *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform(a, b, c, d))
 			})
 		},
@@ -156,7 +156,7 @@ func NewTask5[R any, A any, B any, C any, D any, E any](f ff5[R, A, B, C, D, E])
 func NewTaskFromIO5[R any, A any, B any, C any, D any, E any](io IO5[R, A, B, C, D, E]) Task5[R, A, B, C, D, E] {
 	return Task5[R, A, B, C, D, E]{
 		unsafePerform: func(a A, b B, c C, d D, e E) *Future[R] {
-			return NewFuture[R](func(resolve Resolver[R], reject Rejection) {
+			return NewFuture[R](func(resolve func(R), reject func(error)) {
 				resolve(io.unsafePerform(a, b, c, d, e))
 			})
 		},

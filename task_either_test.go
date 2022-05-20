@@ -10,7 +10,7 @@ func TestTaskEither(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})
@@ -24,12 +24,12 @@ func TestTaskEitherOrElse(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither1 := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})
 	taskEither2 := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			reject(assert.AnError)
 		})
 	})
@@ -45,7 +45,7 @@ func TestTaskEitherMatch(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})
@@ -69,7 +69,7 @@ func TestTaskEitherTryCatch(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})
@@ -93,7 +93,7 @@ func TestTaskEitherToTask(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			reject(assert.AnError)
 		})
 	})
@@ -109,7 +109,7 @@ func TestTaskEitherToEither(t *testing.T) {
 	is := assert.New(t)
 
 	taskEither := NewTaskEither(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			reject(assert.AnError)
 		})
 	})

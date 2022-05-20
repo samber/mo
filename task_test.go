@@ -10,7 +10,7 @@ func TestTask(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask(func() *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})
@@ -23,7 +23,7 @@ func TestTask1(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask1(func(a string) *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			is.Equal("foo", a)
 			resolve(42)
 		})
@@ -37,7 +37,7 @@ func TestTask2(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask2(func(a string, b string) *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			is.Equal("foo", a)
 			is.Equal("bar", b)
 			resolve(42)
@@ -52,7 +52,7 @@ func TestTask3(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask3(func(a string, b string, c string) *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			is.Equal("foo", a)
 			is.Equal("bar", b)
 			is.Equal("hello", c)
@@ -68,7 +68,7 @@ func TestTask4(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask4(func(a string, b string, c string, d string) *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			is.Equal("foo", a)
 			is.Equal("bar", b)
 			is.Equal("hello", c)
@@ -85,7 +85,7 @@ func TestTask5(t *testing.T) {
 	is := assert.New(t)
 
 	task := NewTask5(func(a string, b string, c string, d string, e bool) *Future[int] {
-		return NewFuture(func(resolve Resolver[int], reject Rejection) {
+		return NewFuture(func(resolve func(int), reject func(error)) {
 			is.Equal("foo", a)
 			is.Equal("bar", b)
 			is.Equal("hello", c)

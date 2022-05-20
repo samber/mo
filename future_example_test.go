@@ -3,7 +3,7 @@ package mo
 import "fmt"
 
 func ExampleNewFuture_resolve() {
-	value, err := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	value, err := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Collect()
 
@@ -15,7 +15,7 @@ func ExampleNewFuture_resolve() {
 }
 
 func ExampleNewFuture_reject() {
-	value, err := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	value, err := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Collect()
 
@@ -27,7 +27,7 @@ func ExampleNewFuture_reject() {
 }
 
 func ExampleFuture_Collect_resolve() {
-	value, err := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	value, err := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Collect()
 
@@ -39,7 +39,7 @@ func ExampleFuture_Collect_resolve() {
 }
 
 func ExampleFuture_Collect_reject() {
-	value, err := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	value, err := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Collect()
 
@@ -51,7 +51,7 @@ func ExampleFuture_Collect_reject() {
 }
 
 func ExampleFuture_Result_resolve() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Result()
 
@@ -63,7 +63,7 @@ func ExampleFuture_Result_resolve() {
 }
 
 func ExampleFuture_Result_reject() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Result()
 
@@ -75,7 +75,7 @@ func ExampleFuture_Result_reject() {
 }
 
 func ExampleFuture_Then_resolve() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Then(func(s string) (string, error) {
 		return "baz", nil
@@ -89,7 +89,7 @@ func ExampleFuture_Then_resolve() {
 }
 
 func ExampleFuture_Then_reject() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Then(func(s string) (string, error) {
 		return "foobar", nil
@@ -103,7 +103,7 @@ func ExampleFuture_Then_reject() {
 }
 
 func ExampleFuture_Catch_resolve() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Catch(func(err error) (string, error) {
 		return "baz", nil
@@ -117,7 +117,7 @@ func ExampleFuture_Catch_resolve() {
 }
 
 func ExampleFuture_Catch_reject() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Catch(func(err error) (string, error) {
 		return "foobar", nil
@@ -131,7 +131,7 @@ func ExampleFuture_Catch_reject() {
 }
 
 func ExampleFuture_Finally_resolve() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Finally(func(value string, err error) (string, error) {
 		return "baz", nil
@@ -145,7 +145,7 @@ func ExampleFuture_Finally_resolve() {
 }
 
 func ExampleFuture_Finally_reject() {
-	result := NewFuture(func(resolve Resolver[string], reject Rejection) {
+	result := NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Finally(func(value string, err error) (string, error) {
 		return "foobar", nil
@@ -159,13 +159,13 @@ func ExampleFuture_Finally_reject() {
 }
 
 func ExampleFuture_Cancel_resolve() {
-	NewFuture(func(resolve Resolver[string], reject Rejection) {
+	NewFuture(func(resolve func(string), reject func(error)) {
 		resolve("foobar")
 	}).Cancel()
 }
 
 func ExampleFuture_Cancel_reject() {
-	NewFuture(func(resolve Resolver[string], reject Rejection) {
+	NewFuture(func(resolve func(string), reject func(error)) {
 		reject(fmt.Errorf("failure"))
 	}).Cancel()
 }
