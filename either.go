@@ -9,29 +9,29 @@ var eitherMissingRightValue = fmt.Errorf("no such Right value")
 // Left builds the left side of the Either struct, as opposed to the Right side.
 func Left[L any, R any](value L) Either[L, R] {
 	return Either[L, R]{
-		left:    value,
 		isLeft:  true,
 		isRight: false,
+		left:    value,
 	}
 }
 
 // Right builds the right side of the Either struct, as opposed to the Left side.
 func Right[L any, R any](value R) Either[L, R] {
 	return Either[L, R]{
-		right:   value,
 		isLeft:  false,
 		isRight: true,
+		right:   value,
 	}
 }
 
 // Either respresents a value of 2 possible types.
 // An instance of Either is an instance of either A or B.
 type Either[L any, R any] struct {
-	left  L
-	right R
-
 	isLeft  bool
 	isRight bool
+
+	left  L
+	right R
 }
 
 // IsLeft returns true if Either is an instance of Left.

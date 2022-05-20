@@ -27,10 +27,11 @@ func TupleToResult[T any](v T, err error) Result[T] {
 // Result respresent a result of an action having one
 // of the following output: success or failure.
 // An instance of Result is an instance of either Ok or Err.
+// It could be compared to `Either[error, T]`.
 type Result[T any] struct {
+	isErr bool
 	value T
 	err   error
-	isErr bool
 }
 
 // IsOk returns true when value is valid.

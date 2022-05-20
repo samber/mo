@@ -1,10 +1,10 @@
 # mo - Monads
 
 [![tag](https://img.shields.io/github/tag/samber/mo.svg)](https://github.com/samber/mo/releases)
-[![codecov](https://codecov.io/gh/samber/mo/branch/master/graph/badge.svg)](https://codecov.io/gh/samber/mo)
-![Build Status](https://github.com/samber/mo/actions/workflows/go.yml/badge.svg)
 [![GoDoc](https://godoc.org/github.com/samber/mo?status.svg)](https://pkg.go.dev/github.com/samber/mo)
+![Build Status](https://github.com/samber/mo/actions/workflows/go.yml/badge.svg)
 [![Go report](https://goreportcard.com/badge/github.com/samber/mo)](https://goreportcard.com/report/github.com/samber/mo)
+[![codecov](https://codecov.io/gh/samber/mo/branch/master/graph/badge.svg)](https://codecov.io/gh/samber/mo)
 
 🦄 **`samber/mo` brings monads and populars FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
 
@@ -86,11 +86,11 @@ option3 := option1.Match(
     func(i int) (int, bool) {
         // when value is present
         return i * 2, true
-	},
+    },
     func() (int, bool) {
         // when value is absent
         return 0, false
-	}
+    }
 )
 // Some(42)
 ```
@@ -128,7 +128,7 @@ Methods:
 
 ### Result[T any]
 
-`Result` respresent a result of an action having one of the following output: success or failure. An instance of `Result` is an instance of either `Ok` or `Err`.
+`Result` respresent a result of an action having one of the following output: success or failure. An instance of `Result` is an instance of either `Ok` or `Err`. It could be compared to `Either[error, T]`.
 
 Constructors:
 

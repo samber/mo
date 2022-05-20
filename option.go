@@ -7,8 +7,8 @@ var optionNoSuchElement = fmt.Errorf("no such element")
 // Some builds an Option when value is present.
 func Some[T any](value T) Option[T] {
 	return Option[T]{
-		value:     value,
 		isPresent: true,
+		value:     value,
 	}
 }
 
@@ -29,8 +29,8 @@ func TupleToOption[T any](v T, ok bool) Option[T] {
 // Option is a container for an optional value of type T. If value exists, Option is
 // of type Some. If the value is absent, Option is of type None.
 type Option[T any] struct {
-	value     T
 	isPresent bool
+	value     T
 }
 
 // IsPresent returns true when value is absent.
