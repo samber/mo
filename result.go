@@ -17,11 +17,11 @@ func Err[T any](err error) Result[T] {
 }
 
 // TupleToResult convert a pair of T and error into a Result.
-func TupleToResult[T any](v T, err error) Result[T] {
+func TupleToResult[T any](value T, err error) Result[T] {
 	if err != nil {
 		return Err[T](err)
 	}
-	return Ok(v)
+	return Ok(value)
 }
 
 // Result respresent a result of an action having one
@@ -91,15 +91,15 @@ func (r Result[T]) ToEither() Either[error, T] {
 }
 
 // ForEach executes the given side-effecting function if Result is valid.
-func (r Result[T]) ForEach(f func(T)) {
+func (r Result[T]) ForEach(mapper func(value T)) {
 	if !r.isErr {
-		f(r.value)
+		mapper(r.value)
 	}
 }
 
 // Match executes the first function if Result is valid and second function if invalid.
 // It returns a new Result.
-func (r Result[T]) Match(onSuccess func(T) (T, error), onError func(error) (T, error)) Result[T] {
+func (r Result[T]) Match(onSuccess func(value T) (T, error), onError func(err error) (T, error)) Result[T] {
 	if r.isErr {
 		return TupleToResult(onError(r.err))
 	}
@@ -107,7 +107,7 @@ func (r Result[T]) Match(onSuccess func(T) (T, error), onError func(error) (T, e
 }
 
 // Map executes the mapper function if Result is valid. It returns a new Result.
-func (r Result[T]) Map(mapper func(T) (T, error)) Result[T] {
+func (r Result[T]) Map(mapper func(value T) (T, error)) Result[T] {
 	if !r.isErr {
 		return TupleToResult(mapper(r.value))
 	}
@@ -125,7 +125,7 @@ func (r Result[T]) MapErr(mapper func(error) (T, error)) Result[T] {
 }
 
 // FlatMap executes the mapper function if Result is valid. It returns a new Result.
-func (r Result[T]) FlatMap(mapper func(T) Result[T]) Result[T] {
+func (r Result[T]) FlatMap(mapper func(value T) Result[T]) Result[T] {
 	if !r.isErr {
 		return mapper(r.value)
 	}

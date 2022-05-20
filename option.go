@@ -19,9 +19,9 @@ func None[T any]() Option[T] {
 	}
 }
 
-func TupleToOption[T any](v T, ok bool) Option[T] {
+func TupleToOption[T any](value T, ok bool) Option[T] {
 	if ok {
-		return Some(v)
+		return Some(value)
 	}
 	return None[T]()
 }
@@ -85,15 +85,15 @@ func (o Option[T]) OrEmpty() T {
 }
 
 // ForEach executes the given side-effecting function of value is present.
-func (o Option[T]) ForEach(f func(T)) {
+func (o Option[T]) ForEach(onValue func(value T)) {
 	if o.isPresent {
-		f(o.value)
+		onValue(o.value)
 	}
 }
 
 // Match executes the first function if value is present and second function if absent.
 // It returns a new Option.
-func (o Option[T]) Match(onValue func(T) (T, bool), onNone func() (T, bool)) Option[T] {
+func (o Option[T]) Match(onValue func(value T) (T, bool), onNone func() (T, bool)) Option[T] {
 	if o.isPresent {
 		return TupleToOption(onValue(o.value))
 	}
@@ -101,7 +101,7 @@ func (o Option[T]) Match(onValue func(T) (T, bool), onNone func() (T, bool)) Opt
 }
 
 // Map executes the mapper function if value is present or returns None if absent.
-func (o Option[T]) Map(mapper func(T) (T, bool)) Option[T] {
+func (o Option[T]) Map(mapper func(value T) (T, bool)) Option[T] {
 	if o.isPresent {
 		return TupleToOption(mapper(o.value))
 	}
@@ -119,7 +119,7 @@ func (o Option[T]) MapNone(mapper func() (T, bool)) Option[T] {
 }
 
 // FlatMap executes the mapper function if value is present or returns None if absent.
-func (o Option[T]) FlatMap(mapper func(T) Option[T]) Option[T] {
+func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	if o.isPresent {
 		return mapper(o.value)
 	}

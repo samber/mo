@@ -124,11 +124,11 @@ func (e Either[L, R]) Swap() Either[R, L] {
 }
 
 // ForEach executes the given side-effecting function, depending of value is Left or Right.
-func (e Either[L, R]) ForEach(a func(L), b func(R)) {
+func (e Either[L, R]) ForEach(leftCb func(L), rightCb func(R)) {
 	if e.isLeft {
-		a(e.left)
+		leftCb(e.left)
 	} else if e.isRight {
-		b(e.right)
+		rightCb(e.right)
 	}
 }
 
