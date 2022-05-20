@@ -107,24 +107,24 @@ More examples in [documentation](https://godoc.org/github.com/samber/mo).
 
 Constructors:
 
-- mo.Some()
-- mo.None()
-- mo.TupleToOption()
+- `mo.Some()` [doc](https://pkg.go.dev/github.com/samber/mo#Some)
+- `mo.None()` [doc](https://pkg.go.dev/github.com/samber/mo#None)
+- `mo.TupleToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToOption)
 
 Methods:
 
-- .IsPresent()
-- .IsAbsent()
-- .Size()
-- .Get()
-- .MustGet()
-- .OrElse()
-- .OrEmpty()
-- .ForEach()
-- .Match()
-- .Map()
-- .MapNone()
-- .FlatMap()
+- `.IsPresent()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsPresent)
+- `.IsAbsent()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsAbsent)
+- `.Size()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Size)
+- `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Get)
+- `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MustGet)
+- `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.OrElse)
+- `.OrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.OrEmpty)
+- `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.ForEach)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Match)
+- `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Map)
+- `.MapNone()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MapNone)
+- `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.FlatMap)
 
 ### Result[T any]
 
@@ -132,25 +132,25 @@ Methods:
 
 Constructors:
 
-- mo.Ok()
-- mo.Err()
-- mo.TupleToResult()
+- `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok)
+- `mo.Err()` [doc](https://pkg.go.dev/github.com/samber/mo#Err)
+- `mo.TupleToResult()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToResult)
 
 Methods:
 
-- .IsOk()
-- .IsError()
-- .Error()
-- .Get()
-- .MustGet()
-- .OrElse()
-- .OrEmpty()
-- .ToEither()
-- .ForEach()
-- .Match()
-- .Map()
-- .MapErr()
-- .FlatMap()
+- `.IsOk()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsOk)
+- `.IsError()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsError)
+- `.Error()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Error)
+- `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Get)
+- `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MustGet)
+- `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrElse)
+- `.OrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrEmpty)
+- `.ToEither()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ToEither)
+- `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ForEach)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Match)
+- `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Map)
+- `.MapErr()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapErr)
+- `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.FlatMap)
 
 ### Either[L any, R any]
 
@@ -158,26 +158,26 @@ Methods:
 
 Constructors:
 
-- mo.Left()
-- mo.Right()
+- `mo.Left()` [doc](https://pkg.go.dev/github.com/samber/mo#Left)
+- `mo.Right()` [doc](https://pkg.go.dev/github.com/samber/mo#Right)
 
 Methods:
 
-- .IsLeft()
-- .IsRight()
-- .Left()
-- .Right()
-- .MustLeft()
-- .MustRight()
-- .LeftOrElse()
-- .RightOrElse()
-- .LeftOrEmpty()
-- .RightOrEmpty()
-- .Swap()
-- .ForEach()
-- .Match()
-- .MapLeft()
-- .MapRight()
+- `.IsLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.IsLeft)
+- `.IsRight()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.IsRight)
+- `.Left()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Left)
+- `.Right()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Right)
+- `.MustLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MustLeft)
+- `.MustRight()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MustRight)
+- `.LeftOrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.LeftOrElse)
+- `.RightOrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.RightOrElse)
+- `.LeftOrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.LeftOrEmpty)
+- `.RightOrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.RightOrEmpty)
+- `.Swap()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Swap)
+- `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.ForEach)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Match)
+- `.MapLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapLeft)
+- `.MapRight()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapRight)
 
 ### Future[T any]
 
@@ -185,16 +185,16 @@ Methods:
 
 Constructors:
 
-- mo.NewFuture()
+- `mo.NewFuture()` [doc](https://pkg.go.dev/github.com/samber/mo#NewFuture)
 
 Methods:
 
-- .Then()
-- .Catch()
-- .Finally()
-- .Collect()
-- .Result()
-- .Cancel()
+- `.Then()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Then)
+- `.Catch()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Catch)
+- `.Finally()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Finally)
+- `.Collect()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Collect)
+- `.Result()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Result)
+- `.Cancel()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Cancel)
 
 ### IO[T any]
 
@@ -202,16 +202,16 @@ Methods:
 
 Constructors:
 
-- mo.NewIO()
-- mo.NewIO1()
-- mo.NewIO2()
-- mo.NewIO3()
-- mo.NewIO4()
-- mo.NewIO5()
+- `mo.NewIO()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO)
+- `mo.NewIO1()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO1)
+- `mo.NewIO2()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO2)
+- `mo.NewIO3()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO3)
+- `mo.NewIO4()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO4)
+- `mo.NewIO5()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIO5)
 
 Methods:
 
-- .Run()
+- `.Run()` [doc](https://pkg.go.dev/github.com/samber/mo#Future.Run)
 
 ### IOEither[T any]
 
@@ -219,16 +219,16 @@ Methods:
 
 Constructors:
 
-- mo.NewIOEither()
-- mo.NewIOEither1()
-- mo.NewIOEither2()
-- mo.NewIOEither3()
-- mo.NewIOEither4()
-- mo.NewIOEither5()
+- `mo.NewIOEither()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither)
+- `mo.NewIOEither1()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither1)
+- `mo.NewIOEither2()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither2)
+- `mo.NewIOEither3()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither3)
+- `mo.NewIOEither4()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither4)
+- `mo.NewIOEither5()` [doc](https://pkg.go.dev/github.com/samber/mo#NewIOEither5)
 
 Methods:
 
-- .Run()
+- `.Run()` [doc](https://pkg.go.dev/github.com/samber/mo#IOEither.Run)
 
 ### Task[T any]
 
@@ -236,22 +236,22 @@ Methods:
 
 Constructors:
 
-- mo.NewTask()
-- mo.NewTask1()
-- mo.NewTask2()
-- mo.NewTask3()
-- mo.NewTask4()
-- mo.NewTask5()
-- mo.NewTaskFromIO()
-- mo.NewTaskFromIO1()
-- mo.NewTaskFromIO2()
-- mo.NewTaskFromIO3()
-- mo.NewTaskFromIO4()
-- mo.NewTaskFromIO5()
+- `mo.NewTask()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask)
+- `mo.NewTask1()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask1)
+- `mo.NewTask2()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask2)
+- `mo.NewTask3()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask3)
+- `mo.NewTask4()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask4)
+- `mo.NewTask5()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTask5)
+- `mo.NewTaskFromIO()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO)
+- `mo.NewTaskFromIO1()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO1)
+- `mo.NewTaskFromIO2()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO2)
+- `mo.NewTaskFromIO3()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO3)
+- `mo.NewTaskFromIO4()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO4)
+- `mo.NewTaskFromIO5()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskFromIO5)
 
 Methods:
 
-- .Run()
+- `.Run()` [doc](https://pkg.go.dev/github.com/samber/mo#Task.Run)
 
 ### TaskEither[T any]
 
@@ -259,17 +259,17 @@ Methods:
 
 Constructors:
 
-- mo.NewTaskEither()
-- mo.NewTaskEitherFromIOEither()
+- `mo.NewTaskEither()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskEither)
+- `mo.NewTaskEitherFromIOEither()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTaskEitherFromIOEither)
 
 Methods:
 
-- .Run()
-- .OrElse()
-- .Match()
-- .TryCatch()
-- .ToTask()
-- .ToEither()
+- `.Run()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Run)
+- `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.OrElse)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Match)
+- `.TryCatch()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.TryCatch)
+- `.ToTask()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.ToTask)
+- `.ToEither()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.ToEither)
 
 ### State[S any, A any]
 
@@ -277,15 +277,15 @@ Methods:
 
 Constructors:
 
-- mo.NewState()
-- mo.ReturnState()
+- `mo.NewState()` [doc](https://pkg.go.dev/github.com/samber/mo#NewState)
+- `mo.ReturnState()` [doc](https://pkg.go.dev/github.com/samber/mo#ReturnState)
 
 Methods:
 
-- .Run()
-- .Get()
-- .Modify()
-- .Put()
+- `.Run()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Run)
+- `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Get)
+- `.Modify()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Modify)
+- `.Put()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Put)
 
 ## 🛩 Benchmark
 
