@@ -90,7 +90,7 @@ option3 := option1.Match(
     func() (int, bool) {
         // when value is absent
         return 0, false
-    }
+    },
 )
 // Some(42)
 ```
