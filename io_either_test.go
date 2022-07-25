@@ -16,7 +16,7 @@ func TestIOEither(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }
 
@@ -31,7 +31,7 @@ func TestIOEither1(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }
 
@@ -47,7 +47,7 @@ func TestIOEither2(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }
 
@@ -64,7 +64,7 @@ func TestIOEither3(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }
 
@@ -82,7 +82,7 @@ func TestIOEither4(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }
 
@@ -101,6 +101,6 @@ func TestIOEither5(t *testing.T) {
 
 	is.False(result.isLeft)
 	is.Nil(result.Left())
-	is.True(result.isRight)
+	is.True(result.IsRight())
 	is.Equal(42, result.MustRight())
 }

@@ -9,26 +9,23 @@ var eitherMissingRightValue = fmt.Errorf("no such Right value")
 // Left builds the left side of the Either struct, as opposed to the Right side.
 func Left[L any, R any](value L) Either[L, R] {
 	return Either[L, R]{
-		isLeft:  true,
-		isRight: false,
-		left:    value,
+		isLeft: true,
+		left:   value,
 	}
 }
 
 // Right builds the right side of the Either struct, as opposed to the Left side.
 func Right[L any, R any](value R) Either[L, R] {
 	return Either[L, R]{
-		isLeft:  false,
-		isRight: true,
-		right:   value,
+		isLeft: false,
+		right:  value,
 	}
 }
 
 // Either respresents a value of 2 possible types.
 // An instance of Either is an instance of either A or B.
 type Either[L any, R any] struct {
-	isLeft  bool
-	isRight bool
+	isLeft bool
 
 	left  L
 	right R
@@ -41,12 +38,12 @@ func (e Either[L, R]) IsLeft() bool {
 
 // IsRight returns true if Either is an instance of Right.
 func (e Either[L, R]) IsRight() bool {
-	return e.isRight
+	return !e.isLeft
 }
 
 // Left returns left value of a Either struct.
 func (e Either[L, R]) Left() (L, bool) {
-	if e.isLeft {
+	if e.IsLeft() {
 		return e.left, true
 	}
 	return empty[L](), false
@@ -54,7 +51,7 @@ func (e Either[L, R]) Left() (L, bool) {
 
 // Right returns right value of a Either struct.
 func (e Either[L, R]) Right() (R, bool) {
-	if e.isRight {
+	if e.IsRight() {
 		return e.right, true
 	}
 	return empty[R](), false
@@ -62,7 +59,7 @@ func (e Either[L, R]) Right() (R, bool) {
 
 // MustLeft returns left value of a Either struct or panics.
 func (e Either[L, R]) MustLeft() L {
-	if !e.isLeft {
+	if !e.IsLeft() {
 		panic(eitherMissingLeftValue)
 	}
 
@@ -71,7 +68,7 @@ func (e Either[L, R]) MustLeft() L {
 
 // MustRight returns right value of a Either struct or panics.
 func (e Either[L, R]) MustRight() R {
-	if !e.isRight {
+	if !e.IsRight() {
 		panic(eitherMissingRightValue)
 	}
 
@@ -80,7 +77,7 @@ func (e Either[L, R]) MustRight() R {
 
 // LeftOrElse returns left value of a Either struct or fallback.
 func (e Either[L, R]) LeftOrElse(fallback L) L {
-	if e.isLeft {
+	if e.IsLeft() {
 		return e.left
 	}
 
@@ -89,7 +86,7 @@ func (e Either[L, R]) LeftOrElse(fallback L) L {
 
 // RightOrElse returns right value of a Either struct or fallback.
 func (e Either[L, R]) RightOrElse(fallback R) R {
-	if e.isRight {
+	if e.IsRight() {
 		return e.right
 	}
 
@@ -98,7 +95,7 @@ func (e Either[L, R]) RightOrElse(fallback R) R {
 
 // LeftOrEmpty returns left value of a Either struct or empty value.
 func (e Either[L, R]) LeftOrEmpty() L {
-	if e.isLeft {
+	if e.IsLeft() {
 		return e.left
 	}
 
@@ -107,7 +104,7 @@ func (e Either[L, R]) LeftOrEmpty() L {
 
 // RightOrEmpty returns right value of a Either struct or empty value.
 func (e Either[L, R]) RightOrEmpty() R {
-	if e.isRight {
+	if e.IsRight() {
 		return e.right
 	}
 
@@ -116,7 +113,7 @@ func (e Either[L, R]) RightOrEmpty() R {
 
 // Swap returns the left value in Right and vice versa.
 func (e Either[L, R]) Swap() Either[R, L] {
-	if e.isLeft {
+	if e.IsLeft() {
 		return Right[R, L](e.left)
 	}
 
@@ -125,18 +122,18 @@ func (e Either[L, R]) Swap() Either[R, L] {
 
 // ForEach executes the given side-effecting function, depending of value is Left or Right.
 func (e Either[L, R]) ForEach(leftCb func(L), rightCb func(R)) {
-	if e.isLeft {
+	if e.IsLeft() {
 		leftCb(e.left)
-	} else if e.isRight {
+	} else if e.IsRight() {
 		rightCb(e.right)
 	}
 }
 
 // Match executes the given function, depending of value is Left or Right, and returns result.
 func (e Either[L, R]) Match(onLeft func(L) Either[L, R], onRight func(R) Either[L, R]) Either[L, R] {
-	if e.isLeft {
+	if e.IsLeft() {
 		return onLeft(e.left)
-	} else if e.isRight {
+	} else if e.IsRight() {
 		return onRight(e.right)
 	}
 
@@ -145,9 +142,9 @@ func (e Either[L, R]) Match(onLeft func(L) Either[L, R], onRight func(R) Either[
 
 // MapLeft executes the given function, if Either is of type Left, and returns result.
 func (e Either[L, R]) MapLeft(mapper func(L) Either[L, R]) Either[L, R] {
-	if e.isLeft {
+	if e.IsLeft() {
 		return mapper(e.left)
-	} else if e.isRight {
+	} else if e.IsRight() {
 		return Right[L, R](e.right)
 	}
 
@@ -158,7 +155,7 @@ func (e Either[L, R]) MapLeft(mapper func(L) Either[L, R]) Either[L, R] {
 func (e Either[L, R]) MapRight(mapper func(R) Either[L, R]) Either[L, R] {
 	if e.isLeft {
 		return Left[L, R](e.left)
-	} else if e.isRight {
+	} else if e.IsRight() {
 		return mapper(e.right)
 	}
 
