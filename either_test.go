@@ -20,6 +20,35 @@ func TestEitherRight(t *testing.T) {
 	is.Equal(Either[int, bool]{left: 0, right: true, isLeft: false}, right)
 }
 
+func TestEitherMap(t *testing.T) {
+	is := assert.New(t)
+
+	e1 := Map(Left[int, string](42),
+		func(a int) float64 {
+			is.Equal(42, a)
+			return 21.21
+		},
+		func(b string) float64 {
+			is.Fail("should not enter here")
+			return 1.1
+		},
+	)
+
+	e2 := Map(Right[int, string]("foobar"),
+		func(a int) float64 {
+			is.Fail("should not enter here")
+			return 21.21
+		},
+		func(b string) float64 {
+			is.Equal("foobar", b)
+			return 1.1
+		},
+	)
+
+	is.Equal(21.21, e1)
+	is.Equal(1.1, e2)
+}
+
 func TestEitherIsLeftOrRight(t *testing.T) {
 	is := assert.New(t)
 
