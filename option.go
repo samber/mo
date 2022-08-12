@@ -1,6 +1,9 @@
 package mo
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 var optionNoSuchElement = fmt.Errorf("no such element")
 
@@ -125,4 +128,20 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	}
 
 	return None[T]()
+}
+
+// FlatMap executes the mapper function if value is present or returns None if absent.
+func (o Option[T]) MarshalJSON() ([]byte, error) {
+	if o.isPresent {
+		return json.Marshal(o.value)
+	}
+	return json.Marshal(nil)
+}
+
+// FlatMap executes the mapper function if value is present or returns None if absent.
+func (o Option[T]) UnmarshalJSON(b []byte) error {
+	if o.isPresent {
+		return json.Unmarshal(b, &o.value)
+	}
+	return nil
 }

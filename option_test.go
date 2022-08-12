@@ -153,3 +153,33 @@ func TestOptionFlatMap(t *testing.T) {
 	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
 	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
 }
+
+func TestOptionMarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Some("foo")
+	option2 := None[string]()
+
+	value, err := option1.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`"foo"`, string(value))
+
+	value, err = option2.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`null`, string(value))
+}
+
+func TestOptionUnmarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Some("foo")
+	option2 := None[string]()
+
+	err := option1.UnmarshalJSON([]byte(`"foo"`))
+	is.NoError(err)
+	is.Equal(option1, Some("foo"))
+
+	err = option2.UnmarshalJSON([]byte(`null`))
+	is.NoError(err)
+	is.Equal(option2, None[string]())
+}
