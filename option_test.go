@@ -1,6 +1,7 @@
 package mo
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -167,6 +168,14 @@ func TestOptionMarshalJSON(t *testing.T) {
 	value, err = option2.MarshalJSON()
 	is.NoError(err)
 	is.Equal(`null`, string(value))
+
+	optionInStruct := testStruct{
+		Field: option1,
+	}
+	var marshalled []byte
+	marshalled, err = json.Marshal(optionInStruct)
+	is.NoError(err)
+	is.Equal(`{"Field":"foo"}`, string(marshalled))
 }
 
 func TestOptionUnmarshalJSON(t *testing.T) {
@@ -177,9 +186,25 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 
 	err := option1.UnmarshalJSON([]byte(`"foo"`))
 	is.NoError(err)
-	is.Equal(option1, Some("foo"))
+	is.Equal(Some("foo"), option1)
+
+	var res Option[string]
+	err = json.Unmarshal([]byte(`"foo"`), &res)
+	is.NoError(err)
+	is.Equal(res, option1)
 
 	err = option2.UnmarshalJSON([]byte(`null`))
 	is.NoError(err)
-	is.Equal(option2, None[string]())
+	is.Equal(None[string](), option2)
+
+	unmarshal := testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": "foo"}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{
+		Field: Some("foo"),
+	}, unmarshal)
+}
+
+type testStruct struct {
+	Field Option[string]
 }
