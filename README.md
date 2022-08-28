@@ -135,6 +135,7 @@ Constructors:
 - `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok)
 - `mo.Err()` [doc](https://pkg.go.dev/github.com/samber/mo#Err)
 - `mo.TupleToResult()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToResult)
+- `mo.Try()` [doc](https://pkg.go.dev/github.com/samber/mo#Try)
 
 Methods:
 

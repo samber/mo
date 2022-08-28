@@ -18,6 +18,23 @@ func TestResultErr(t *testing.T) {
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, Err[int](assert.AnError))
 }
 
+func TestResultTupleToResult(t *testing.T) {
+	is := assert.New(t)
+
+	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, TupleToResult(42, assert.AnError))
+}
+
+func TestResultTry(t *testing.T) {
+	is := assert.New(t)
+
+	is.Equal(Result[int]{value: 42, isErr: false, err: nil}, Try(func() (int, error) {
+		return 42, nil
+	}))
+	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, Try(func() (int, error) {
+		return 42, assert.AnError
+	}))
+}
+
 func TestResultIsOk(t *testing.T) {
 	is := assert.New(t)
 

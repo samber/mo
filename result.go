@@ -24,6 +24,11 @@ func TupleToResult[T any](value T, err error) Result[T] {
 	return Ok(value)
 }
 
+// Try returns either a Ok or Err object.
+func Try[T any](f func() (T, error)) Result[T] {
+	return TupleToResult(f())
+}
+
 // Result respresent a result of an action having one
 // of the following output: success or failure.
 // An instance of Result is an instance of either Ok or Err.

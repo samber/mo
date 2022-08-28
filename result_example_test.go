@@ -38,6 +38,36 @@ func ExampleTupleToResult() {
 	// Output: 1234
 }
 
+func ExampleTry_ok() {
+	randomFunc := func() (int, error) {
+		return 42, nil
+	}
+
+	result := Try(randomFunc)
+	value, err := result.Get()
+
+	fmt.Println(value)
+	fmt.Println(err)
+	// Output:
+	// 42
+	// <nil>
+}
+
+func ExampleTry_err() {
+	randomFunc := func() (int, error) {
+		return 42, err
+	}
+
+	result := Try(randomFunc)
+	value, err := result.Get()
+
+	fmt.Println(value)
+	fmt.Println(err)
+	// Output:
+	// 0
+	// error
+}
+
 func ExampleResult_ok() {
 	ok := Ok(42)
 	result := ok.OrElse(1234)
