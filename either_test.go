@@ -10,14 +10,14 @@ func TestEitherLeft(t *testing.T) {
 	is := assert.New(t)
 
 	left := Left[int, bool](42)
-	is.Equal(Either[int, bool]{left: 42, right: false, isLeft: true, isRight: false}, left)
+	is.Equal(Either[int, bool]{left: 42, right: false, isLeft: true}, left)
 }
 
 func TestEitherRight(t *testing.T) {
 	is := assert.New(t)
 
 	right := Right[int, bool](true)
-	is.Equal(Either[int, bool]{left: 0, right: true, isLeft: false, isRight: true}, right)
+	is.Equal(Either[int, bool]{left: 0, right: true, isLeft: false}, right)
 }
 
 func TestEitherIsLeftOrRight(t *testing.T) {
@@ -103,8 +103,8 @@ func TestEitherSwap(t *testing.T) {
 	left := Left[int, string](42)
 	right := Right[int, string]("foobar")
 
-	is.Equal(Either[string, int]{left: "", right: 42, isLeft: false, isRight: true}, left.Swap())
-	is.Equal(Either[string, int]{left: "foobar", right: 0, isLeft: true, isRight: false}, right.Swap())
+	is.Equal(Either[string, int]{left: "", right: 42, isLeft: false}, left.Swap())
+	is.Equal(Either[string, int]{left: "foobar", right: 0, isLeft: true}, right.Swap())
 }
 
 func TestEitherForEach(t *testing.T) {
@@ -154,8 +154,8 @@ func TestEitherMatch(t *testing.T) {
 		},
 	)
 
-	is.Equal(Either[int, string]{left: 21, right: "", isLeft: true, isRight: false}, e1)
-	is.Equal(Either[int, string]{left: 0, right: "plop", isLeft: false, isRight: true}, e2)
+	is.Equal(Either[int, string]{left: 21, right: "", isLeft: true}, e1)
+	is.Equal(Either[int, string]{left: 0, right: "plop", isLeft: false}, e2)
 }
 
 func TestEitherMapLeft(t *testing.T) {
@@ -175,8 +175,8 @@ func TestEitherMapLeft(t *testing.T) {
 		},
 	)
 
-	is.Equal(Either[int, string]{left: 21, right: "", isLeft: true, isRight: false}, e1)
-	is.Equal(Either[int, string]{left: 0, right: "foobar", isLeft: false, isRight: true}, e2)
+	is.Equal(Either[int, string]{left: 21, right: "", isLeft: true}, e1)
+	is.Equal(Either[int, string]{left: 0, right: "foobar", isLeft: false}, e2)
 }
 
 func TestEitherMapRight(t *testing.T) {
@@ -196,6 +196,6 @@ func TestEitherMapRight(t *testing.T) {
 		},
 	)
 
-	is.Equal(Either[int, string]{left: 42, right: "", isLeft: true, isRight: false}, e1)
-	is.Equal(Either[int, string]{left: 0, right: "plop", isLeft: false, isRight: true}, e2)
+	is.Equal(Either[int, string]{left: 42, right: "", isLeft: true}, e1)
+	is.Equal(Either[int, string]{left: 0, right: "plop", isLeft: false}, e2)
 }
