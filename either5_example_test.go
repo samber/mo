@@ -34,13 +34,13 @@ func ExampleEither5_Arg1() {
 
 func ExampleEither5_MustArg1() {
 	either5Arg1 := NewEither5Arg1[int, bool, float64, string, byte](42)
-	result := either5Arg1.MustArg1()
-
-	fmt.Println(result)
-	// Output: 42
 
 	// result = either5Arg1.MustArg4()
-	// Output: panics
+	// Panics
+
+	result := either5Arg1.MustArg1()
+	fmt.Println(result)
+	// Output: 42
 }
 
 func ExampleEither5_Arg1OrElse() {
