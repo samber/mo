@@ -183,11 +183,17 @@ Methods:
 
 ### EitherX[T1, ..., TX] (With X between 3 and 5)
 
-`EitherX` respresents a value of x possible types. An instance of `EitherX` is an instance of either `T1` to `TX`.
+`EitherX` respresents a value of X possible types. For example, an `Either3` value is either `T1`, `T2` or `T3`.
 
 Constructors:
 
-- `mo.NewEitherXArgY()` [doc](https://pkg.go.dev/github.com/samber/mo#NewEither5Arg1)
+- `mo.NewEitherXArgY()` [doc](https://pkg.go.dev/github.com/samber/mo#NewEither5Arg1). Eg:
+  - `mo.NewEither3Arg1[A, B, C](A)`
+  - `mo.NewEither3Arg2[A, B, C](B)`
+  - `mo.NewEither3Arg3[A, B, C](C)`
+  - `mo.NewEither4Arg1[A, B, C, D](A)`
+  - `mo.NewEither4Arg2[A, B, C, D](B)`
+  - ...
 
 Methods:
 
