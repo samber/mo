@@ -30,6 +30,7 @@ We currently support the following data types:
 - `Option[T]` (Maybe)
 - `Result[T]`
 - `Either[A, B]`
+- `EitherX[T1, ..., TX]` (With X between 3 and 5) 
 - `Future[T]`
 - `IO[T]`
 - `IOEither[T]`
@@ -125,6 +126,8 @@ Methods:
 - `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Map)
 - `.MapNone()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MapNone)
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.FlatMap)
+- `.MarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalJSON)
+- `.UnmarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalJSON)
 
 ### Result[T any]
 
@@ -135,6 +138,7 @@ Constructors:
 - `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok)
 - `mo.Err()` [doc](https://pkg.go.dev/github.com/samber/mo#Err)
 - `mo.TupleToResult()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToResult)
+- `mo.Try()` [doc](https://pkg.go.dev/github.com/samber/mo#Try)
 
 Methods:
 
@@ -178,6 +182,31 @@ Methods:
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Match)
 - `.MapLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapLeft)
 - `.MapRight()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapRight)
+
+### EitherX[T1, ..., TX] (With X between 3 and 5)
+
+`EitherX` respresents a value of X possible types. For example, an `Either3` value is either `T1`, `T2` or `T3`.
+
+Constructors:
+
+- `mo.NewEitherXArgY()` [doc](https://pkg.go.dev/github.com/samber/mo#NewEither5Arg1). Eg:
+  - `mo.NewEither3Arg1[A, B, C](A)`
+  - `mo.NewEither3Arg2[A, B, C](B)`
+  - `mo.NewEither3Arg3[A, B, C](C)`
+  - `mo.NewEither4Arg1[A, B, C, D](A)`
+  - `mo.NewEither4Arg2[A, B, C, D](B)`
+  - ...
+
+Methods:
+
+- `.IsArgX()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.IsArg1)
+- `.ArgX()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.Arg1)
+- `.MustArgX()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.MustArg1)
+- `.ArgXOrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.Arg1OrElse)
+- `.ArgXOrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.Arg1OrEmpty)
+- `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.ForEach)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.Match)
+- `.MapArgX()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.MapArg1)
 
 ### Future[T any]
 

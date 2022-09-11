@@ -1,6 +1,7 @@
 package mo
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -8,7 +9,7 @@ import (
 var optionNoSuchElement = fmt.Errorf("no such element")
 
 // Some builds an Option when value is present.
-func Some[T comparable](value T) Option[T] {
+func Some[T any](value T) Option[T] {
 	return Option[T]{
 		isPresent: true,
 		value:     value,
@@ -16,13 +17,13 @@ func Some[T comparable](value T) Option[T] {
 }
 
 // None builds an Option when value is absent.
-func None[T comparable]() Option[T] {
+func None[T any]() Option[T] {
 	return Option[T]{
 		isPresent: false,
 	}
 }
 
-func TupleToOption[T comparable](value T, ok bool) Option[T] {
+func TupleToOption[T any](value T, ok bool) Option[T] {
 	if ok {
 		return Some(value)
 	}
@@ -31,7 +32,7 @@ func TupleToOption[T comparable](value T, ok bool) Option[T] {
 
 // Option is a container for an optional value of type T. If value exists, Option is
 // of type Some. If the value is absent, Option is of type None.
-type Option[T comparable] struct {
+type Option[T any] struct {
 	isPresent bool
 	value     T
 }
@@ -130,7 +131,7 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	return None[T]()
 }
 
-// FlatMap executes the mapper function if value is present or returns None if absent.
+// MarshalJSON encodes Option into json.
 func (o Option[T]) MarshalJSON() ([]byte, error) {
 	if o.isPresent {
 		return json.Marshal(o.value)
@@ -138,14 +139,18 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(nil)
 }
 
-// FlatMap executes the mapper function if value is present or returns None if absent.
+// UnmarshalJSON decodes Option from json.
 func (o *Option[T]) UnmarshalJSON(b []byte) error {
-	err := json.Unmarshal(b, &o.value)
-
-	var v T
-	if v != o.value && err == nil {
-		o.isPresent = true
+	if bytes.Equal(b, []byte("null")) {
+		o.isPresent = false
+		return nil
 	}
 
-	return err
+	err := json.Unmarshal(b, &o.value)
+	if err != nil {
+		return err
+	}
+
+	o.isPresent = true
+	return nil
 }
