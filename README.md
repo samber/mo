@@ -126,6 +126,8 @@ Methods:
 - `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Map)
 - `.MapNone()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MapNone)
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.FlatMap)
+- `.MarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalJSON)
+- `.UnmarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalJSON)
 
 ### Result[T any]
 

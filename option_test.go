@@ -1,6 +1,7 @@
 package mo
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -152,4 +153,82 @@ func TestOptionFlatMap(t *testing.T) {
 
 	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
 	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
+}
+
+func TestOptionMarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Some("foo")
+	option2 := None[string]()
+	option3 := Some("")
+
+	value, err := option1.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`"foo"`, string(value))
+
+	value, err = option2.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`null`, string(value))
+
+	value, err = option3.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`""`, string(value))
+
+	optionInStruct := testStruct{
+		Field: option1,
+	}
+	var marshalled []byte
+	marshalled, err = json.Marshal(optionInStruct)
+	is.NoError(err)
+	is.Equal(`{"Field":"foo"}`, string(marshalled))
+}
+
+func TestOptionUnmarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Some("foo")
+	option2 := None[string]()
+
+	err := option1.UnmarshalJSON([]byte(`"foo"`))
+	is.NoError(err)
+	is.Equal(Some("foo"), option1)
+
+	var res Option[string]
+	err = json.Unmarshal([]byte(`"foo"`), &res)
+	is.NoError(err)
+	is.Equal(res, option1)
+
+	err = option2.UnmarshalJSON([]byte(`null`))
+	is.NoError(err)
+	is.Equal(None[string](), option2)
+
+	unmarshal := testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": "foo"}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{
+		Field: Some("foo"),
+	}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": null}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: None[string]()}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: None[string]()}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": ""}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: Some("")}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": "}`), &unmarshal)
+	is.Error(err)
+}
+
+type testStruct struct {
+	Field Option[string]
 }
