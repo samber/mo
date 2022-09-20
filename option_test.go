@@ -1,6 +1,7 @@
 package mo
 
 import (
+	"database/sql"
 	"encoding/json"
 	"testing"
 
@@ -174,6 +175,10 @@ func TestOptionMarshalJSON(t *testing.T) {
 	is.NoError(err)
 	is.Equal(`""`, string(value))
 
+	type testStruct struct {
+		Field Option[string]
+	}
+
 	optionInStruct := testStruct{
 		Field: option1,
 	}
@@ -202,6 +207,10 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	is.NoError(err)
 	is.Equal(None[string](), option2)
 
+	type testStruct struct {
+		Field Option[string]
+	}
+
 	unmarshal := testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": "foo"}`), &unmarshal)
 	is.NoError(err)
@@ -229,6 +238,143 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	is.Error(err)
 }
 
-type testStruct struct {
-	Field Option[string]
+func TestOptionMarshalText(t *testing.T) {
+	is := assert.New(t)
+
+	bytes1, err1 := Some(42).MarshalText()
+	bytes2, err2 := None[int]().MarshalText()
+	bytes3, err3 := Some("42").MarshalText()
+
+	is.Equal([]byte("42"), bytes1)
+	is.Nil(err1)
+	is.Equal([]byte("null"), bytes2)
+	is.Nil(err2)
+	is.Equal([]byte("\"42\""), bytes3)
+	is.Nil(err3)
+}
+
+func TestOptionUnmarshalText(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Option[int]{}
+	option2 := Option[int]{}
+	option3 := Option[string]{}
+
+	err1 := option1.UnmarshalText([]byte("null"))
+	err2 := option2.UnmarshalText([]byte("42"))
+	err3 := option3.UnmarshalText([]byte("\"42\""))
+
+	is.Equal(None[int](), option1)
+	is.Nil(err1)
+	is.Equal(Some[int](42), option2)
+	is.Nil(err2)
+	is.Equal(Some[string]("42"), option3)
+	is.Nil(err3)
+}
+
+func TestOptionMarshalBinary(t *testing.T) {
+	is := assert.New(t)
+
+	binary1, err1 := Some(42).MarshalBinary()
+	binary2, err2 := None[int]().MarshalBinary()
+	binary3, err3 := Some("42").MarshalBinary()
+
+	is.Equal([]byte{1, 0x3, 0x4, 0x0, 0x54}, binary1)
+	is.Nil(err1)
+	is.Equal([]byte{0}, binary2)
+	is.Nil(err2)
+	is.Equal([]byte{1, 0x5, 0xc, 0x0, 0x2, 0x34, 0x32}, binary3)
+	is.Nil(err3)
+}
+
+func TestOptionUnmarshalBinary(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Option[int]{}
+	option2 := Option[int]{}
+	option3 := Option[string]{}
+
+	err1 := option1.UnmarshalBinary([]byte{0})
+	err2 := option2.UnmarshalBinary([]byte{1, 0x3, 0x4, 0x0, 0x54})
+	err3 := option3.UnmarshalBinary([]byte{1, 0x5, 0xc, 0x0, 0x2, 0x34, 0x32})
+
+	is.Equal(None[int](), option1)
+	is.Nil(err1)
+	is.Equal(Some[int](42), option2)
+	is.Nil(err2)
+	is.Equal(Some[string]("42"), option3)
+	is.Nil(err3)
+}
+
+func TestOptionGobEncode(t *testing.T) {
+	is := assert.New(t)
+
+	binary1, err1 := Some(42).GobEncode()
+	binary2, err2 := None[int]().GobEncode()
+	binary3, err3 := Some("42").GobEncode()
+
+	is.Equal([]byte{1, 0x3, 0x4, 0x0, 0x54}, binary1)
+	is.Nil(err1)
+	is.Equal([]byte{0}, binary2)
+	is.Nil(err2)
+	is.Equal([]byte{1, 0x5, 0xc, 0x0, 0x2, 0x34, 0x32}, binary3)
+	is.Nil(err3)
+}
+
+func TestOptionGobDecode(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Option[int]{}
+	option2 := Option[int]{}
+	option3 := Option[string]{}
+
+	err1 := option1.GobDecode([]byte{0})
+	err2 := option2.GobDecode([]byte{1, 0x3, 0x4, 0x0, 0x54})
+	err3 := option3.GobDecode([]byte{1, 0x5, 0xc, 0x0, 0x2, 0x34, 0x32})
+
+	is.Equal(None[int](), option1)
+	is.Nil(err1)
+	is.Equal(Some[int](42), option2)
+	is.Nil(err2)
+	is.Equal(Some[string]("42"), option3)
+	is.Nil(err3)
+}
+
+func TestOptionScan(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Some("foo")
+	option2 := None[string]()
+
+	nullString1 := sql.NullString{String: "foo", Valid: true}
+	nullString2 := sql.NullString{String: "", Valid: false}
+
+	res1Exp, err1Exp := nullString1.Value()
+	res1, err1 := option1.Value()
+
+	res2Exp, err2Exp := nullString2.Value()
+	res2, err2 := option2.Value()
+
+	is.Equal(res1Exp, res1)
+	is.Equal(err1Exp, err1)
+	is.Equal(res2Exp, res2)
+	is.Equal(err2Exp, err2)
+}
+
+func TestOptionValue(t *testing.T) {
+	is := assert.New(t)
+
+	option1 := Option[string]{}
+	option2 := Option[string]{}
+
+	nullString1, _ := sql.NullString{String: "foo", Valid: true}.Value()
+	nullString2, _ := sql.NullString{String: "", Valid: false}.Value()
+
+	err1 := option1.Scan(nullString1)
+	err2 := option2.Scan(nullString2)
+
+	is.EqualValues(Some("foo"), option1)
+	is.Nil(err1)
+	is.EqualValues(None[string](), option2)
+	is.Nil(err2)
 }
