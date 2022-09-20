@@ -128,6 +128,14 @@ Methods:
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.FlatMap)
 - `.MarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalJSON)
 - `.UnmarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalJSON)
+- `.MarshalText()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalText)
+- `.UnmarshalText()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalText)
+- `.MarshalBinary()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalBinary)
+- `.UnmarshalBinary()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalBinary)
+- `.GobEncode()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.GobEncode)
+- `.GobDecode()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.GobDecode)
+- `.Scan()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Scan)
+- `.Value()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Value)
 
 ### Result[T any]
 
