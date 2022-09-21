@@ -1,8 +1,14 @@
 package mo
 
 import (
+	"bytes"
+	"database/sql/driver"
+	"encoding/gob"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
+	"time"
 )
 
 var optionNoSuchElement = fmt.Errorf("no such element")
@@ -140,4 +146,116 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	}
 
 	return None[T]()
+}
+
+// MarshalJSON encodes Option into json.
+func (o Option[T]) MarshalJSON() ([]byte, error) {
+	if o.isPresent {
+		return json.Marshal(o.value)
+	}
+	return json.Marshal(nil)
+}
+
+// UnmarshalJSON decodes Option from json.
+func (o *Option[T]) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		o.isPresent = false
+		return nil
+	}
+
+	err := json.Unmarshal(b, &o.value)
+	if err != nil {
+		return err
+	}
+
+	o.isPresent = true
+	time.Now()
+	return nil
+}
+
+// MarshalText implements the encoding.TextMarshaler interface.
+func (o Option[T]) MarshalText() ([]byte, error) {
+	return json.Marshal(o)
+}
+
+// UnmarshalText implements the encoding.TextUnmarshaler interface.
+func (o *Option[T]) UnmarshalText(data []byte) error {
+	return json.Unmarshal(data, o)
+}
+
+// BinaryMarshaler is the interface implemented by an object that can marshal itself into a binary form.
+func (o Option[T]) MarshalBinary() ([]byte, error) {
+	if !o.isPresent {
+		return []byte{0}, nil
+	}
+
+	var buf bytes.Buffer
+
+	enc := gob.NewEncoder(&buf)
+	if err := enc.Encode(o.value); err != nil {
+		return []byte{}, err
+	}
+
+	return append([]byte{1}, buf.Bytes()...), nil
+}
+
+// BinaryUnmarshaler is the interface implemented by an object that can unmarshal a binary representation of itself.
+func (o *Option[T]) UnmarshalBinary(data []byte) error {
+	if len(data) == 0 {
+		return errors.New("Option[T].UnmarshalBinary: no data")
+	}
+
+	if data[0] == 0 {
+		o.isPresent = false
+		o.value = empty[T]()
+		return nil
+	}
+
+	buf := bytes.NewBuffer(data[1:])
+	dec := gob.NewDecoder(buf)
+	err := dec.Decode(&o.value)
+	if err != nil {
+		return err
+	}
+
+	o.isPresent = true
+	return nil
+}
+
+// GobEncode implements the gob.GobEncoder interface.
+func (o Option[T]) GobEncode() ([]byte, error) {
+	return o.MarshalBinary()
+}
+
+// GobDecode implements the gob.GobDecoder interface.
+func (o *Option[T]) GobDecode(data []byte) error {
+	return o.UnmarshalBinary(data)
+}
+
+// Scan implements the SQL driver.Scanner interface.
+func (o *Option[T]) Scan(src any) error {
+	if src == nil {
+		o.isPresent = false
+		o.value = empty[T]()
+		return nil
+	}
+
+	if av, err := driver.DefaultParameterConverter.ConvertValue(src); err == nil {
+		if v, ok := av.(T); ok {
+			o.isPresent = true
+			o.value = v
+			return nil
+		}
+	}
+
+	return fmt.Errorf("failed to scan Option[T]")
+}
+
+// Value implements the driver Valuer interface.
+func (o Option[T]) Value() (driver.Value, error) {
+	if !o.isPresent {
+		return nil, nil
+	}
+
+	return o.value, nil
 }
