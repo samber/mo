@@ -111,6 +111,7 @@ Constructors:
 - `mo.Some()` [doc](https://pkg.go.dev/github.com/samber/mo#Some)
 - `mo.None()` [doc](https://pkg.go.dev/github.com/samber/mo#None)
 - `mo.TupleToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToOption)
+- `mo.EmptyableToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#EmptyableToOption)
 
 Methods:
 
