@@ -18,6 +18,29 @@ func TestOptionNone(t *testing.T) {
 	is.Equal(Option[int]{isPresent: false}, None[int]())
 }
 
+func TestTupleToOption(t *testing.T) {
+	is := assert.New(t)
+
+	cb := func(v int, ok bool) func() (int, bool) {
+		return func() (int, bool) {
+			return v, ok
+		}
+	}
+
+	is.Equal(Option[int]{isPresent: false}, TupleToOption(cb(42, false)()))
+	is.Equal(Option[int]{isPresent: true, value: 42}, TupleToOption(cb(42, true)()))
+}
+
+func TestOptionEmptyableToOption(t *testing.T) {
+	is := assert.New(t)
+
+	is.Equal(Option[error]{isPresent: false}, EmptyableToOption[error](nil))
+	is.Equal(Option[error]{isPresent: true, value: assert.AnError}, EmptyableToOption(assert.AnError))
+
+	is.Equal(Option[int]{isPresent: false}, EmptyableToOption(0))
+	is.Equal(Option[int]{isPresent: true, value: 42}, EmptyableToOption(42))
+}
+
 func TestOptionIsPresent(t *testing.T) {
 	is := assert.New(t)
 

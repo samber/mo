@@ -1,6 +1,9 @@
 package mo
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 var optionNoSuchElement = fmt.Errorf("no such element")
 
@@ -19,11 +22,23 @@ func None[T any]() Option[T] {
 	}
 }
 
+// TupleToOption builds a Some Option when second argument is true, or None.
 func TupleToOption[T any](value T, ok bool) Option[T] {
 	if ok {
 		return Some(value)
 	}
 	return None[T]()
+}
+
+// EmptyableToOption builds a Some Option when value is not empty, or None.
+func EmptyableToOption[T any](value T) Option[T] {
+	// 🤮
+	isZero := reflect.ValueOf(&value).Elem().IsZero()
+	if isZero {
+		return None[T]()
+	}
+
+	return Some(value)
 }
 
 // Option is a container for an optional value of type T. If value exists, Option is

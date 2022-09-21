@@ -1,6 +1,8 @@
 package mo
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func ExampleSome() {
 	some := Some(42)
@@ -32,6 +34,27 @@ func ExampleTupleToOption() {
 
 	fmt.Println(result)
 	// Output: 1234
+}
+
+func ExampleEmptyableToOption() {
+	cb := func(ok bool) error {
+		if ok {
+			return nil
+		}
+
+		return fmt.Errorf("an error")
+	}
+
+	err := cb(false)
+
+	none := EmptyableToOption(err)
+	result, ok := none.Get()
+
+	fmt.Println(result)
+	fmt.Println(ok)
+	// Output:
+	// an error
+	// true
 }
 
 func ExampleOption_some() {
