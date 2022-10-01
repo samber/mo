@@ -153,6 +153,8 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 	if o.isPresent {
 		return json.Marshal(o.value)
 	}
+
+	// if anybody find a way to support `omitempty` param, please contribute!
 	return json.Marshal(nil)
 }
 
