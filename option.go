@@ -14,6 +14,7 @@ import (
 var optionNoSuchElement = fmt.Errorf("no such element")
 
 // Some builds an Option when value is present.
+// Play: https://go.dev/play/p/iqz2n9n0tDM
 func Some[T any](value T) Option[T] {
 	return Option[T]{
 		isPresent: true,
@@ -22,6 +23,7 @@ func Some[T any](value T) Option[T] {
 }
 
 // None builds an Option when value is absent.
+// Play: https://go.dev/play/p/yYQPsYCSYlD
 func None[T any]() Option[T] {
 	return Option[T]{
 		isPresent: false,
@@ -29,6 +31,7 @@ func None[T any]() Option[T] {
 }
 
 // TupleToOption builds a Some Option when second argument is true, or None.
+// Play: https://go.dev/play/p/gkrg2pZwOty
 func TupleToOption[T any](value T, ok bool) Option[T] {
 	if ok {
 		return Some(value)
@@ -37,6 +40,7 @@ func TupleToOption[T any](value T, ok bool) Option[T] {
 }
 
 // EmptyableToOption builds a Some Option when value is not empty, or None.
+// Play: https://go.dev/play/p/GSpQQ-q-UES
 func EmptyableToOption[T any](value T) Option[T] {
 	// 🤮
 	isZero := reflect.ValueOf(&value).Elem().IsZero()
@@ -55,16 +59,19 @@ type Option[T any] struct {
 }
 
 // IsPresent returns true when value is absent.
+// Play: https://go.dev/play/p/nDqIaiihyCA
 func (o Option[T]) IsPresent() bool {
 	return o.isPresent
 }
 
 // IsAbsent returns true when value is present.
+// Play: https://go.dev/play/p/23e2zqyVOQm
 func (o Option[T]) IsAbsent() bool {
 	return !o.isPresent
 }
 
 // Size returns 1 when value is present or 0 instead.
+// Play: https://go.dev/play/p/7ixCNG1E9l7
 func (o Option[T]) Size() int {
 	if o.isPresent {
 		return 1
@@ -74,6 +81,7 @@ func (o Option[T]) Size() int {
 }
 
 // Get returns value and presence.
+// Play: https://go.dev/play/p/0-JBa1usZRT
 func (o Option[T]) Get() (T, bool) {
 	if !o.isPresent {
 		return empty[T](), false
@@ -83,6 +91,7 @@ func (o Option[T]) Get() (T, bool) {
 }
 
 // MustGet returns value if present or panics instead.
+// Play: https://go.dev/play/p/RVBckjdi5WR
 func (o Option[T]) MustGet() T {
 	if !o.isPresent {
 		panic(optionNoSuchElement)
@@ -92,6 +101,7 @@ func (o Option[T]) MustGet() T {
 }
 
 // OrElse returns value if present or default value.
+// Play: https://go.dev/play/p/TrGByFWCzXS
 func (o Option[T]) OrElse(fallback T) T {
 	if !o.isPresent {
 		return fallback
@@ -101,6 +111,7 @@ func (o Option[T]) OrElse(fallback T) T {
 }
 
 // OrEmpty returns value if present or empty value.
+// Play: https://go.dev/play/p/SpSUJcE-tQm
 func (o Option[T]) OrEmpty() T {
 	return o.value
 }
@@ -114,6 +125,7 @@ func (o Option[T]) ForEach(onValue func(value T)) {
 
 // Match executes the first function if value is present and second function if absent.
 // It returns a new Option.
+// Play: https://go.dev/play/p/1V6st3LDJsM
 func (o Option[T]) Match(onValue func(value T) (T, bool), onNone func() (T, bool)) Option[T] {
 	if o.isPresent {
 		return TupleToOption(onValue(o.value))
@@ -122,6 +134,7 @@ func (o Option[T]) Match(onValue func(value T) (T, bool), onNone func() (T, bool
 }
 
 // Map executes the mapper function if value is present or returns None if absent.
+// Play: https://go.dev/play/p/mvfP3pcP_eJ
 func (o Option[T]) Map(mapper func(value T) (T, bool)) Option[T] {
 	if o.isPresent {
 		return TupleToOption(mapper(o.value))
@@ -131,6 +144,7 @@ func (o Option[T]) Map(mapper func(value T) (T, bool)) Option[T] {
 }
 
 // MapNone executes the mapper function if value is absent or returns Option.
+// Play: https://go.dev/play/p/_KaHWZ6Q17b
 func (o Option[T]) MapNone(mapper func() (T, bool)) Option[T] {
 	if o.isPresent {
 		return Some(o.value)
@@ -140,6 +154,7 @@ func (o Option[T]) MapNone(mapper func() (T, bool)) Option[T] {
 }
 
 // FlatMap executes the mapper function if value is present or returns None if absent.
+// Play: https://go.dev/play/p/OXO-zJx6n5r
 func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	if o.isPresent {
 		return mapper(o.value)
