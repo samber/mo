@@ -144,26 +144,26 @@ Methods:
 
 Constructors:
 
-- `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok)
-- `mo.Err()` [doc](https://pkg.go.dev/github.com/samber/mo#Err)
-- `mo.TupleToResult()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToResult)
-- `mo.Try()` [doc](https://pkg.go.dev/github.com/samber/mo#Try)
+- `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok) - [play](https://go.dev/play/p/PDwADdzNoyZ)
+- `mo.Err()` [doc](https://pkg.go.dev/github.com/samber/mo#Err) - [play](https://go.dev/play/p/PDwADdzNoyZ)
+- `mo.TupleToResult()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToResult) - [play](https://go.dev/play/p/KWjfqQDHQwa)
+- `mo.Try()` [doc](https://pkg.go.dev/github.com/samber/mo#Try) - [play](https://go.dev/play/p/ilOlQx-Mx42)
 
 Methods:
 
-- `.IsOk()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsOk)
-- `.IsError()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsError)
-- `.Error()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Error)
-- `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Get)
-- `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MustGet)
-- `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrElse)
-- `.OrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrEmpty)
-- `.ToEither()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ToEither)
+- `.IsOk()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsOk) - [play](https://go.dev/play/p/sfNvBQyZfgU)
+- `.IsError()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.IsError) - [play](https://go.dev/play/p/xkV9d464scV)
+- `.Error()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Error) - [play](https://go.dev/play/p/CSkHGTyiXJ5)
+- `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Get) - [play](https://go.dev/play/p/8KyX3z6TuNo)
+- `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MustGet) - [play](https://go.dev/play/p/8LSlndHoTAE)
+- `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrElse) - [play](https://go.dev/play/p/MN_ULx0soi6)
+- `.OrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.OrEmpty) - [play](https://go.dev/play/p/rdKtBmOcMLh)
+- `.ToEither()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ToEither) - [play](https://go.dev/play/p/Uw1Zz6b952q)
 - `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ForEach)
-- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Match)
-- `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Map)
-- `.MapErr()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapErr)
-- `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.FlatMap)
+- `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Match) - [play](https://go.dev/play/p/-_eFaLJ31co)
+- `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Map) - [play](https://go.dev/play/p/-ndpN_b_OSc)
+- `.MapErr()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapErr) - [play](https://go.dev/play/p/WraZixg9GGf)
+- `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.FlatMap) - [play](https://go.dev/play/p/Ud5QjZOqg-7)
 
 ### Either[L any, R any]
 
