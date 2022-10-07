@@ -61,7 +61,7 @@ func (r Result[T]) Error() error {
 	return r.err
 }
 
-// MustGet returns value and error.
+// Get returns value and error.
 // Play: https://go.dev/play/p/8KyX3z6TuNo
 func (r Result[T]) Get() (T, error) {
 	if r.isErr {
