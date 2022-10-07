@@ -46,7 +46,7 @@ func (f *Future[T]) reject(err error) {
 	}
 }
 
-// Catch is called when Future is resolved. It returns a new Future.
+// Then is called when Future is resolved. It returns a new Future.
 func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -171,7 +171,7 @@ func (f *Future[T]) Result() Result[T] {
 	return TupleToResult(f.Collect())
 }
 
-// Result wraps Collect and returns a Result.
+// Either wraps Collect and returns a Either.
 func (f *Future[T]) Either() Either[error, T] {
 	v, err := f.Collect()
 	if err != nil {
