@@ -7,14 +7,12 @@ import (
 // NewFuture instanciate a new future.
 func NewFuture[T any](cb func(resolve func(T), reject func(error))) *Future[T] {
 	future := Future[T]{
-		mu:       sync.RWMutex{},
-		next:     nil,
+		cb:       cb,
 		cancelCb: func() {},
+		done:     make(chan struct{}),
 	}
 
-	go func() {
-		cb(future.resolve, future.reject)
-	}()
+	future.active()
 
 	return &future
 }
@@ -22,28 +20,43 @@ func NewFuture[T any](cb func(resolve func(T), reject func(error))) *Future[T] {
 // Future represents a value which may or may not currently be available, but will be
 // available at some point, or an exception if that value could not be made available.
 type Future[T any] struct {
-	mu sync.RWMutex
+	mu sync.Mutex
 
-	next     func(T, error)
+	cb       func(func(T), func(error))
 	cancelCb func()
+	next     *Future[T]
+	done     chan struct{}
+	result   Result[T]
+}
+
+func (f *Future[T]) active() {
+	go f.cb(f.resolve, f.reject)
+}
+
+func (f *Future[T]) activeSync() {
+	f.cb(f.resolve, f.reject)
 }
 
 func (f *Future[T]) resolve(value T) {
-	f.mu.RLock()
-	defer f.mu.RUnlock()
+	f.mu.Lock()
+	defer f.mu.Unlock()
 
+	f.result = Ok(value)
 	if f.next != nil {
-		f.next(value, nil)
+		f.next.activeSync()
 	}
+	close(f.done)
 }
 
 func (f *Future[T]) reject(err error) {
-	f.mu.RLock()
-	defer f.mu.RUnlock()
+	f.mu.Lock()
+	defer f.mu.Unlock()
 
+	f.result = Err[T](err)
 	if f.next != nil {
-		f.next(empty[T](), err)
+		f.next.activeSync()
 	}
+	close(f.done)
 }
 
 // Then is called when Future is resolved. It returns a new Future.
@@ -51,30 +64,31 @@ func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	future := &Future[T]{
-		mu:   sync.RWMutex{},
-		next: nil,
+	f.next = &Future[T]{
+		cb: func(resolve func(T), reject func(error)) {
+			if f.result.IsError() {
+				reject(f.result.Error())
+				return
+			}
+			newValue, err := cb(f.result.MustGet())
+			if err != nil {
+				reject(err)
+				return
+			}
+			resolve(newValue)
+		},
 		cancelCb: func() {
 			f.Cancel()
 		},
+		done: make(chan struct{}),
 	}
 
-	f.next = func(value T, err error) {
-		if err != nil {
-			future.reject(err)
-			return
-		}
-
-		newValue, err := cb(value)
-		if err != nil {
-			future.reject(err)
-			return
-		}
-
-		future.resolve(newValue)
+	select {
+	case <-f.done:
+		f.next.active()
+	default:
 	}
-
-	return future
+	return f.next
 }
 
 // Catch is called when Future is rejected. It returns a new Future.
@@ -82,30 +96,31 @@ func (f *Future[T]) Catch(cb func(error) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	future := &Future[T]{
-		mu:   sync.RWMutex{},
-		next: nil,
+	f.next = &Future[T]{
+		cb: func(resolve func(T), reject func(error)) {
+			if f.result.IsOk() {
+				resolve(f.result.MustGet())
+				return
+			}
+			newValue, err := cb(f.result.Error())
+			if err != nil {
+				reject(err)
+				return
+			}
+			resolve(newValue)
+		},
 		cancelCb: func() {
 			f.Cancel()
 		},
+		done: make(chan struct{}),
 	}
 
-	f.next = func(value T, err error) {
-		if err == nil {
-			future.resolve(value)
-			return
-		}
-
-		newValue, err := cb(err)
-		if err != nil {
-			future.reject(err)
-			return
-		}
-
-		future.resolve(newValue)
+	select {
+	case <-f.done:
+		f.next.active()
+	default:
 	}
-
-	return future
+	return f.next
 }
 
 // Finally is called when Future is processed either resolved or rejected. It returns a new Future.
@@ -113,25 +128,27 @@ func (f *Future[T]) Finally(cb func(T, error) (T, error)) *Future[T] {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	future := &Future[T]{
-		mu:   sync.RWMutex{},
-		next: nil,
+	f.next = &Future[T]{
+		cb: func(resolve func(T), reject func(error)) {
+			newValue, err := cb(f.result.Get())
+			if err != nil {
+				reject(err)
+				return
+			}
+			resolve(newValue)
+		},
 		cancelCb: func() {
 			f.Cancel()
 		},
+		done: make(chan struct{}),
 	}
 
-	f.next = func(value T, err error) {
-		newValue, err := cb(value, err)
-		if err != nil {
-			future.reject(err)
-			return
-		}
-
-		future.resolve(newValue)
+	select {
+	case <-f.done:
+		f.next.active()
+	default:
 	}
-
-	return future
+	return f.next
 }
 
 // Cancel cancels the Future chain.
@@ -147,23 +164,8 @@ func (f *Future[T]) Cancel() {
 
 // Collect awaits and return result of the Future.
 func (f *Future[T]) Collect() (T, error) {
-	done := make(chan struct{})
-
-	var a T
-	var b error
-
-	f.mu.Lock()
-	f.next = func(value T, err error) {
-		a = value
-		b = err
-
-		done <- struct{}{}
-	}
-	f.mu.Unlock()
-
-	<-done
-
-	return a, b
+	<-f.done
+	return f.result.Get()
 }
 
 // Result wraps Collect and returns a Result.
