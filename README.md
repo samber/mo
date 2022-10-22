@@ -30,7 +30,7 @@ We currently support the following data types:
 - `Option[T]` (Maybe)
 - `Result[T]`
 - `Either[A, B]`
-- `EitherX[T1, ..., TX]` (With X between 3 and 5) 
+- `EitherX[T1, ..., TX]` (With X between 3 and 5)
 - `Future[T]`
 - `IO[T]`
 - `IOEither[T]`
@@ -357,9 +357,9 @@ make test
 make watch-test
 ```
 
-## 👤 Authors
+## 👤 Contributors
 
-- Samuel Berthe
+![Contributors](https://contrib.rocks/image?repo=samber/mo)
 
 ## 💫 Show your support
 
