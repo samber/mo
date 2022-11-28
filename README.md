@@ -1,10 +1,12 @@
 # mo - Monads
 
 [![tag](https://img.shields.io/github/tag/samber/mo.svg)](https://github.com/samber/mo/releases)
+![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.18-%23007d9c)
 [![GoDoc](https://godoc.org/github.com/samber/mo?status.svg)](https://pkg.go.dev/github.com/samber/mo)
 ![Build Status](https://github.com/samber/mo/actions/workflows/go.yml/badge.svg)
 [![Go report](https://goreportcard.com/badge/github.com/samber/mo)](https://goreportcard.com/report/github.com/samber/mo)
-[![codecov](https://codecov.io/gh/samber/mo/branch/master/graph/badge.svg)](https://codecov.io/gh/samber/mo)
+[![Coverage](https://img.shields.io/codecov/c/github/samber/do)](https://codecov.io/gh/samber/mo)
+[![License](https://img.shields.io/github/license/samber/mo)](./LICENSE)
 
 🦄 **`samber/mo` brings monads and popular FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
 
@@ -97,6 +99,18 @@ option3 := option1.Match(
 ```
 
 More examples in [documentation](https://godoc.org/github.com/samber/mo).
+
+### Tips for lazy developers
+
+I cannot recommend it, but in case you are too lazy for repeating `mo.` everywhere, you can import the entire library into the namespace.
+
+```go
+import (
+    . "github.com/samber/mo"
+)
+```
+
+I take no responsibility on this junk. 😁 💩
 
 ## 🤠 Documentation and examples
 

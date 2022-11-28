@@ -318,6 +318,7 @@ func TestFutureCompleteBeforeThen(t *testing.T) {
 	})
 
 	<-completed
+	//nolint:errcheck
 	fut.Then(func(in int) (int, error) {
 		fmt.Println(in) // will never been print
 		return in, nil
