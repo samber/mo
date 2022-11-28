@@ -1,6 +1,7 @@
 package mo
 
 import (
+	"fmt"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -307,4 +308,18 @@ func TestFutureResultEither(t *testing.T) {
 	is.Equal(Left[error, int](assert.AnError), either)
 	is.NotNil(either.Left())
 	is.Equal(assert.AnError, either.MustLeft())
+}
+
+func TestFutureCompleteBeforeThen(t *testing.T) {
+	completed := make(chan struct{})
+	fut := NewFuture(func(resolve func(int), reject func(error)) {
+		resolve(1)
+		close(completed)
+	})
+
+	<-completed
+	fut.Then(func(in int) (int, error) {
+		fmt.Println(in) // will never been print
+		return in, nil
+	}).Collect() // deadlock
 }

@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"time"
 )
 
 var optionNoSuchElement = fmt.Errorf("no such element")
@@ -186,7 +185,6 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 	}
 
 	o.isPresent = true
-	time.Now()
 	return nil
 }
 
