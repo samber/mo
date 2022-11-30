@@ -22,6 +22,17 @@ func Right[L any, R any](value R) Either[L, R] {
 	}
 }
 
+// Map executes the given function, depending of value is Left or Right, and returns result.
+func Map[L any, R any, T any](e Either[L, R], onLeft func(L) T, onRight func(R) T) T {
+	if e.IsLeft() {
+		return onLeft(e.left)
+	} else if e.IsRight() {
+		return onRight(e.right)
+	}
+
+	panic(eitherShouldBeLeftOrRight)
+}
+
 // Either respresents a value of 2 possible types.
 // An instance of Either is an instance of either A or B.
 type Either[L any, R any] struct {

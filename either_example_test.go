@@ -20,6 +20,21 @@ func ExampleRight() {
 	// Output: world 42
 }
 
+func ExampleMap() {
+	left := Left[string, int]("hello")
+	result := Map(left,
+		func(s string) float64 {
+			return 21.21
+		},
+		func(i int) float64 {
+			return 1.1
+		},
+	)
+
+	fmt.Println(result)
+	// Output: 21.21
+}
+
 func ExampleEither_IsLeft_left() {
 	left := Left[string, int]("hello")
 	result := left.IsLeft()

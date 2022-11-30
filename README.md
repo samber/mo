@@ -188,6 +188,10 @@ Constructors:
 - `mo.Left()` [doc](https://pkg.go.dev/github.com/samber/mo#Left)
 - `mo.Right()` [doc](https://pkg.go.dev/github.com/samber/mo#Right)
 
+Helper:
+
+- `mo.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Map)
+
 Methods:
 
 - `.IsLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.IsLeft)
