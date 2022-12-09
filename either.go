@@ -75,6 +75,11 @@ func (e Either[L, R]) MustRight() R {
 	return e.right
 }
 
+// Unpack returns all values
+func (e Either[L, R]) Unpack() (L, R) {
+	return e.left, e.right
+}
+
 // LeftOrElse returns left value of a Either struct or fallback.
 func (e Either[L, R]) LeftOrElse(fallback L) L {
 	if e.IsLeft() {

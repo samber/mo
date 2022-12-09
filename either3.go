@@ -112,6 +112,11 @@ func (e Either3[T1, T2, T3]) MustArg3() T3 {
 	return e.arg3
 }
 
+// Unpack returns all values
+func (e Either3[T1, T2, T3]) Unpack() (T1, T2, T3) {
+	return e.arg1, e.arg2, e.arg3
+}
+
 // Arg1OrElse returns the first argument of a Either3 struct or fallback.
 func (e Either3[T1, T2, T3]) Arg1OrElse(fallback T1) T1 {
 	if e.IsArg1() {

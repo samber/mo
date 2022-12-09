@@ -230,6 +230,19 @@ func TestEither5MustArg(t *testing.T) {
 	})
 }
 
+func TestEither5Unpack(t *testing.T) {
+	is := assert.New(t)
+
+	either := NewEither5Arg1[int, bool, float64, string, string](42)
+	either5Arg1, either5Arg2, either5Arg3, either5Arg4, either5Arg5 := either.Unpack()
+
+	is.Equal(42, either5Arg1)
+	is.Equal(false, either5Arg2)
+	is.Equal(float64(0), either5Arg3)
+	is.Equal("", either5Arg4)
+	is.Equal("", either5Arg5)
+}
+
 func TestEither5GetOrElse(t *testing.T) {
 	is := assert.New(t)
 

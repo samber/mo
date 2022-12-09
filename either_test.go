@@ -20,6 +20,18 @@ func TestEitherRight(t *testing.T) {
 	is.Equal(Either[int, bool]{left: 0, right: true, isLeft: false}, right)
 }
 
+func TestEitherUnpack(t *testing.T) {
+	is := assert.New(t)
+
+	left1, right1 := Left[int, bool](42).Unpack()
+	left2, right2 := Right[int, bool](true).Unpack()
+
+	is.Equal(42, left1)
+	is.Equal(false, right1)
+	is.Equal(0, left2)
+	is.Equal(true, right2)
+}
+
 func TestEitherIsLeftOrRight(t *testing.T) {
 	is := assert.New(t)
 

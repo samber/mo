@@ -144,6 +144,11 @@ func (e Either4[T1, T2, T3, T4]) MustArg4() T4 {
 	return e.arg4
 }
 
+// Unpack returns all values
+func (e Either4[T1, T2, T3, T4]) Unpack() (T1, T2, T3, T4) {
+	return e.arg1, e.arg2, e.arg3, e.arg4
+}
+
 // Arg1OrElse returns the first argument of a Either4 struct or fallback.
 func (e Either4[T1, T2, T3, T4]) Arg1OrElse(fallback T1) T1 {
 	if e.IsArg1() {

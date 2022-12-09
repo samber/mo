@@ -112,6 +112,17 @@ func TestEither3MustArg(t *testing.T) {
 	})
 }
 
+func TestEither3Unpack(t *testing.T) {
+	is := assert.New(t)
+
+	either := NewEither3Arg1[int, bool, float64](42)
+	either3Arg1, either3Arg2, either3Arg3 := either.Unpack()
+
+	is.Equal(42, either3Arg1)
+	is.Equal(false, either3Arg2)
+	is.Equal(float64(0), either3Arg3)
+}
+
 func TestEither3GetOrElse(t *testing.T) {
 	is := assert.New(t)
 

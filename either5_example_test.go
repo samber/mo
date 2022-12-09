@@ -43,6 +43,14 @@ func ExampleEither5_MustArg1() {
 	// Output: 42
 }
 
+func ExampleEither5_Unpack() {
+	either5 := NewEither5Arg1[int, bool, float64, string, byte](42)
+	a, b, c, d, e := either5.Unpack()
+
+	fmt.Println(a, b, c, d, e)
+	// Output: 42 false 0  0
+}
+
 func ExampleEither5_Arg1OrElse() {
 	either5Arg1 := NewEither5Arg1[int, bool, float64, string, byte](42)
 	result1 := either5Arg1.Arg1OrElse(21)

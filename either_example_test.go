@@ -20,6 +20,22 @@ func ExampleRight() {
 	// Output: world 42
 }
 
+func ExampleEither_Unpack_left() {
+	either := Left[string, int]("42")
+	left, right := either.Unpack()
+
+	fmt.Println(left, right)
+	// Output: 42 0
+}
+
+func ExampleEither_Unpack_right() {
+	either := Right[string, int](42)
+	left, right := either.Unpack()
+
+	fmt.Println(left, right)
+	// Output: 42
+}
+
 func ExampleEither_IsLeft_left() {
 	left := Left[string, int]("hello")
 	result := left.IsLeft()

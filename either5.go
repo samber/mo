@@ -176,6 +176,11 @@ func (e Either5[T1, T2, T3, T4, T5]) MustArg5() T5 {
 	return e.arg5
 }
 
+// Unpack returns all values
+func (e Either5[T1, T2, T3, T4, T5]) Unpack() (T1, T2, T3, T4, T5) {
+	return e.arg1, e.arg2, e.arg3, e.arg4, e.arg5
+}
+
 // Arg1OrElse returns the first argument of a Either5 struct or fallback.
 func (e Either5[T1, T2, T3, T4, T5]) Arg1OrElse(fallback T1) T1 {
 	if e.IsArg1() {
