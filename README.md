@@ -38,6 +38,7 @@ We currently support the following data types:
 - `IOEither[T]`
 - `Task[T]`
 - `TaskEither[T]`
+- `Transaction[T]`
 - `State[S, A]`
 
 ## 🚀 Install
@@ -324,6 +325,19 @@ Methods:
 - `.TryCatch()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.TryCatch)
 - `.ToTask()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.ToTask)
 - `.ToEither()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.ToEither)
+
+### Transaction[T any]
+
+`Transaction` implements a local Saga pattern.
+
+Constructors:
+
+- `mo.NewTransaction()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTransaction)
+
+Methods:
+
+- `.Then()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTransaction.Then)
+- `.Process()` [doc](https://pkg.go.dev/github.com/samber/mo#NewTransaction.Process)
 
 ### State[S any, A any]
 
