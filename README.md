@@ -50,6 +50,8 @@ This library is v1 and follows SemVer strictly.
 
 No breaking changes will be made to exported APIs before v2.0.0.
 
+This library has no dependencies outside the Go standard library.
+
 ## 💡 Quick start
 
 You can import `mo` using:
