@@ -43,6 +43,18 @@ func TestOptionEmptyableToOption(t *testing.T) {
 	is.Equal(Option[int]{isPresent: true, value: 42}, EmptyableToOption(42))
 }
 
+func TestOptionPointerToOption(t *testing.T) {
+	is := assert.New(t)
+
+	is.Equal(Option[error]{isPresent: false}, PointerToOption[error](nil))
+	is.Equal(Option[error]{isPresent: true, value: assert.AnError}, PointerToOption(&assert.AnError))
+
+	zero := 0
+	fortyTwo := 42
+	is.Equal(Option[int]{isPresent: true, value: 0}, PointerToOption(&zero))
+	is.Equal(Option[int]{isPresent: true, value: 42}, PointerToOption(&fortyTwo))
+}
+
 func TestOptionIsPresent(t *testing.T) {
 	is := assert.New(t)
 

@@ -50,6 +50,16 @@ func EmptyableToOption[T any](value T) Option[T] {
 	return Some(value)
 }
 
+// PointerToOption builds a Some Option when value is not nil, or None.
+// Play: https://go.dev/play/p/yPVMj4DUb-I
+func PointerToOption[T any](value *T) Option[T] {
+	if value == nil {
+		return None[T]()
+	}
+
+	return Some(*value)
+}
+
 // Option is a container for an optional value of type T. If value exists, Option is
 // of type Some. If the value is absent, Option is of type None.
 type Option[T any] struct {

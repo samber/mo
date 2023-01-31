@@ -2,6 +2,10 @@ module github.com/samber/mo
 
 go 1.18
 
+//
+// Dependencies are excluded from releases. Please check CI.
+//
+
 require github.com/stretchr/testify v1.7.0
 
 require (

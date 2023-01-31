@@ -50,6 +50,8 @@ This library is v1 and follows SemVer strictly.
 
 No breaking changes will be made to exported APIs before v2.0.0.
 
+This library has no dependencies except the Go std lib.
+
 ## 💡 Quick start
 
 You can import `mo` using:
@@ -126,6 +128,7 @@ Constructors:
 - `mo.None()` [doc](https://pkg.go.dev/github.com/samber/mo#None) - [play](https://go.dev/play/p/yYQPsYCSYlD)
 - `mo.TupleToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#TupleToOption) - [play](https://go.dev/play/p/gkrg2pZwOty)
 - `mo.EmptyableToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#EmptyableToOption) - [play](https://go.dev/play/p/GSpQQ-q-UES)
+- `mo.PointerToOption()` [doc](https://pkg.go.dev/github.com/samber/mo#PointerToOption) - [play](https://go.dev/play/p/yPVMj4DUb-I)
 
 Methods:
 
