@@ -18,7 +18,7 @@ func ExampleIO() {
 	fmt.Println(result2)
 	fmt.Println(result3)
 	// Output:
-	// 2022
-	// 2022
-	// 2022
+	// 2023
+	// 2023
+	// 2023
 }

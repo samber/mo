@@ -20,5 +20,5 @@ func ExampleTask() {
 
 	fmt.Println(result)
 	// Output:
-	// 2022
+	// 2023
 }
