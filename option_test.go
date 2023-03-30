@@ -440,9 +440,16 @@ func TestOptionScanner(t *testing.T) {
 	is := assert.New(t)
 
 	jsonString := `{"cool": true, "some": 123}`
-	var optionalScanner Option[SomeScanner]
+	nullString, _ := sql.NullString{}.Value()
 
-	err := optionalScanner.Scan(jsonString)
-	is.Nil(err)
-	is.EqualValues(Some(SomeScanner{Cool: true, Some: 123}), optionalScanner)
+	var someScanner Option[SomeScanner]
+	var noneScanner Option[SomeScanner]
+
+	err1 := someScanner.Scan(jsonString)
+	err2 := noneScanner.Scan(nullString)
+
+	is.NoError(err1)
+	is.EqualValues(Some(SomeScanner{Cool: true, Some: 123}), someScanner)
+	is.NoError(err2)
+	is.EqualValues(None[SomeScanner](), noneScanner)
 }
