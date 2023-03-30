@@ -2,6 +2,7 @@ package mo
 
 import (
 	"bytes"
+	"database/sql"
 	"database/sql/driver"
 	"encoding/gob"
 	"encoding/json"
@@ -257,11 +258,24 @@ func (o *Option[T]) GobDecode(data []byte) error {
 	return o.UnmarshalBinary(data)
 }
 
-// Scan implements the SQL driver.Scanner interface.
+// Scan implements the SQL sql.Scanner interface.
 func (o *Option[T]) Scan(src any) error {
 	if src == nil {
 		o.isPresent = false
 		o.value = empty[T]()
+		return nil
+	}
+
+	// is is only possible to assert interfaces, so convert first
+	// https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#why-not-permit-type-assertions-on-values-whose-type-is-a-type-parameter
+	var t T
+	if tScanner, ok := interface{}(&t).(sql.Scanner); ok {
+		if err := tScanner.Scan(src); err != nil {
+			return fmt.Errorf("failed to scan: %w", err)
+		}
+
+		o.isPresent = true
+		o.value = t
 		return nil
 	}
 
