@@ -115,6 +115,16 @@ func TestOptionOrEmpty(t *testing.T) {
 	is.Equal(0, None[int]().OrEmpty())
 }
 
+func TestOptionPointerOrNil(t *testing.T) {
+	is := assert.New(t)
+
+	p := Some(42).PointerOrNil()
+	is.NotNil(p)
+	is.Equal(42, *p)
+
+	is.Nil(None[int]().PointerOrNil())
+}
+
 func TestOptionForEach(t *testing.T) {
 	is := assert.New(t)
 
