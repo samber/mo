@@ -67,13 +67,13 @@ type Option[T any] struct {
 	value     T
 }
 
-// IsPresent returns true when value is absent.
+// IsPresent returns false when value is absent.
 // Play: https://go.dev/play/p/nDqIaiihyCA
 func (o Option[T]) IsPresent() bool {
 	return o.isPresent
 }
 
-// IsAbsent returns true when value is present.
+// IsAbsent returns false when value is present.
 // Play: https://go.dev/play/p/23e2zqyVOQm
 func (o Option[T]) IsAbsent() bool {
 	return !o.isPresent
