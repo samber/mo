@@ -208,7 +208,7 @@ func (o *Option[T]) UnmarshalText(data []byte) error {
 	return json.Unmarshal(data, o)
 }
 
-// BinaryMarshaler is the interface implemented by an object that can marshal itself into a binary form.
+// MarshalBinary is the interface implemented by an object that can marshal itself into a binary form.
 func (o Option[T]) MarshalBinary() ([]byte, error) {
 	if !o.isPresent {
 		return []byte{0}, nil
@@ -224,7 +224,7 @@ func (o Option[T]) MarshalBinary() ([]byte, error) {
 	return append([]byte{1}, buf.Bytes()...), nil
 }
 
-// BinaryUnmarshaler is the interface implemented by an object that can unmarshal a binary representation of itself.
+// UnmarshalBinary is the interface implemented by an object that can unmarshal a binary representation of itself.
 func (o *Option[T]) UnmarshalBinary(data []byte) error {
 	if len(data) == 0 {
 		return errors.New("Option[T].UnmarshalBinary: no data")

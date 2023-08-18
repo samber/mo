@@ -33,7 +33,7 @@ func Try[T any](f func() (T, error)) Result[T] {
 	return TupleToResult(f())
 }
 
-// Result respresent a result of an action having one
+// Result represents a result of an action having one
 // of the following output: success or failure.
 // An instance of Result is an instance of either Ok or Err.
 // It could be compared to `Either[error, T]`.
