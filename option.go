@@ -173,6 +173,16 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	return None[T]()
 }
 
+// PointerOrNil returns value if present or a nil pointer.
+// Play: TODO
+func (o Option[T]) PointerOrNil() *T {
+	if !o.isPresent {
+		return nil
+	}
+
+	return &o.value
+}
+
 // MarshalJSON encodes Option into json.
 func (o Option[T]) MarshalJSON() ([]byte, error) {
 	if o.isPresent {
