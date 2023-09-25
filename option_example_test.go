@@ -196,7 +196,7 @@ func ExampleOption_PointerOrNil_some() {
 	some := Some(42)
 	result := some.PointerOrNil()
 
-	fmt.Println(result)
+	fmt.Println(*result)
 	// Output: 42
 }
 
