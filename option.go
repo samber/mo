@@ -174,7 +174,7 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 }
 
 // PointerOrNil returns value if present or a nil pointer.
-// Play: TODO
+// Play: https://go.dev/play/p/iRlxc2K8HQL
 func (o Option[T]) PointerOrNil() *T {
 	if !o.isPresent {
 		return nil
