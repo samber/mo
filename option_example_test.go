@@ -192,6 +192,22 @@ func ExampleOption_OrEmpty_none() {
 	// Output: 0
 }
 
+func ExampleOption_PointerOrNil_some() {
+	some := Some(42)
+	result := some.PointerOrNil()
+
+	fmt.Println(result)
+	// Output: 42
+}
+
+func ExampleOption_PointerOrNil_none() {
+	none := None[int]()
+	result := none.PointerOrNil()
+
+	fmt.Println(result)
+	// Output: <nil>
+}
+
 func ExampleOption_Match_some() {
 	some := Some(42)
 	result := some.Match(
