@@ -192,17 +192,17 @@ func ExampleOption_OrEmpty_none() {
 	// Output: 0
 }
 
-func ExampleOption_PointerOrNil_some() {
+func ExampleOption_ToPointer_some() {
 	some := Some(42)
-	result := some.PointerOrNil()
+	result := some.ToPointer()
 
 	fmt.Println(*result)
 	// Output: 42
 }
 
-func ExampleOption_PointerOrNil_none() {
+func ExampleOption_ToPointer_none() {
 	none := None[int]()
-	result := none.PointerOrNil()
+	result := none.ToPointer()
 
 	fmt.Println(result)
 	// Output: <nil>
