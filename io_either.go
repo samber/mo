@@ -7,7 +7,7 @@ func NewIOEither[R any](f fe0[R]) IOEither[R] {
 	}
 }
 
-// IO represents a non-deterministic synchronous computation that
+// IOEither represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither[R any] struct {
 	unsafePerform fe0[R]
@@ -30,7 +30,7 @@ func NewIOEither1[R any, A any](f fe1[R, A]) IOEither1[R, A] {
 	}
 }
 
-// IO1 represents a non-deterministic synchronous computation that
+// IOEither1 represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither1[R any, A any] struct {
 	unsafePerform fe1[R, A]
@@ -53,7 +53,7 @@ func NewIOEither2[R any, A any, B any](f fe2[R, A, B]) IOEither2[R, A, B] {
 	}
 }
 
-// IO2 represents a non-deterministic synchronous computation that
+// IOEither2 represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither2[R any, A any, B any] struct {
 	unsafePerform fe2[R, A, B]
@@ -76,7 +76,7 @@ func NewIOEither3[R any, A any, B any, C any](f fe3[R, A, B, C]) IOEither3[R, A,
 	}
 }
 
-// IO3 represents a non-deterministic synchronous computation that
+// IOEither3 represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither3[R any, A any, B any, C any] struct {
 	unsafePerform fe3[R, A, B, C]
@@ -99,7 +99,7 @@ func NewIOEither4[R any, A any, B any, C any, D any](f fe4[R, A, B, C, D]) IOEit
 	}
 }
 
-// IO4 represents a non-deterministic synchronous computation that
+// IOEither4 represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither4[R any, A any, B any, C any, D any] struct {
 	unsafePerform fe4[R, A, B, C, D]
@@ -122,7 +122,7 @@ func NewIOEither5[R any, A any, B any, C any, D any, E any](f fe5[R, A, B, C, D,
 	}
 }
 
-// IO5 represents a non-deterministic synchronous computation that
+// IOEither5 represents a non-deterministic synchronous computation that
 // can cause side effects, yields a value of type `R` and can fail.
 type IOEither5[R any, A any, B any, C any, D any, E any] struct {
 	unsafePerform fe5[R, A, B, C, D, E]

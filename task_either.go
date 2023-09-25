@@ -50,7 +50,7 @@ func (t TaskEither[R]) ToTask(fallback R) Task[R] {
 	})
 }
 
-// ToTask converts TaskEither to Task
+// ToEither converts TaskEither to Either.
 func (t TaskEither[R]) ToEither() Either[error, R] {
 	return t.Run().Either()
 }

@@ -253,7 +253,7 @@ func (e Either5[T1, T2, T3, T4, T5]) Arg4OrEmpty() T4 {
 	return empty[T4]()
 }
 
-// Arg5OrEmpty returns the fith argument of a Either5 struct or empty value.
+// Arg5OrEmpty returns the fifth argument of a Either5 struct or empty value.
 func (e Either5[T1, T2, T3, T4, T5]) Arg5OrEmpty() T5 {
 	if e.IsArg5() {
 		return e.arg5

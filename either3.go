@@ -39,7 +39,7 @@ func NewEither3Arg3[T1 any, T2 any, T3 any](value T3) Either3[T1, T2, T3] {
 	}
 }
 
-// Either3 respresents a value of 3 possible types.
+// Either3 represents a value of 3 possible types.
 // An instance of Either3 is an instance of either T1, T2 or T3.
 type Either3[T1 any, T2 any, T3 any] struct {
 	argId int8
