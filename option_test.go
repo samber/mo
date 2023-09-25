@@ -3,6 +3,7 @@ package mo
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -412,4 +413,43 @@ func TestOptionValue(t *testing.T) {
 	is.Nil(err1)
 	is.EqualValues(None[string](), option2)
 	is.Nil(err2)
+}
+
+type SomeScanner struct {
+	Cool bool
+	Some int
+}
+
+func (ss *SomeScanner) Scan(src any) error {
+	val, ok := src.(string)
+	if !ok {
+		return fmt.Errorf("cannot scan - src is not a string")
+	}
+
+	var unmarshalled SomeScanner
+	if err := json.Unmarshal([]byte(val), &unmarshalled); err != nil {
+		return fmt.Errorf("failed to unmarshal json: %w", err)
+	}
+
+	*ss = unmarshalled
+	return nil
+}
+
+// If T is a sql.Scanner, make use of that.
+func TestOptionScanner(t *testing.T) {
+	is := assert.New(t)
+
+	jsonString := `{"cool": true, "some": 123}`
+	nullString, _ := sql.NullString{}.Value()
+
+	var someScanner Option[SomeScanner]
+	var noneScanner Option[SomeScanner]
+
+	err1 := someScanner.Scan(jsonString)
+	err2 := noneScanner.Scan(nullString)
+
+	is.NoError(err1)
+	is.EqualValues(Some(SomeScanner{Cool: true, Some: 123}), someScanner)
+	is.NoError(err2)
+	is.EqualValues(None[SomeScanner](), noneScanner)
 }
