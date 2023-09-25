@@ -24,6 +24,15 @@ func ExampleErr() {
 	// Output: 1234 error
 }
 
+func ExampleErrf() {
+	ko := Errf[int]("error")
+	result := ko.OrElse(1234)
+	_err := ko.Error()
+
+	fmt.Println(result, _err)
+	// Output: 1234 error
+}
+
 func ExampleTupleToResult() {
 	randomFunc := func() (int, error) {
 		return 42, err

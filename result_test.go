@@ -18,6 +18,12 @@ func TestResultErr(t *testing.T) {
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, Err[int](assert.AnError))
 }
 
+func TestResultErrf(t *testing.T) {
+	is := assert.New(t)
+
+	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, Errf[int](assert.AnError.Error()))
+}
+
 func TestResultTupleToResult(t *testing.T) {
 	is := assert.New(t)
 
