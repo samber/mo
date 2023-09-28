@@ -1,6 +1,8 @@
 package mo
 
 import (
+	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -200,4 +202,95 @@ func TestResultFlatMap(t *testing.T) {
 
 	is.Equal(Result[int]{value: 42, isErr: false, err: nil}, opt1)
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, opt2)
+}
+
+func TestResultMarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	result1 := Ok("foo")
+	result2 := Err[string](fmt.Errorf("an error"))
+	result3 := Ok("")
+
+	value, err := result1.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`{"result":"foo"}`, string(value))
+
+	value, err = result2.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`{"error":{"message":"an error"}}`, string(value))
+
+	value, err = result3.MarshalJSON()
+	is.NoError(err)
+	is.Equal(`{"result":""}`, string(value))
+
+	type testStruct struct {
+		Field Result[string]
+	}
+
+	resultInStruct := testStruct{
+		Field: result1,
+	}
+	var marshalled []byte
+	marshalled, err = json.Marshal(resultInStruct)
+	is.NoError(err)
+	is.Equal(`{"Field":{"result":"foo"}}`, string(marshalled))
+}
+
+func TestResultUnmarshalJSON(t *testing.T) {
+	is := assert.New(t)
+
+	result1 := Ok("foo")
+	result2 := Err[string](fmt.Errorf("an error"))
+	result3 := Ok("")
+
+	err := result1.UnmarshalJSON([]byte(`{"result":"foo"}`))
+	is.NoError(err)
+	is.Equal(Ok("foo"), result1)
+
+	var res Result[string]
+	err = json.Unmarshal([]byte(`{"result":"foo"}`), &res)
+	is.NoError(err)
+	is.Equal(res, result1)
+
+	err = result2.UnmarshalJSON([]byte(`{"error":{"message":"an error"}}`))
+	is.NoError(err)
+	is.Equal(Err[string](fmt.Errorf("an error")), result2)
+
+	err = result3.UnmarshalJSON([]byte(`{"result":""}`))
+	is.NoError(err)
+	is.Equal(Ok(""), result3)
+
+	type testStruct struct {
+		Field Result[string]
+	}
+
+	unmarshal := testStruct{}
+	err = json.Unmarshal([]byte(`{"Field":{"result":"foo"}}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: Ok("foo")}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field":{"error":{"message":"an error"}}}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: Err[string](fmt.Errorf("an error"))}, unmarshal)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: Ok("")}, unmarshal)
+
+	// Both result and error are set; unmarshal to Err
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field":{"result":"foo","error":{"message":"an error"}}}`), &unmarshal)
+	is.NoError(err)
+	is.Equal(testStruct{Field: Err[string](fmt.Errorf("an error"))}, unmarshal)
+
+	// Bad structure for error; cannot unmarshal
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field":{"result":"foo","error":true}}`), &unmarshal)
+	is.Error(err)
+
+	unmarshal = testStruct{}
+	err = json.Unmarshal([]byte(`{"Field": "}`), &unmarshal)
+	is.Error(err)
 }
