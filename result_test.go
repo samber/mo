@@ -174,6 +174,42 @@ func TestResultMap(t *testing.T) {
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, opt2)
 }
 
+func TestResultMaps(t *testing.T) {
+	is := assert.New(t)
+	mul2 := func(i int) (int, error) {
+		return i * 2, nil
+	}
+	inc1 := func(i int) (int, error) {
+		return i + 1, nil
+	}
+	returnErr := func(i int) (int, error) {
+		return 0, assert.AnError
+	}
+	t.Run("maps 2 func ok ", func(t *testing.T) {
+		v := Ok(21).Maps(mul2, inc1)
+		is.Equal(Result[int]{value: 43, isErr: false, err: nil}, v)
+	})
+	t.Run("maps first ok func, second failed func", func(t *testing.T) {
+		v := Ok(21).Maps(mul2, returnErr)
+		is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, v)
+	})
+
+	t.Run("maps 2 failed func", func(t *testing.T) {
+		v := Ok(21).Maps(returnErr, func(i int) (int, error) {
+			is.Fail("should not be called")
+			return 42, nil
+		})
+		is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, v)
+	})
+	t.Run("errors maps ", func(t *testing.T) {
+		v := Err[int](assert.AnError).Maps(mul2, func(i int) (int, error) {
+			is.Fail("should not be called")
+			return 42, nil
+		})
+		is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, v)
+	})
+}
+
 func TestResultMapErr(t *testing.T) {
 	is := assert.New(t)
 
