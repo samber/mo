@@ -146,6 +146,21 @@ func (r Result[T]) Map(mapper func(value T) (T, error)) Result[T] {
 
 	return Err[T](r.err)
 }
+func (r Result[T]) Maps(mapperList ...func(value T) (T, error)) Result[T] {
+	if r.isErr {
+		return Err[T](r.err)
+	}
+
+	tmpValue := r.value
+	for _, mapper := range mapperList {
+		var err error
+		tmpValue, err = mapper(tmpValue)
+		if err != nil {
+			return Err[T](err)
+		}
+	}
+	return Ok[T](tmpValue)
+}
 
 // MapErr executes the mapper function if Result is invalid. It returns a new Result.
 // Play: https://go.dev/play/p/WraZixg9GGf
