@@ -137,6 +137,13 @@ func (r Result[T]) Match(onSuccess func(value T) (T, error), onError func(err er
 	return TupleToResult(onSuccess(r.value))
 }
 
+func (r Result[T]) Fold(successFunc func(T) interface{}, failureFunc func(error) interface{}) interface{} {
+	if r.err != nil {
+		return failureFunc(r.err)
+	}
+	return successFunc(r.value)
+}
+
 // Map executes the mapper function if Result is valid. It returns a new Result.
 // Play: https://go.dev/play/p/-ndpN_b_OSc
 func (r Result[T]) Map(mapper func(value T) (T, error)) Result[T] {
