@@ -137,6 +137,8 @@ func (r Result[T]) Match(onSuccess func(value T) (T, error), onError func(err er
 	return TupleToResult(onSuccess(r.value))
 }
 
+// Fold applies one of the two functions based on whether the result is a success or failure,
+// and returns the result of applying that function.
 func (r Result[T]) Fold(successFunc func(T) interface{}, failureFunc func(error) interface{}) interface{} {
 	if r.err != nil {
 		return failureFunc(r.err)
