@@ -12,9 +12,6 @@ type Foldable[T any, U any] interface {
 }
 
 // Fold applies one of the two functions based on the state of the Foldable type,
-// and returns the result of applying that function.
-
-// Fold applies one of the two functions based on the state of the Foldable type,
 // and it returns the result of applying either successFunc or failureFunc.
 //
 // - T: the type of the failure value (e.g., an error type)
