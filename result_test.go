@@ -163,14 +163,14 @@ func TestResultMatch(t *testing.T) {
 func TestFoldSuccess(t *testing.T) {
 	result := Result[int]{value: 42, isErr: false, err: nil}
 
-	successFunc := func(value int) interface{} {
+	successFunc := func(value int) string {
 		return fmt.Sprintf("Success: %v", value)
 	}
-	failureFunc := func(err error) interface{} {
+	failureFunc := func(err error) string {
 		return fmt.Sprintf("Failure: %v", err)
 	}
 
-	folded := result.Fold(successFunc, failureFunc)
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
 	expected := "Success: 42"
 
 	if folded != expected {
@@ -183,17 +183,17 @@ func TestFoldFailure(t *testing.T) {
 	expectedError := assert.AnError
 	result := Result[int]{value: 0, isErr: true, err: expectedError}
 
-	successFunc := func(value int) interface{} {
+	successFunc := func(value int) string {
 		return fmt.Sprintf("Success: %v", value)
 	}
-	failureFunc := func(err error) interface{} {
+	failureFunc := func(err error) string {
 		if err == expectedError {
 			return "Expected error occurred"
 		}
 		return fmt.Sprintf("Failure: %v", err)
 	}
 
-	folded := result.Fold(successFunc, failureFunc)
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
 	expected := "Expected error occurred"
 
 	assert.Equal(t, expected, folded)

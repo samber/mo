@@ -137,15 +137,6 @@ func (r Result[T]) Match(onSuccess func(value T) (T, error), onError func(err er
 	return TupleToResult(onSuccess(r.value))
 }
 
-// Fold applies one of the two functions based on whether the result is a success or failure,
-// and returns the result of applying that function.
-func (r Result[T]) Fold(successFunc func(T) interface{}, failureFunc func(error) interface{}) interface{} {
-	if r.err != nil {
-		return failureFunc(r.err)
-	}
-	return successFunc(r.value)
-}
-
 // Map executes the mapper function if Result is valid. It returns a new Result.
 // Play: https://go.dev/play/p/-ndpN_b_OSc
 func (r Result[T]) Map(mapper func(value T) (T, error)) Result[T] {
@@ -221,4 +212,19 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 	o.value = result.Result
 	o.isErr = false
 	return nil
+}
+
+// left returns the error if the Result is an error, otherwise nil
+func (r Result[T]) left() error {
+	return r.err
+}
+
+// right returns the value if the Result is a success, otherwise the zero value of T
+func (r Result[T]) right() T {
+	return r.value
+}
+
+// isLeft returns true if the Result represents an error state.
+func (r Result[T]) isLeft() bool {
+	return r.isErr
 }
