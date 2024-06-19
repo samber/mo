@@ -215,9 +215,9 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 }
 
 // Unwrap extracts the value from a Result type
-func Unwrap[T any](res Result[T]) T {
-	if res.IsError() {
-		panic(res.Error())
+func (r Result[T]) Unwrap() T {
+	if r.IsError() {
+		panic(r.Error())
 	}
-	return res.MustGet()
+	return r.MustGet()
 }
