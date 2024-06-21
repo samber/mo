@@ -463,3 +463,39 @@ func TestOptionScanner(t *testing.T) {
 	is.NoError(err2)
 	is.EqualValues(None[SomeScanner](), noneScanner)
 }
+
+// TestOptionFoldSuccess tests the Fold method with a successful result.
+func TestOptionFoldSuccess(t *testing.T) {
+	is := assert.New(t)
+	option := Option[int]{isPresent: true, value: 10}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](option, successFunc, failureFunc)
+	expected := "Success: 10"
+
+	is.Equal(expected, folded)
+}
+
+// // TestOptionFoldFailure tests the Fold method with a failure result.
+func TestOptionFoldFailure(t *testing.T) {
+	is := assert.New(t)
+	option := Option[int]{isPresent: false}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](option, successFunc, failureFunc)
+	expected := fmt.Sprintf("Failure: %v", optionNoSuchElement)
+
+	is.Equal(expected, folded)
+}

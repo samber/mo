@@ -308,3 +308,25 @@ func (o Option[T]) Value() (driver.Value, error) {
 
 	return o.value, nil
 }
+
+// left returns an error if the Option is None, otherwise nil
+func (o Option[T]) left() error {
+	if !o.isPresent {
+		return optionNoSuchElement
+	}
+	return nil
+}
+
+// right returns the value if the Option is Some, otherwise the zero value of T
+func (o Option[T]) right() T {
+	if !o.isPresent {
+		var zero T
+		return zero
+	}
+	return o.value
+}
+
+// isLeft returns true if the Option represents a None state
+func (o Option[T]) isLeft() bool {
+	return !o.isPresent
+}

@@ -2,6 +2,7 @@ package mo
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -159,46 +160,6 @@ func TestResultMatch(t *testing.T) {
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, opt2)
 }
 
-// TestFoldSuccess tests the Fold method with a successful result.
-func TestFoldSuccess(t *testing.T) {
-	result := Result[int]{value: 42, isErr: false, err: nil}
-
-	successFunc := func(value int) string {
-		return fmt.Sprintf("Success: %v", value)
-	}
-	failureFunc := func(err error) string {
-		return fmt.Sprintf("Failure: %v", err)
-	}
-
-	folded := Fold[error, int, string](result, successFunc, failureFunc)
-	expected := "Success: 42"
-
-	if folded != expected {
-		t.Errorf("Expected %q, got %q", expected, folded)
-	}
-}
-
-// TestFoldFailure tests the Fold method with a failure result.
-func TestFoldFailure(t *testing.T) {
-	expectedError := assert.AnError
-	result := Result[int]{value: 0, isErr: true, err: expectedError}
-
-	successFunc := func(value int) string {
-		return fmt.Sprintf("Success: %v", value)
-	}
-	failureFunc := func(err error) string {
-		if err == expectedError {
-			return "Expected error occurred"
-		}
-		return fmt.Sprintf("Failure: %v", err)
-	}
-
-	folded := Fold[error, int, string](result, successFunc, failureFunc)
-	expected := "Expected error occurred"
-
-	assert.Equal(t, expected, folded)
-}
-
 func TestResultMap(t *testing.T) {
 	is := assert.New(t)
 
@@ -333,4 +294,42 @@ func TestResultUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": "}`), &unmarshal)
 	is.Error(err)
+}
+
+// TestResultFoldSuccess tests the Fold method with a successful result.
+func TestResultFoldSuccess(t *testing.T) {
+	is := assert.New(t)
+	result := Result[int]{value: 42, isErr: false, err: nil}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
+	expected := "Success: 42"
+
+	is.Equal(expected, folded)
+}
+
+// TestResultFoldFailure tests the Fold method with a failure result.
+func TestResultFoldFailure(t *testing.T) {
+	err := errors.New("result error")
+	is := assert.New(t)
+
+	result := Result[int]{value: 0, isErr: true, err: err}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
+	expected := fmt.Sprintf("Failure: %v", err)
+
+	is.Equal(expected, folded)
 }
