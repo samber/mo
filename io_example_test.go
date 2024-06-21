@@ -5,9 +5,20 @@ import (
 	"time"
 )
 
+var mockTimeNowYear = func() int {
+	return time.Now().Year()
+}
+
 func ExampleIO() {
+	originalTimeNowYear := mockTimeNowYear
+	defer func() { mockTimeNowYear = originalTimeNowYear }() // Restore the original function after the test
+
+	mockTimeNowYear = func() int {
+		return 2023
+	}
+
 	io := NewIO(func() int {
-		return time.Now().Year()
+		return mockTimeNowYear()
 	})
 
 	result1 := io.Run()
