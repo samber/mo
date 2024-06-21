@@ -214,17 +214,17 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// left returns the error if the Result is an error, otherwise nil
-func (r Result[T]) left() error {
+// leftValue returns the error if the Result is an error, otherwise nil
+func (r Result[T]) leftValue() error {
 	return r.err
 }
 
-// right returns the value if the Result is a success, otherwise the zero value of T
-func (r Result[T]) right() T {
+// rightValue returns the value if the Result is a success, otherwise the zero value of T
+func (r Result[T]) rightValue() T {
 	return r.value
 }
 
-// isLeft returns true if the Result represents an error state.
-func (r Result[T]) isLeft() bool {
+// hasLeftValue returns true if the Result represents an error state.
+func (r Result[T]) hasLeftValue() bool {
 	return r.isErr
 }
