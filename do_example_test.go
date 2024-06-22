@@ -16,8 +16,8 @@ func ExampleDo() {
 	})
 
 	fmt.Println(result.IsError())
-	fmt.Println("Hello, World!", result.MustGet())
+	fmt.Println(result.MustGet())
 	// Output:
 	// false
-	// Hello, World!
+	// [Hello, World! 42]
 }
