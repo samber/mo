@@ -1,8 +1,6 @@
 module github.com/samber/mo
 
-go 1.21.0
-
-toolchain go1.22.0
+go 1.18
 
 //
 // Dependencies are excluded from releases. Please check CI.
