@@ -159,6 +159,10 @@ Methods:
 - `.Scan()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Scan)
 - `.Value()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Value)
 
+Other:
+
+- `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
+
 ### Result[T any]
 
 `Result` respresent a result of an action having one of the following output: success or failure. An instance of `Result` is an instance of either `Ok` or `Err`. It could be compared to `Either[error, T]`.
@@ -190,9 +194,14 @@ Methods:
 - `.MapErr()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapErr) - [play](https://go.dev/play/p/WraZixg9GGf)
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.FlatMap) - [play](https://go.dev/play/p/Ud5QjZOqg-7)
 
+Other:
+
+- `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
+- `mo.Do[T any](fn func() T) (result mo.Result[T])` [doc](https://pkg.go.dev/github.com/samber/mo#Do)
+
 ### Either[L any, R any]
 
-`Either` respresents a value of 2 possible types. An instance of `Either` is an instance of either `A` or `B`.
+`Either` represents a value of 2 possible types. An instance of `Either` is an instance of either `A` or `B`.
 
 Implements:
 - `mo.Foldable[T, U]`
@@ -220,6 +229,10 @@ Methods:
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.Match)
 - `.MapLeft()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapLeft)
 - `.MapRight()` [doc](https://pkg.go.dev/github.com/samber/mo#Either.MapRight)
+
+Other:
+
+- `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
 
 ### EitherX[T1, ..., TX] (With X between 3 and 5)
 
