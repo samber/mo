@@ -482,7 +482,7 @@ func TestOptionFoldSuccess(t *testing.T) {
 	is.Equal(expected, folded)
 }
 
-// // TestOptionFoldFailure tests the Fold method with a failure result.
+// TestOptionFoldFailure tests the Fold method with a failure result.
 func TestOptionFoldFailure(t *testing.T) {
 	is := assert.New(t)
 	option := Option[int]{isPresent: false}
