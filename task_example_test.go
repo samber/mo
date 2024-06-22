@@ -6,9 +6,11 @@ import (
 )
 
 func ExampleTask() {
+	t := time.Date(2024, 6, 22, 0, 0, 0, 0, time.Local)
+
 	task := NewTask(func() *Future[int] {
 		return NewFuture(func(resolve func(int), reject func(error)) {
-			resolve(time.Now().Year())
+			resolve(t.Year())
 		})
 	})
 
@@ -20,5 +22,5 @@ func ExampleTask() {
 
 	fmt.Println(result)
 	// Output:
-	// 2023
+	// 2024
 }

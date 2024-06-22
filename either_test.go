@@ -1,6 +1,8 @@
 package mo
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -210,4 +212,42 @@ func TestEitherMapRight(t *testing.T) {
 
 	is.Equal(Either[int, string]{left: 42, right: "", isLeft: true}, e1)
 	is.Equal(Either[int, string]{left: 0, right: "plop", isLeft: false}, e2)
+}
+
+// TestEitherFoldSuccess tests the Fold method with a successful result.
+func TestEitherFoldSuccess(t *testing.T) {
+	is := assert.New(t)
+	either := Either[error, int]{left: nil, right: 10, isLeft: false}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](either, successFunc, failureFunc)
+	expected := "Success: 10"
+
+	is.Equal(expected, folded)
+}
+
+// TestEitherFoldFailure tests the Fold method with a failure result.
+func TestEitherFoldFailure(t *testing.T) {
+	err := errors.New("result error")
+	is := assert.New(t)
+
+	either := Either[error, int]{left: err, right: 0, isLeft: true}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](either, successFunc, failureFunc)
+	expected := fmt.Sprintf("Failure: %v", err)
+
+	is.Equal(expected, folded)
 }

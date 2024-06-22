@@ -2,6 +2,7 @@ package mo
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -293,4 +294,42 @@ func TestResultUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": "}`), &unmarshal)
 	is.Error(err)
+}
+
+// TestResultFoldSuccess tests the Fold method with a successful result.
+func TestResultFoldSuccess(t *testing.T) {
+	is := assert.New(t)
+	result := Result[int]{value: 42, isErr: false, err: nil}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
+	expected := "Success: 42"
+
+	is.Equal(expected, folded)
+}
+
+// TestResultFoldFailure tests the Fold method with a failure result.
+func TestResultFoldFailure(t *testing.T) {
+	err := errors.New("result error")
+	is := assert.New(t)
+
+	result := Result[int]{value: 0, isErr: true, err: err}
+
+	successFunc := func(value int) string {
+		return fmt.Sprintf("Success: %v", value)
+	}
+	failureFunc := func(err error) string {
+		return fmt.Sprintf("Failure: %v", err)
+	}
+
+	folded := Fold[error, int, string](result, successFunc, failureFunc)
+	expected := fmt.Sprintf("Failure: %v", err)
+
+	is.Equal(expected, folded)
 }

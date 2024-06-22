@@ -6,8 +6,10 @@ import (
 )
 
 func ExampleIO() {
+	t := time.Date(2024, 6, 22, 0, 0, 0, 0, time.Local)
+
 	io := NewIO(func() int {
-		return time.Now().Year()
+		return t.Year()
 	})
 
 	result1 := io.Run()
@@ -18,7 +20,7 @@ func ExampleIO() {
 	fmt.Println(result2)
 	fmt.Println(result3)
 	// Output:
-	// 2023
-	// 2023
-	// 2023
+	// 2024
+	// 2024
+	// 2024
 }

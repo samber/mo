@@ -23,7 +23,7 @@
 
 **Why this name?**
 
-I love **short name** for such utility library. This name is similar to "Monad Go" and no Go package currently uses this name.
+I love **short name** for such utility library. This name is similar to "Monad Go" and no Go package uses this name.
 
 ## 💡 Features
 
@@ -122,6 +122,9 @@ I take no responsibility on this junk. 😁 💩
 
 `Option` is a container for an optional value of type `T`. If value exists, `Option` is of type `Some`. If the value is absent, `Option` is of type `None`.
 
+Implements:
+- `mo.Foldable[T, U]`
+
 Constructors:
 
 - `mo.Some()` [doc](https://pkg.go.dev/github.com/samber/mo#Some) - [play](https://go.dev/play/p/iqz2n9n0tDM)
@@ -160,6 +163,9 @@ Methods:
 
 `Result` respresent a result of an action having one of the following output: success or failure. An instance of `Result` is an instance of either `Ok` or `Err`. It could be compared to `Either[error, T]`.
 
+Implements:
+- `mo.Foldable[T, U]`
+
 Constructors:
 
 - `mo.Ok()` [doc](https://pkg.go.dev/github.com/samber/mo#Ok) - [play](https://go.dev/play/p/PDwADdzNoyZ)
@@ -187,6 +193,9 @@ Methods:
 ### Either[L any, R any]
 
 `Either` respresents a value of 2 possible types. An instance of `Either` is an instance of either `A` or `B`.
+
+Implements:
+- `mo.Foldable[T, U]`
 
 Constructors:
 
@@ -346,6 +355,12 @@ Methods:
 - `.Modify()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Modify)
 - `.Put()` [doc](https://pkg.go.dev/github.com/samber/mo#TaskEither.Put)
 
+### Foldable[T, U]
+
+Foldable represents a type that can be folded into a single value based on its state.
+
+- `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
+
 ## 🛩 Benchmark
 
 // @TODO
@@ -354,7 +369,7 @@ This library does not use `reflect` package. We don't expect overhead.
 
 ## 🤝 Contributing
 
-- Ping me on twitter [@samuelberthe](https://twitter.com/samuelberthe) (DMs, mentions, whatever :))
+- Ping me on Twitter [@samuelberthe](https://twitter.com/samuelberthe) (DMs, mentions, whatever :))
 - Fork the [project](https://github.com/samber/mo)
 - Fix [open issues](https://github.com/samber/mo/issues) or request new features
 
