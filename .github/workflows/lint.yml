@@ -15,6 +15,6 @@ jobs:
           stable: false
       - uses: actions/checkout@v2
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v5
+        uses: golangci/golangci-lint-action@v6
         with:
           args: --timeout 120s --max-same-issues 50
