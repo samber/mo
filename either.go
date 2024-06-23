@@ -168,16 +168,22 @@ func (e Either[L, R]) MapRight(mapper func(R) Either[L, R]) Either[L, R] {
 }
 
 // leftValue returns left value of a Either struct.(implementation of Foldable interface)
+//
+//nolint:unused
 func (e Either[L, R]) leftValue() L {
 	return e.left
 }
 
 // rightValue returns right value of a Either struct.(implementation of Foldable interface)
+//
+//nolint:unused
 func (e Either[L, R]) rightValue() R {
 	return e.right
 }
 
 // hasLeft returns true if the Result represents an error state.
+//
+//nolint:unused
 func (e Either[L, R]) hasLeftValue() bool {
 	return e.isLeft
 }

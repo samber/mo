@@ -215,16 +215,22 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 }
 
 // leftValue returns the error if the Result is an error, otherwise nil
+//
+//nolint:unused
 func (r Result[T]) leftValue() error {
 	return r.err
 }
 
 // rightValue returns the value if the Result is a success, otherwise the zero value of T
+//
+//nolint:unused
 func (r Result[T]) rightValue() T {
 	return r.value
 }
 
 // hasLeftValue returns true if the Result represents an error state.
+//
+//nolint:unused
 func (r Result[T]) hasLeftValue() bool {
 	return r.isErr
 }

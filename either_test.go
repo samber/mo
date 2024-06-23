@@ -234,7 +234,7 @@ func TestEitherFoldSuccess(t *testing.T) {
 
 // TestEitherFoldFailure tests the Fold method with a failure result.
 func TestEitherFoldFailure(t *testing.T) {
-	err := errors.New("result error")
+	err := errors.New("either error")
 	is := assert.New(t)
 
 	either := Either[error, int]{left: err, right: 0, isLeft: true}

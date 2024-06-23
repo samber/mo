@@ -346,13 +346,3 @@ func ExampleResult_FlatMap_err() {
 	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
 	// Output: true 0 error
 }
-
-func exampleResult_Fold() {
-	res := Result[int]{value: 42, err: nil}
-	foldResult := Fold[error, int, string](res, func(v int) string {
-		return "Success"
-	}, func(_ error) string {
-		return "Failure"
-	})
-	println(foldResult)
-}
