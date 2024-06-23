@@ -173,6 +173,43 @@ func TestOptionMap(t *testing.T) {
 	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
 }
 
+func TestOptionMaps(t *testing.T) {
+	is := assert.New(t)
+
+	mul2 := func(i int) (int, bool) {
+		return i * 2, true
+	}
+	inc1 := func(i int) (int, bool) {
+		return i + 1, true
+	}
+	returnFalse := func(i int) (int, bool) {
+		return 0, false
+	}
+	t.Run("maps 2 func ok ", func(t *testing.T) {
+		v := Some(21).Maps(mul2, inc1)
+		is.Equal(Option[int]{value: 43, isPresent: true}, v)
+	})
+	t.Run("maps first ok func, second failed func", func(t *testing.T) {
+		v := Some(21).Maps(mul2, returnFalse)
+		is.False(v.IsPresent())
+	})
+
+	t.Run("maps 2 failed func", func(t *testing.T) {
+		v := Some(21).Maps(returnFalse, func(i int) (int, bool) {
+			is.Fail("should not be called")
+			return 42, true
+		})
+		is.False(v.IsPresent())
+	})
+	t.Run("maps none", func(t *testing.T) {
+		v := None[int]().Maps(mul2, func(i int) (int, bool) {
+			is.Fail("should not be called")
+			return 42, true
+		})
+		is.False(v.IsPresent())
+	})
+}
+
 func TestOptionMapNone(t *testing.T) {
 	is := assert.New(t)
 

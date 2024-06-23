@@ -153,6 +153,22 @@ func (o Option[T]) Map(mapper func(value T) (T, bool)) Option[T] {
 	return None[T]()
 }
 
+func (o Option[T]) Maps(mapperList ...func(value T) (T, bool)) Option[T] {
+	if !o.isPresent {
+		return None[T]()
+	}
+	tmpValue := o.value
+	for _, mapper := range mapperList {
+		var ok bool
+		tmpValue, ok = mapper(tmpValue)
+		if !ok {
+			return None[T]()
+		}
+	}
+
+	return Some(tmpValue)
+}
+
 // MapNone executes the mapper function if value is absent or returns Option.
 // Play: https://go.dev/play/p/_KaHWZ6Q17b
 func (o Option[T]) MapNone(mapper func() (T, bool)) Option[T] {
