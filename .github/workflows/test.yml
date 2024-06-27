@@ -10,6 +10,15 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - '1.18'
+          - '1.19'
+          - '1.20'
+          - '1.21'
+          - '1.22'
+          - '1.x'
     steps:
     - uses: actions/checkout@v2
 
