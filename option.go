@@ -305,8 +305,7 @@ func (o Option[T]) Value() (driver.Value, error) {
 	if !o.isPresent {
 		return nil, nil
 	}
-
-	return o.value, nil
+	return driver.DefaultParameterConverter.ConvertValue(o.value)
 }
 
 // leftValue returns an error if the Option is None, otherwise nil
