@@ -297,6 +297,16 @@ func (o *Option[T]) Scan(src any) error {
 		}
 	}
 
+	// we try to convertAssign values that we can't directly assign because ConvertValue
+	// will return immediately for v that is already a Value, even if it is a different
+	// Value type than the one we expect here.
+	var st sql.Null[T]
+	if err := st.Scan(src); err == nil {
+		o.isPresent = true
+		o.value = st.V
+		return nil
+	}
+
 	return fmt.Errorf("failed to scan Option[T]")
 }
 
@@ -306,7 +316,7 @@ func (o Option[T]) Value() (driver.Value, error) {
 		return nil, nil
 	}
 
-	return o.value, nil
+	return driver.DefaultParameterConverter.ConvertValue(o.value)
 }
 
 // leftValue returns an error if the Option is None, otherwise nil
