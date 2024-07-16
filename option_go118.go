@@ -6,6 +6,7 @@ package mo
 //
 // sql.Null[T] has been introduce in go1.22
 // This file is a copy of stdlib and ensure retro-compatibility.
+// See https://github.com/samber/mo/pull/49
 //
 
 import (
