@@ -297,7 +297,7 @@ func (o *Option[T]) Scan(src any) error {
 		}
 	}
 
-	return fmt.Errorf("failed to scan Option[T]")
+	return o.scanConvertValue(src)
 }
 
 // Value implements the driver Valuer interface.
@@ -306,7 +306,7 @@ func (o Option[T]) Value() (driver.Value, error) {
 		return nil, nil
 	}
 
-	return o.value, nil
+	return driver.DefaultParameterConverter.ConvertValue(o.value)
 }
 
 // leftValue returns an error if the Option is None, otherwise nil

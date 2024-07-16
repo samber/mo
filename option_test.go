@@ -407,6 +407,25 @@ func TestOptionScan(t *testing.T) {
 	is.Equal(err2Exp, err2)
 }
 
+func TestOptionScanWithPossibleConvert(t *testing.T) {
+	is := assert.New(t)
+
+	// As passed by the sql package in some cases, src is a []byte.
+	// https://github.com/golang/go/blob/071b8d51c1a70fa6b12f0bed2e93370e193333fd/src/database/sql/convert.go#L396
+	src1 := []byte{65, 66, 67}
+	dest1 := None[string]()
+	src2 := int32(32)
+	dest2 := None[int]()
+
+	err1 := dest1.Scan(src1)
+	err2 := dest2.Scan(src2)
+
+	is.Nil(err1)
+	is.Equal(Some("ABC"), dest1)
+	is.Nil(err2)
+	is.Equal(Some(32), dest2)
+}
+
 func TestOptionValue(t *testing.T) {
 	is := assert.New(t)
 
@@ -423,6 +442,17 @@ func TestOptionValue(t *testing.T) {
 	is.Nil(err1)
 	is.EqualValues(None[string](), option2)
 	is.Nil(err2)
+}
+
+func TestOptionValueWithPossibleConvert(t *testing.T) {
+	is := assert.New(t)
+
+	opt := Some(uint32(42))
+	expected := int64(42)
+
+	value, err := opt.Value()
+	is.Nil(err)
+	is.Equal(expected, value)
 }
 
 type SomeScanner struct {
