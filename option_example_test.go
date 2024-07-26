@@ -258,6 +258,34 @@ func ExampleOption_Map_none() {
 	// Output: false 0
 }
 
+func ExampleOption_Maps_some() {
+	some := Some(42)
+	result := some.Maps(
+		func(i int) (int, bool) {
+			return 1234, true
+		},
+		func(value int) (int, bool) {
+			return value + 1, true
+		},
+	)
+
+	fmt.Println(result.IsPresent(), result.OrEmpty())
+	// Output: true 1235
+}
+func ExampleOption_Maps_none() {
+	none := None[int]()
+	result := none.Maps(
+		func(i int) (int, bool) {
+			return 1234, true
+		},
+		func(value int) (int, bool) {
+			return value + 1, true
+		},
+	)
+
+	fmt.Println(result.IsPresent(), result.OrEmpty())
+	// Output: false 0
+}
 func ExampleOption_MapNone_some() {
 	some := Some(42)
 	result := some.MapNone(func() (int, bool) {
