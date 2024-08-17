@@ -157,6 +157,14 @@ func (r Result[T]) MapErr(mapper func(error) (T, error)) Result[T] {
 	return Ok(r.value)
 }
 
+func (r Result[T]) ErrContext(context string) Result[T] {
+	if r.isErr {
+		return Err[T](fmt.Errorf("%s\n\nOriginal Error:\n%s", context, r.err.Error()))
+	}
+
+	return Ok(r.value)
+}
+
 // FlatMap executes the mapper function if Result is valid. It returns a new Result.
 // Play: https://go.dev/play/p/Ud5QjZOqg-7
 func (r Result[T]) FlatMap(mapper func(value T) Result[T]) Result[T] {

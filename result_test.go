@@ -190,6 +190,14 @@ func TestResultMapErr(t *testing.T) {
 	is.Equal(Result[int]{value: 42, isErr: false, err: nil}, opt2)
 }
 
+func TestResultErrContext(t *testing.T) {
+	is := assert.New(t)
+
+	opt := Err[int](assert.AnError).ErrContext("Oh bananas")
+
+	is.Equal(Result[int]{value: 0, isErr: true, err: errors.New("Oh bananas\n\nOriginal Error:\nassert.AnError general error for testing")}, opt)
+}
+
 func TestResultFlatMap(t *testing.T) {
 	is := assert.New(t)
 
