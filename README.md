@@ -75,8 +75,8 @@ option1.
     FlatMap(func (value int) Option[int] {
         return Some(value%2)
     }).
-    FlatMap(func (value int) Option[int] {
-        return Some(value+21)
+    Map(func (value int) int {
+        return value+21
     }).
     OrElse(1234)
 // 21
