@@ -299,6 +299,36 @@ func ExampleResult_Map_err() {
 	// Output: true 0 error
 }
 
+func ExampleResult_Maps_ok() {
+	ok := Ok(42)
+	result := ok.Maps(
+		func(i int) (int, error) {
+			return i * 2, nil
+		},
+		func(i int) (int, error) {
+			return i + 1, nil
+		},
+	)
+
+	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
+	// Output: false 85 <nil>
+}
+
+func ExampleResult_Maps_err() {
+	ko := Err[int](err)
+	result := ko.Maps(
+		func(i int) (int, error) {
+			return i * 2, nil
+		},
+		func(i int) (int, error) {
+			return i + 1, nil
+		},
+	)
+
+	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
+	// Output: true 0 error
+}
+
 func ExampleResult_MapErr_ok() {
 	ok := Ok(42)
 	result := ok.MapErr(
