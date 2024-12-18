@@ -14,8 +14,7 @@ func (o *Option[T]) scanConvertValue(src any) error {
 	// Value type than the one we expect here.
 	var st sql.Null[T]
 	if err := st.Scan(src); err == nil {
-		o.isPresent = true
-		o.value = st.V
+		*o = append(*o, st.V)
 		return nil
 	}
 	return fmt.Errorf("failed to scan Option[T]")

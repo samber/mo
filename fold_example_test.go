@@ -44,8 +44,8 @@ func ExampleFold_either() {
 }
 
 func ExampleFold_option() {
-	option1 := Option[int]{isPresent: true, value: 42}
-	option2 := Option[int]{isPresent: false}
+	option1 := Option[int]{42}
+	option2 := Option[int]{}
 
 	successFunc := func(val int) string {
 		return fmt.Sprintf("Success with value %d", val)
