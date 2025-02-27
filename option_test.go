@@ -251,7 +251,7 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 
 	err = option2.UnmarshalJSON([]byte(`null`))
 	is.NoError(err)
-	is.Equal(None[string](), option2)
+	is.Equal(Some[string](""), option2)
 
 	type testStruct struct {
 		Field Option[string]
@@ -267,7 +267,7 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": null}`), &unmarshal)
 	is.NoError(err)
-	is.Equal(testStruct{Field: None[string]()}, unmarshal)
+	is.Equal(testStruct{Field: Some[string]("")}, unmarshal)
 
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{}`), &unmarshal)
@@ -310,7 +310,7 @@ func TestOptionUnmarshalText(t *testing.T) {
 	err2 := option2.UnmarshalText([]byte("42"))
 	err3 := option3.UnmarshalText([]byte("\"42\""))
 
-	is.Equal(None[int](), option1)
+	is.Equal(Some[int](0), option1)
 	is.Nil(err1)
 	is.Equal(Some[int](42), option2)
 	is.Nil(err2)
