@@ -12,13 +12,13 @@ import (
 func TestOptionSome(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal(Option[int]{value: 42, isPresent: true}, Some(42))
+	is.Equal(Option[int]{42}, Some(42))
 }
 
 func TestOptionNone(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal(Option[int]{isPresent: false}, None[int]())
+	is.Equal(Option[int]{}, None[int]())
 }
 
 func TestTupleToOption(t *testing.T) {
@@ -30,30 +30,30 @@ func TestTupleToOption(t *testing.T) {
 		}
 	}
 
-	is.Equal(Option[int]{isPresent: false}, TupleToOption(cb(42, false)()))
-	is.Equal(Option[int]{isPresent: true, value: 42}, TupleToOption(cb(42, true)()))
+	is.Equal(Option[int]{}, TupleToOption(cb(42, false)()))
+	is.Equal(Option[int]{42}, TupleToOption(cb(42, true)()))
 }
 
 func TestOptionEmptyableToOption(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal(Option[error]{isPresent: false}, EmptyableToOption[error](nil))
-	is.Equal(Option[error]{isPresent: true, value: assert.AnError}, EmptyableToOption(assert.AnError))
+	is.Equal(Option[error]{}, EmptyableToOption[error](nil))
+	is.Equal(Option[error]{assert.AnError}, EmptyableToOption(assert.AnError))
 
-	is.Equal(Option[int]{isPresent: false}, EmptyableToOption(0))
-	is.Equal(Option[int]{isPresent: true, value: 42}, EmptyableToOption(42))
+	is.Equal(Option[int]{}, EmptyableToOption(0))
+	is.Equal(Option[int]{42}, EmptyableToOption(42))
 }
 
 func TestOptionPointerToOption(t *testing.T) {
 	is := assert.New(t)
 
-	is.Equal(Option[error]{isPresent: false}, PointerToOption[error](nil))
-	is.Equal(Option[error]{isPresent: true, value: assert.AnError}, PointerToOption(&assert.AnError))
+	is.Equal(Option[error]{}, PointerToOption[error](nil))
+	is.Equal(Option[error]{assert.AnError}, PointerToOption(&assert.AnError))
 
 	zero := 0
 	fortyTwo := 42
-	is.Equal(Option[int]{isPresent: true, value: 0}, PointerToOption(&zero))
-	is.Equal(Option[int]{isPresent: true, value: 42}, PointerToOption(&fortyTwo))
+	is.Equal(Option[int]{0}, PointerToOption(&zero))
+	is.Equal(Option[int]{42}, PointerToOption(&fortyTwo))
 }
 
 func TestOptionIsPresent(t *testing.T) {
@@ -154,8 +154,8 @@ func TestOptionMatch(t *testing.T) {
 	opt1 := Some(21).Match(onValue, onNone)
 	opt2 := None[int]().Match(onValue, onNone)
 
-	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
-	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
+	is.Equal(Option[int]{42}, opt1)
+	is.Equal(Option[int]{}, opt2)
 }
 
 func TestOptionMap(t *testing.T) {
@@ -169,8 +169,8 @@ func TestOptionMap(t *testing.T) {
 		return 42, true
 	})
 
-	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
-	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
+	is.Equal(Option[int]{42}, opt1)
+	is.Equal(Option[int]{}, opt2)
 }
 
 func TestOptionMapNone(t *testing.T) {
@@ -184,8 +184,8 @@ func TestOptionMapNone(t *testing.T) {
 		return 42, true
 	})
 
-	is.Equal(Option[int]{value: 21, isPresent: true}, opt1)
-	is.Equal(Option[int]{value: 42, isPresent: true}, opt2)
+	is.Equal(Option[int]{21}, opt1)
+	is.Equal(Option[int]{42}, opt2)
 }
 
 func TestOptionFlatMap(t *testing.T) {
@@ -198,8 +198,8 @@ func TestOptionFlatMap(t *testing.T) {
 		return Some(42)
 	})
 
-	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
-	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
+	is.Equal(Option[int]{42}, opt1)
+	is.Equal(Option[int]{}, opt2)
 }
 
 func TestOptionMarshalJSON(t *testing.T) {
@@ -232,6 +232,59 @@ func TestOptionMarshalJSON(t *testing.T) {
 	marshalled, err = json.Marshal(optionInStruct)
 	is.NoError(err)
 	is.Equal(`{"Field":"foo"}`, string(marshalled))
+}
+
+func TestOptionMarshalJSONOmitEmpty(t *testing.T) {
+	type testStructOmit struct {
+		Bar   string
+		Field Option[string] `json:",omitempty"`
+	}
+
+	t.Run("WithValue", func(t *testing.T) {
+		is := assert.New(t)
+		optionInStruct := testStructOmit{
+			Bar:   "bar",
+			Field: Some("foo"),
+		}
+
+		var marshalled []byte
+		marshalled, err := json.Marshal(optionInStruct)
+		is.NoError(err)
+		is.Equal(`{"Bar":"bar","Field":"foo"}`, string(marshalled))
+	})
+
+	t.Run("WithNone", func(t *testing.T) {
+		is := assert.New(t)
+		optionInStruct := testStructOmit{
+			Bar:   "bar",
+			Field: None[string](),
+		}
+
+		marshalled, err := json.Marshal(optionInStruct)
+		is.NoError(err)
+		is.Equal(`{"Bar":"bar"}`, string(marshalled))
+	})
+
+	t.Run("WithZero", func(t *testing.T) {
+		is := assert.New(t)
+		optionInStruct := testStructOmit{
+			Bar: "bar",
+		}
+		marshalled, err := json.Marshal(optionInStruct)
+		is.NoError(err)
+		is.Equal(`{"Bar":"bar"}`, string(marshalled))
+	})
+
+	t.Run("WithEmpty", func(t *testing.T) {
+		is := assert.New(t)
+		optionInStruct := testStructOmit{
+			Bar:   "bar",
+			Field: Some(""),
+		}
+		marshalled, err := json.Marshal(optionInStruct)
+		is.NoError(err)
+		is.Equal(`{"Bar":"bar","Field":""}`, string(marshalled))
+	})
 }
 
 func TestOptionUnmarshalJSON(t *testing.T) {
@@ -267,16 +320,21 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": null}`), &unmarshal)
 	is.NoError(err)
+	is.True(unmarshal.Field.IsAbsent())
+	is.False(unmarshal.Field.IsPresent())
 	is.Equal(testStruct{Field: None[string]()}, unmarshal)
 
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{}`), &unmarshal)
 	is.NoError(err)
-	is.Equal(testStruct{Field: None[string]()}, unmarshal)
+	is.True(unmarshal.Field.IsAbsent())
+	is.False(unmarshal.Field.IsPresent())
 
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": ""}`), &unmarshal)
 	is.NoError(err)
+	is.True(unmarshal.Field.IsPresent())
+	is.False(unmarshal.Field.IsAbsent())
 	is.Equal(testStruct{Field: Some("")}, unmarshal)
 
 	unmarshal = testStruct{}
@@ -497,7 +555,7 @@ func TestOptionScanner(t *testing.T) {
 // TestOptionFoldSuccess tests the Fold method with a successful result.
 func TestOptionFoldSuccess(t *testing.T) {
 	is := assert.New(t)
-	option := Option[int]{isPresent: true, value: 10}
+	option := Option[int]{10}
 
 	successFunc := func(value int) string {
 		return fmt.Sprintf("Success: %v", value)
@@ -515,7 +573,7 @@ func TestOptionFoldSuccess(t *testing.T) {
 // TestOptionFoldFailure tests the Fold method with a failure result.
 func TestOptionFoldFailure(t *testing.T) {
 	is := assert.New(t)
-	option := Option[int]{isPresent: false}
+	option := Option[int]{}
 
 	successFunc := func(value int) string {
 		return fmt.Sprintf("Success: %v", value)
