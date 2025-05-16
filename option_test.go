@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -199,6 +200,18 @@ func TestOptionFlatMap(t *testing.T) {
 	})
 
 	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
+	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
+}
+
+func TestOptionMapValue(t *testing.T) {
+	is := assert.New(t)
+
+	opt1 := Some("hello").MapValue(strings.ToUpper)
+	opt2 := None[int]().FlatMap(func(i int) Option[int] {
+		return Some(42)
+	})
+
+	is.Equal(Option[string]{value: "HELLO", isPresent: true}, opt1)
 	is.Equal(Option[int]{value: 0, isPresent: false}, opt2)
 }
 
