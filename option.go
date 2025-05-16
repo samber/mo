@@ -173,6 +173,15 @@ func (o Option[T]) FlatMap(mapper func(value T) Option[T]) Option[T] {
 	return None[T]()
 }
 
+// MapValue executes the mapper function if value is present or returns None if absent.
+func (o Option[T]) MapValue(mapper func(value T) T) Option[T] {
+	if o.isPresent {
+		return Some(mapper(o.value))
+	}
+
+	return None[T]()
+}
+
 // ToPointer returns value if present or a nil pointer.
 // Play: https://go.dev/play/p/N43w92SM-Bs
 func (o Option[T]) ToPointer() *T {
