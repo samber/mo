@@ -143,13 +143,12 @@ func (o Option[T]) Match(onValue func(value T) (T, bool), onNone func() (T, bool
 	return TupleToOption(onNone())
 }
 
-// Map executes the mapper function if value is present or returns None if absent.
-// Play: https://go.dev/play/p/mvfP3pcP_eJ
-func (o Option[T]) Map(mapper func(value T) (T, bool)) Option[T] {
+// Map executes the mapper function for a value.
+// Play: https://go.dev/play/p/-A5IMTdRLI-
+func (o Option[T]) Map(mapper func(value T) T) Option[T] {
 	if o.isPresent {
-		return TupleToOption(mapper(o.value))
+		return Some(mapper(o.value))
 	}
-
 	return None[T]()
 }
 
