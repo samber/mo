@@ -204,10 +204,8 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON decodes Option from json.
 func (o *Option[T]) UnmarshalJSON(b []byte) error {
-	if bytes.Equal(b, []byte("null")) {
-		o.isPresent = false
-		return nil
-	}
+	// if user manually set the field to be `null`, then `isPresent` should be `true` since that is want user intends the value to be
+	// this makes sure `isPresent` makes semantic sense, and solves the ambiguity of pointer completely
 
 	err := json.Unmarshal(b, &o.value)
 	if err != nil {
@@ -216,6 +214,24 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 
 	o.isPresent = true
 	return nil
+}
+
+// IsZero assists `omitzero` tag introduced in Go 1.24
+func (o Option[T]) IsZero() bool {
+	if !o.isPresent {
+		return true
+	}
+
+	type zeroer interface {
+		IsZero() bool
+	}
+
+	var v any = o.value
+	if v, ok := v.(zeroer); ok {
+		return v.IsZero()
+	}
+
+	return reflect.ValueOf(o.value).IsZero()
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.

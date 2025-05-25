@@ -358,6 +358,6 @@ func ExampleOption_UnmarshalJSON_none() {
 	fmt.Println(result.Email.Get())
 	fmt.Println(err)
 	// Output:
-	// false
+	// true
 	// <nil>
 }
