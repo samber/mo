@@ -13,6 +13,10 @@ import (
 
 var errOptionNoSuchElement = fmt.Errorf("no such element")
 
+type zeroer interface {
+	IsZero() bool
+}
+
 // Some builds an Option when value is present.
 // Play: https://go.dev/play/p/iqz2n9n0tDM
 func Some[T any](value T) Option[T] {
@@ -220,10 +224,6 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 func (o Option[T]) IsZero() bool {
 	if !o.isPresent {
 		return true
-	}
-
-	type zeroer interface {
-		IsZero() bool
 	}
 
 	var v any = o.value
