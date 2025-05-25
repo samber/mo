@@ -2,9 +2,9 @@ package mo
 
 import "fmt"
 
-var eitherShouldBeLeftOrRight = fmt.Errorf("either should be Left or Right")
-var eitherMissingLeftValue = fmt.Errorf("no such Left value")
-var eitherMissingRightValue = fmt.Errorf("no such Right value")
+var errEitherShouldBeLeftOrRight = fmt.Errorf("either should be Left or Right")
+var errEitherMissingLeftValue = fmt.Errorf("no such Left value")
+var errEitherMissingRightValue = fmt.Errorf("no such Right value")
 
 // Left builds the left side of the Either struct, as opposed to the Right side.
 func Left[L any, R any](value L) Either[L, R] {
@@ -60,7 +60,7 @@ func (e Either[L, R]) Right() (R, bool) {
 // MustLeft returns left value of a Either struct or panics.
 func (e Either[L, R]) MustLeft() L {
 	if !e.IsLeft() {
-		panic(eitherMissingLeftValue)
+		panic(errEitherMissingLeftValue)
 	}
 
 	return e.left
@@ -69,7 +69,7 @@ func (e Either[L, R]) MustLeft() L {
 // MustRight returns right value of a Either struct or panics.
 func (e Either[L, R]) MustRight() R {
 	if !e.IsRight() {
-		panic(eitherMissingRightValue)
+		panic(errEitherMissingRightValue)
 	}
 
 	return e.right
@@ -142,7 +142,7 @@ func (e Either[L, R]) Match(onLeft func(L) Either[L, R], onRight func(R) Either[
 		return onRight(e.right)
 	}
 
-	panic(eitherShouldBeLeftOrRight)
+	panic(errEitherShouldBeLeftOrRight)
 }
 
 // MapLeft executes the given function, if Either is of type Left, and returns result.
@@ -153,7 +153,7 @@ func (e Either[L, R]) MapLeft(mapper func(L) Either[L, R]) Either[L, R] {
 		return Right[L, R](e.right)
 	}
 
-	panic(eitherShouldBeLeftOrRight)
+	panic(errEitherShouldBeLeftOrRight)
 }
 
 // MapRight executes the given function, if Either is of type Right, and returns result.
@@ -164,7 +164,7 @@ func (e Either[L, R]) MapRight(mapper func(R) Either[L, R]) Either[L, R] {
 		return mapper(e.right)
 	}
 
-	panic(eitherShouldBeLeftOrRight)
+	panic(errEitherShouldBeLeftOrRight)
 }
 
 // leftValue returns left value of a Either struct.(implementation of Foldable interface)

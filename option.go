@@ -11,7 +11,7 @@ import (
 	"reflect"
 )
 
-var optionNoSuchElement = fmt.Errorf("no such element")
+var errOptionNoSuchElement = fmt.Errorf("no such element")
 
 // Some builds an Option when value is present.
 // Play: https://go.dev/play/p/iqz2n9n0tDM
@@ -104,7 +104,7 @@ func (o Option[T]) Get() (T, bool) {
 // Play: https://go.dev/play/p/RVBckjdi5WR
 func (o Option[T]) MustGet() T {
 	if !o.isPresent {
-		panic(optionNoSuchElement)
+		panic(errOptionNoSuchElement)
 	}
 
 	return o.value
@@ -339,7 +339,7 @@ func (o Option[T]) Value() (driver.Value, error) {
 //nolint:unused
 func (o Option[T]) leftValue() error {
 	if !o.isPresent {
-		return optionNoSuchElement
+		return errOptionNoSuchElement
 	}
 	return nil
 }
