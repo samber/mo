@@ -2,6 +2,7 @@ package mo
 
 import (
 	"fmt"
+	"strings"
 )
 
 var err = fmt.Errorf("error")
@@ -297,6 +298,21 @@ func ExampleResult_Map_err() {
 
 	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
 	// Output: true 0 error
+}
+
+func ExampleResult_MapValue_ok() {
+	ok := Ok("hello")
+	result := ok.MapValue(strings.ToTitle)
+	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
+	// Output: false HELLO <nil>
+}
+
+func ExampleResult_MapValue_err() {
+	ko := Err[string](err)
+	result := ko.MapValue(strings.ToTitle)
+
+	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
+	// Output: true "" error
 }
 
 func ExampleResult_MapErr_ok() {
