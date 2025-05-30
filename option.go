@@ -11,7 +11,11 @@ import (
 	"reflect"
 )
 
-var optionNoSuchElement = fmt.Errorf("no such element")
+var errOptionNoSuchElement = fmt.Errorf("no such element")
+
+type zeroer interface {
+	IsZero() bool
+}
 
 // Some builds an Option when value is present.
 // Play: https://go.dev/play/p/iqz2n9n0tDM
@@ -104,7 +108,7 @@ func (o Option[T]) Get() (T, bool) {
 // Play: https://go.dev/play/p/RVBckjdi5WR
 func (o Option[T]) MustGet() T {
 	if !o.isPresent {
-		panic(optionNoSuchElement)
+		panic(errOptionNoSuchElement)
 	}
 
 	return o.value
@@ -204,10 +208,8 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON decodes Option from json.
 func (o *Option[T]) UnmarshalJSON(b []byte) error {
-	if bytes.Equal(b, []byte("null")) {
-		o.isPresent = false
-		return nil
-	}
+	// if user manually set the field to be `null`, then `isPresent` should be `true` since that is want user intends the value to be
+	// this makes sure `isPresent` makes semantic sense, and solves the ambiguity of pointer completely
 
 	err := json.Unmarshal(b, &o.value)
 	if err != nil {
@@ -216,6 +218,20 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 
 	o.isPresent = true
 	return nil
+}
+
+// IsZero assists `omitzero` tag introduced in Go 1.24
+func (o Option[T]) IsZero() bool {
+	if !o.isPresent {
+		return true
+	}
+
+	var v any = o.value
+	if v, ok := v.(zeroer); ok {
+		return v.IsZero()
+	}
+
+	return reflect.ValueOf(o.value).IsZero()
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.
@@ -323,7 +339,7 @@ func (o Option[T]) Value() (driver.Value, error) {
 //nolint:unused
 func (o Option[T]) leftValue() error {
 	if !o.isPresent {
-		return optionNoSuchElement
+		return errOptionNoSuchElement
 	}
 	return nil
 }

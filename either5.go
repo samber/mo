@@ -11,12 +11,12 @@ const (
 )
 
 var (
-	either5InvalidArgumentId = fmt.Errorf("either5 argument should be between 1 and 5")
-	either5MissingArg1       = fmt.Errorf("either5 doesn't contain expected argument 1")
-	either5MissingArg2       = fmt.Errorf("either5 doesn't contain expected argument 2")
-	either5MissingArg3       = fmt.Errorf("either5 doesn't contain expected argument 3")
-	either5MissingArg4       = fmt.Errorf("either5 doesn't contain expected argument 4")
-	either5MissingArg5       = fmt.Errorf("either5 doesn't contain expected argument 5")
+	errEither5InvalidArgumentId = fmt.Errorf("either5 argument should be between 1 and 5")
+	errEither5MissingArg1       = fmt.Errorf("either5 doesn't contain expected argument 1")
+	errEither5MissingArg2       = fmt.Errorf("either5 doesn't contain expected argument 2")
+	errEither5MissingArg3       = fmt.Errorf("either5 doesn't contain expected argument 3")
+	errEither5MissingArg4       = fmt.Errorf("either5 doesn't contain expected argument 4")
+	errEither5MissingArg5       = fmt.Errorf("either5 doesn't contain expected argument 5")
 )
 
 // NewEither5Arg1 builds the first argument of the Either5 struct.
@@ -139,7 +139,7 @@ func (e Either5[T1, T2, T3, T4, T5]) Arg5() (T5, bool) {
 // MustArg1 returns the first argument of a Either5 struct or panics.
 func (e Either5[T1, T2, T3, T4, T5]) MustArg1() T1 {
 	if !e.IsArg1() {
-		panic(either5MissingArg1)
+		panic(errEither5MissingArg1)
 	}
 	return e.arg1
 }
@@ -147,7 +147,7 @@ func (e Either5[T1, T2, T3, T4, T5]) MustArg1() T1 {
 // MustArg2 returns the second argument of a Either5 struct or panics.
 func (e Either5[T1, T2, T3, T4, T5]) MustArg2() T2 {
 	if !e.IsArg2() {
-		panic(either5MissingArg2)
+		panic(errEither5MissingArg2)
 	}
 	return e.arg2
 }
@@ -155,7 +155,7 @@ func (e Either5[T1, T2, T3, T4, T5]) MustArg2() T2 {
 // MustArg3 returns the third argument of a Either5 struct or panics.
 func (e Either5[T1, T2, T3, T4, T5]) MustArg3() T3 {
 	if !e.IsArg3() {
-		panic(either5MissingArg3)
+		panic(errEither5MissingArg3)
 	}
 	return e.arg3
 }
@@ -163,7 +163,7 @@ func (e Either5[T1, T2, T3, T4, T5]) MustArg3() T3 {
 // MustArg4 returns the fourth argument of a Either5 struct or panics.
 func (e Either5[T1, T2, T3, T4, T5]) MustArg4() T4 {
 	if !e.IsArg4() {
-		panic(either5MissingArg4)
+		panic(errEither5MissingArg4)
 	}
 	return e.arg4
 }
@@ -171,7 +171,7 @@ func (e Either5[T1, T2, T3, T4, T5]) MustArg4() T4 {
 // MustArg5 returns the fith argument of a Either5 struct or panics.
 func (e Either5[T1, T2, T3, T4, T5]) MustArg5() T5 {
 	if !e.IsArg5() {
-		panic(either5MissingArg5)
+		panic(errEither5MissingArg5)
 	}
 	return e.arg5
 }
@@ -298,7 +298,7 @@ func (e Either5[T1, T2, T3, T4, T5]) Match(
 		return onArg5(e.arg5)
 	}
 
-	panic(either5InvalidArgumentId)
+	panic(errEither5InvalidArgumentId)
 }
 
 // MapArg1 executes the given function, if Either5 use the first argument, and returns result.

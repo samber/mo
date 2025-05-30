@@ -9,10 +9,10 @@ const (
 )
 
 var (
-	either3InvalidArgumentId = fmt.Errorf("either3 argument should be between 1 and 3")
-	either3MissingArg1       = fmt.Errorf("either3 doesn't contain expected argument 1")
-	either3MissingArg2       = fmt.Errorf("either3 doesn't contain expected argument 2")
-	either3MissingArg3       = fmt.Errorf("either3 doesn't contain expected argument 3")
+	errEither3InvalidArgumentId = fmt.Errorf("either3 argument should be between 1 and 3")
+	errEither3MissingArg1       = fmt.Errorf("either3 doesn't contain expected argument 1")
+	errEither3MissingArg2       = fmt.Errorf("either3 doesn't contain expected argument 2")
+	errEither3MissingArg3       = fmt.Errorf("either3 doesn't contain expected argument 3")
 )
 
 // NewEither3Arg1 builds the first argument of the Either3 struct.
@@ -91,7 +91,7 @@ func (e Either3[T1, T2, T3]) Arg3() (T3, bool) {
 // MustArg1 returns the first argument of a Either3 struct or panics.
 func (e Either3[T1, T2, T3]) MustArg1() T1 {
 	if !e.IsArg1() {
-		panic(either3MissingArg1)
+		panic(errEither3MissingArg1)
 	}
 	return e.arg1
 }
@@ -99,7 +99,7 @@ func (e Either3[T1, T2, T3]) MustArg1() T1 {
 // MustArg2 returns the second argument of a Either3 struct or panics.
 func (e Either3[T1, T2, T3]) MustArg2() T2 {
 	if !e.IsArg2() {
-		panic(either3MissingArg2)
+		panic(errEither3MissingArg2)
 	}
 	return e.arg2
 }
@@ -107,7 +107,7 @@ func (e Either3[T1, T2, T3]) MustArg2() T2 {
 // MustArg3 returns the third argument of a Either3 struct or panics.
 func (e Either3[T1, T2, T3]) MustArg3() T3 {
 	if !e.IsArg3() {
-		panic(either3MissingArg3)
+		panic(errEither3MissingArg3)
 	}
 	return e.arg3
 }
@@ -192,7 +192,7 @@ func (e Either3[T1, T2, T3]) Match(
 		return onArg3(e.arg3)
 	}
 
-	panic(either3InvalidArgumentId)
+	panic(errEither3InvalidArgumentId)
 }
 
 // MapArg1 executes the given function, if Either3 use the first argument, and returns result.
