@@ -147,6 +147,7 @@ Methods:
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Match) - [play](https://go.dev/play/p/1V6st3LDJsM)
 - `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Map) - [play](https://go.dev/play/p/mvfP3pcP_eJ)
 - `.MapNone()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MapNone) - [play](https://go.dev/play/p/_KaHWZ6Q17b)
+- `.MapValue()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MapValue)
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.FlatMap) - [play](https://go.dev/play/p/OXO-zJx6n5r)
 - `.MarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MarshalJSON)
 - `.UnmarshalJSON()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.UnmarshalJSON)
