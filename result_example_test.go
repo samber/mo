@@ -312,7 +312,7 @@ func ExampleResult_MapValue_err() {
 	result := ko.MapValue(strings.ToTitle)
 
 	fmt.Println(result.IsError(), result.OrEmpty(), result.Error())
-	// Output: true "" error
+	// Output: true  error
 }
 
 func ExampleResult_MapErr_ok() {
