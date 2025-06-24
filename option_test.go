@@ -117,6 +117,33 @@ func TestOptionOrEmpty(t *testing.T) {
 	is.Equal(0, None[int]().OrEmpty())
 }
 
+func TestPointerOptionOrEmpty(t *testing.T) {
+	is := assert.New(t)
+
+	type bar struct {
+		S string
+	}
+	type foo struct {
+		I int
+		B bar
+	}
+
+	option := PointerToOption[foo](nil)
+	is.Equal(foo{}, option.OrEmpty())
+	is.Equal(0, option.OrEmpty().I)
+	is.Equal(bar{}, option.OrEmpty().B)
+	is.Equal("", option.OrEmpty().B.S)
+
+	option = PointerToOption(&foo{
+		I: 2,
+		B: bar{
+			S: "bar",
+		},
+	})
+	is.Equal(2, option.OrEmpty().I)
+	is.Equal("bar", option.OrEmpty().B.S)
+}
+
 func TestOptionToPointer(t *testing.T) {
 	is := assert.New(t)
 

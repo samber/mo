@@ -127,7 +127,10 @@ func (o Option[T]) OrElse(fallback T) T {
 // OrEmpty returns value if present or empty value.
 // Play: https://go.dev/play/p/SpSUJcE-tQm
 func (o Option[T]) OrEmpty() T {
-	return o.value
+	if o.isPresent {
+		return o.value
+	}
+	return empty[T]()
 }
 
 // ForEach executes the given side-effecting function of value is present.
