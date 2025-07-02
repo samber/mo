@@ -26,6 +26,7 @@ type Future[T any] struct {
 	cancelCb func()
 	next     *Future[T]
 	done     chan struct{}
+	doneOnce sync.Once
 	result   Result[T]
 }
 
@@ -38,25 +39,29 @@ func (f *Future[T]) activeSync() {
 }
 
 func (f *Future[T]) resolve(value T) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
+	f.doneOnce.Do(func() {
+		f.mu.Lock()
+		defer f.mu.Unlock()
 
-	f.result = Ok(value)
-	if f.next != nil {
-		f.next.activeSync()
-	}
-	close(f.done)
+		f.result = Ok(value)
+		if f.next != nil {
+			f.next.activeSync()
+		}
+		close(f.done)
+	})
 }
 
 func (f *Future[T]) reject(err error) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
+	f.doneOnce.Do(func() {
+		f.mu.Lock()
+		defer f.mu.Unlock()
 
-	f.result = Err[T](err)
-	if f.next != nil {
-		f.next.activeSync()
-	}
-	close(f.done)
+		f.result = Err[T](err)
+		if f.next != nil {
+			f.next.activeSync()
+		}
+		close(f.done)
+	})
 }
 
 // Then is called when Future is resolved. It returns a new Future.
@@ -179,5 +184,5 @@ func (f *Future[T]) Either() Either[error, T] {
 	if err != nil {
 		return Left[error, T](err)
 	}
-	return Right[error, T](v)
+	return Right[error](v)
 }
