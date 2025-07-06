@@ -67,9 +67,8 @@ func (f *Future[T]) reject(err error) {
 // Then is called when Future is resolved. It returns a new Future.
 func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 	f.mu.Lock()
-	defer f.mu.Unlock()
 
-	f.next = &Future[T]{
+	next := &Future[T]{
 		cb: func(resolve func(T), reject func(error)) {
 			if f.result.IsError() {
 				reject(f.result.Error())
@@ -87,21 +86,24 @@ func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
+	f.next = next
 
 	select {
 	case <-f.done:
-		f.next.active()
+		f.mu.Unlock()
+		next.active()
 	default:
+		f.mu.Unlock()
 	}
-	return f.next
+
+	return next
 }
 
 // Catch is called when Future is rejected. It returns a new Future.
 func (f *Future[T]) Catch(cb func(error) (T, error)) *Future[T] {
 	f.mu.Lock()
-	defer f.mu.Unlock()
 
-	f.next = &Future[T]{
+	next := &Future[T]{
 		cb: func(resolve func(T), reject func(error)) {
 			if f.result.IsOk() {
 				resolve(f.result.MustGet())
@@ -119,21 +121,24 @@ func (f *Future[T]) Catch(cb func(error) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
+	f.next = next
 
 	select {
 	case <-f.done:
-		f.next.active()
+		f.mu.Unlock()
+		next.active()
 	default:
+		f.mu.Unlock()
 	}
-	return f.next
+
+	return next
 }
 
 // Finally is called when Future is processed either resolved or rejected. It returns a new Future.
 func (f *Future[T]) Finally(cb func(T, error) (T, error)) *Future[T] {
 	f.mu.Lock()
-	defer f.mu.Unlock()
 
-	f.next = &Future[T]{
+	next := &Future[T]{
 		cb: func(resolve func(T), reject func(error)) {
 			newValue, err := cb(f.result.Get())
 			if err != nil {
@@ -147,13 +152,17 @@ func (f *Future[T]) Finally(cb func(T, error) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
+	f.next = next
 
 	select {
 	case <-f.done:
-		f.next.active()
+		f.mu.Unlock()
+		next.active()
 	default:
+		f.mu.Unlock()
 	}
-	return f.next
+
+	return next
 }
 
 // Cancel cancels the Future chain.
