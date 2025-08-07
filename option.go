@@ -208,8 +208,17 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON decodes Option from json.
 func (o *Option[T]) UnmarshalJSON(b []byte) error {
-	// if user manually set the field to be `null`, then `isPresent` should be `true` since that is want user intends the value to be
-	// this makes sure `isPresent` makes semantic sense, and solves the ambiguity of pointer completely
+	o.value = empty[T]() // reset the value if not set later.
+
+	// If user manually set the field to be `null`, then it either means the option is absent or present with a zero value.
+	if bytes.Equal([]byte("null"), bytes.ToLower(b)) {
+		// // If the type is a pointer, then it means the option is present with a zero value.
+		// o.isPresent = reflect.TypeOf(o.value).Kind() == reflect.Ptr
+		// return nil
+
+		o.isPresent = false
+		return nil
+	}
 
 	err := json.Unmarshal(b, &o.value)
 	if err != nil {

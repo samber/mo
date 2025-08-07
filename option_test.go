@@ -264,7 +264,7 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 
 	err = option2.UnmarshalJSON([]byte(`null`))
 	is.NoError(err)
-	is.Equal(Some[string](""), option2)
+	is.Equal(None[string](), option2)
 
 	type testStruct struct {
 		Field Option[string]
@@ -280,7 +280,7 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": null}`), &unmarshal)
 	is.NoError(err)
-	is.Equal(testStruct{Field: Some[string]("")}, unmarshal)
+	is.Equal(testStruct{Field: None[string]()}, unmarshal)
 
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{}`), &unmarshal)
@@ -295,6 +295,41 @@ func TestOptionUnmarshalJSON(t *testing.T) {
 	unmarshal = testStruct{}
 	err = json.Unmarshal([]byte(`{"Field": "}`), &unmarshal)
 	is.Error(err)
+}
+
+func TestRoundtripJSONPerson(t *testing.T) {
+	is := assert.New(t)
+
+	type person struct {
+		Firstname  string
+		Middlename Option[*string]
+		Lastname   Option[*string]
+		Fullname   Option[*string]
+		Age        Option[int]
+	}
+
+	empty := empty[string]()
+	aPerson := person{
+		Firstname:  "MyPerson",
+		Middlename: Some[*string](nil),
+		Lastname:   Some(&empty),
+		Fullname:   None[*string](),
+		Age:        None[int](),
+	}
+
+	serialized, err := json.Marshal(&aPerson)
+	is.Nil(err, "Failed to serialize Person")
+	is.Equal(`{"Firstname":"MyPerson","Middlename":null,"Lastname":"","Fullname":null,"Age":null}`, string(serialized))
+
+	var deserialized person
+	err = json.Unmarshal(serialized, &deserialized)
+	is.Nil(err, "Failed to deserialize Person")
+	// is.EqualValues(aPerson, deserialized, "person should be the same before and after JSON serialization roundtrip")
+	is.Equal("MyPerson", deserialized.Firstname)
+	is.Equal(None[*string](), deserialized.Middlename)
+	is.Equal(Some(&empty), deserialized.Lastname)
+	is.Equal(None[*string](), deserialized.Fullname)
+	is.Equal(None[int](), deserialized.Age)
 }
 
 func TestOptionMarshalText(t *testing.T) {
@@ -318,17 +353,35 @@ func TestOptionUnmarshalText(t *testing.T) {
 	option1 := Option[int]{}
 	option2 := Option[int]{}
 	option3 := Option[string]{}
+	option4 := Option[int]{}
+	option5 := Option[string]{}
+	option6 := Option[*string]{}
+	option7 := Option[*string]{}
 
 	err1 := option1.UnmarshalText([]byte("null"))
-	err2 := option2.UnmarshalText([]byte("42"))
-	err3 := option3.UnmarshalText([]byte("\"42\""))
+	err2 := option2.UnmarshalText([]byte("0"))
+	err3 := option3.UnmarshalText([]byte("\"\""))
+	err4 := option4.UnmarshalText([]byte("42"))
+	err5 := option5.UnmarshalText([]byte("\"42\""))
+	err6 := option6.UnmarshalText([]byte("null"))
+	err7 := option7.UnmarshalText([]byte("\"\""))
 
-	is.Equal(Some[int](0), option1)
+	empty := empty[string]()
+
+	is.Equal(None[int](), option1)
 	is.Nil(err1)
-	is.Equal(Some[int](42), option2)
+	is.Equal(Some(0), option2)
 	is.Nil(err2)
-	is.Equal(Some[string]("42"), option3)
+	is.Equal(Some(""), option3)
 	is.Nil(err3)
+	is.Equal(Some(42), option4)
+	is.Nil(err4)
+	is.Equal(Some("42"), option5)
+	is.Nil(err5)
+	is.Equal(None[*string](), option6)
+	is.Nil(err6)
+	is.Equal(Some(&empty), option7)
+	is.Nil(err7)
 }
 
 func TestOptionMarshalBinary(t *testing.T) {
