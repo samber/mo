@@ -119,7 +119,7 @@ func (e Either[L, R]) RightOrEmpty() R {
 // Swap returns the left value in Right and vice versa.
 func (e Either[L, R]) Swap() Either[R, L] {
 	if e.IsLeft() {
-		return Right[R, L](e.left)
+		return Right[R](e.left)
 	}
 
 	return Left[R, L](e.right)
