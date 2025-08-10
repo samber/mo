@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -173,6 +174,19 @@ func TestResultMap(t *testing.T) {
 
 	is.Equal(Result[int]{value: 42, isErr: false, err: nil}, opt1)
 	is.Equal(Result[int]{value: 0, isErr: true, err: assert.AnError}, opt2)
+}
+
+func TestResultMapValue(t *testing.T) {
+	is := assert.New(t)
+
+	opt1 := Ok("hello").MapValue(strings.ToUpper)
+	opt2 := Err[string](assert.AnError).MapValue(func(s string) string {
+		is.Fail("should not be called")
+		return "42"
+	})
+
+	is.Equal(Result[string]{value: "HELLO", isErr: false, err: nil}, opt1)
+	is.Equal(Result[string]{value: "", isErr: true, err: assert.AnError}, opt2)
 }
 
 func TestResultMapErr(t *testing.T) {
