@@ -194,7 +194,7 @@ Methods:
 - `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.ForEach) - [play](https://go.dev/play/p/Z59EvNdWoRx)
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Match) - [play](https://go.dev/play/p/-_eFaLJ31co)
 - `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.Map) - [play](https://go.dev/play/p/-ndpN_b_OSc)
-- `.MapValue()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapValue) - [play](https://go.dev/play/p/QCMoUlOLCbT)
+- `.MapValue()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapValue) - [play](https://go.dev/play/p/qyyjUP4XbK2)
 - `.MapErr()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.MapErr) - [play](https://go.dev/play/p/WraZixg9GGf)
 - `.FlatMap()` [doc](https://pkg.go.dev/github.com/samber/mo#Result.FlatMap) - [play](https://go.dev/play/p/Ud5QjZOqg-7)
 
