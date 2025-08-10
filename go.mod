@@ -1,4 +1,4 @@
-module github.com/yonesko/mo
+module github.com/samber/mo
 
 go 1.18
 
