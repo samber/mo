@@ -64,11 +64,25 @@ func TestOptionIsPresent(t *testing.T) {
 	is.False(None[int]().IsPresent())
 }
 
+func TestOptionIsSome(t *testing.T) {
+	is := assert.New(t)
+
+	is.True(Some(42).IsPresent())
+	is.False(None[int]().IsPresent())
+}
+
 func TestOptionIsAbsent(t *testing.T) {
 	is := assert.New(t)
 
 	is.False(Some(42).IsAbsent())
 	is.True(None[int]().IsAbsent())
+}
+
+func TestOptionIsNone(t *testing.T) {
+	is := assert.New(t)
+
+	is.False(Some(42).IsNone())
+	is.True(None[int]().IsNone())
 }
 
 func TestOptionSize(t *testing.T) {
