@@ -138,7 +138,9 @@ Constructors:
 Methods:
 
 - `.IsPresent()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsPresent) - [play](https://go.dev/play/p/nDqIaiihyCA)
+- `.IsSome()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsSome) - [play](https://go.dev/play/p/DyvGRy7fP9m)
 - `.IsAbsent()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsAbsent) - [play](https://go.dev/play/p/23e2zqyVOQm)
+- `.IsNone()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.IsNone) - [play](https://go.dev/play/p/EdqxKhborIP)
 - `.Size()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Size) - [play](https://go.dev/play/p/7ixCNG1E9l7)
 - `.Get()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Get) - [play](https://go.dev/play/p/0-JBa1usZRT)
 - `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MustGet) - [play](https://go.dev/play/p/RVBckjdi5WR)

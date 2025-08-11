@@ -78,10 +78,22 @@ func (o Option[T]) IsPresent() bool {
 	return o.isPresent
 }
 
+// IsSome is an alias to IsPresent.
+// Play: https://go.dev/play/p/DyvGRy7fP9m
+func (o Option[T]) IsSome() bool {
+	return o.IsPresent()
+}
+
 // IsAbsent returns false when value is present.
 // Play: https://go.dev/play/p/23e2zqyVOQm
 func (o Option[T]) IsAbsent() bool {
 	return !o.isPresent
+}
+
+// IsNone is an alias to IsAbsent.
+// Play: https://go.dev/play/p/EdqxKhborIP
+func (o Option[T]) IsNone() bool {
+	return o.IsAbsent()
 }
 
 // Size returns 1 when value is present or 0 instead.
