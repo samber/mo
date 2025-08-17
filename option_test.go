@@ -67,8 +67,8 @@ func TestOptionIsPresent(t *testing.T) {
 func TestOptionIsSome(t *testing.T) {
 	is := assert.New(t)
 
-	is.True(Some(42).IsPresent())
-	is.False(None[int]().IsPresent())
+	is.True(Some(42).IsSome())
+	is.False(None[int]().IsSome())
 }
 
 func TestOptionIsAbsent(t *testing.T) {
