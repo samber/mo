@@ -609,3 +609,107 @@ func TestOptionFoldFailure(t *testing.T) {
 
 	is.Equal(expected, folded)
 }
+
+func TestOption_Equal(t *testing.T) {
+	is := assert.New(t)
+
+	// Test None == None
+	none1 := None[int]()
+	none2 := None[int]()
+	is.True(none1.Equal(none2))
+
+	// Test Some == Some with same value
+	some1 := Some(42)
+	some2 := Some(42)
+	is.True(some1.Equal(some2))
+
+	// Test Some != Some with different values
+	some3 := Some(24)
+	is.False(some1.Equal(some3))
+
+	// Test None != Some
+	is.False(none1.Equal(some1))
+	is.False(some1.Equal(none1))
+
+	// Test with strings
+	someStr1 := Some("hello")
+	someStr2 := Some("hello")
+	someStr3 := Some("world")
+	noneStr := None[string]()
+
+	is.True(someStr1.Equal(someStr2))
+	is.False(someStr1.Equal(someStr3))
+	is.False(someStr1.Equal(noneStr))
+	is.False(noneStr.Equal(someStr1))
+
+	// Test with slices
+	slice1 := Some([]int{1, 2, 3})
+	slice2 := Some([]int{1, 2, 3})
+	slice3 := Some([]int{1, 2, 4})
+	noneSlice := None[[]int]()
+
+	is.True(slice1.Equal(slice2))
+	is.False(slice1.Equal(slice3))
+	is.False(slice1.Equal(noneSlice))
+
+	// Test with structs
+	type person struct {
+		Name string
+		Age  int
+	}
+
+	person1 := Some(person{Name: "X", Age: 30})
+	person2 := Some(person{Name: "X", Age: 30})
+	person3 := Some(person{Name: "Y", Age: 25})
+	nonePerson := None[person]()
+
+	is.True(person1.Equal(person2))
+	is.False(person1.Equal(person3))
+	is.False(person1.Equal(nonePerson))
+
+	// Test with pointers
+	val1 := 42
+	val2 := 42
+	ptr1 := Some(&val1)
+	ptr2 := Some(&val2)
+	ptr3 := Some(&val1)
+	nonePtr := None[*int]()
+
+	is.True(ptr1.Equal(ptr2)) // same value
+	is.True(ptr1.Equal(ptr3)) // same pointer
+	is.False(ptr1.Equal(nonePtr))
+
+	// Test with nil pointers
+	nilPtr1 := Some[*int](nil)
+	nilPtr2 := Some[*int](nil)
+	is.True(nilPtr1.Equal(nilPtr2))
+
+	// Test with maps
+	map1 := Some(map[string]int{"a": 1, "b": 2})
+	map2 := Some(map[string]int{"a": 1, "b": 2})
+	map3 := Some(map[string]int{"a": 1, "b": 3})
+	noneMap := None[map[string]int]()
+
+	is.True(map1.Equal(map2))
+	is.False(map1.Equal(map3))
+	is.False(map1.Equal(noneMap))
+
+	// Test with boolean
+	trueOpt1 := Some(true)
+	trueOpt2 := Some(true)
+	falseOpt := Some(false)
+	is.True(trueOpt1.Equal(trueOpt2))
+	is.False(trueOpt1.Equal(falseOpt))
+
+	// Test with channels
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+	chOpt1 := Some(ch1)
+	chOpt2 := Some(ch1) // same channel
+	chOpt3 := Some(ch2) // different channel
+	is.True(chOpt1.Equal(chOpt2))
+	is.False(chOpt1.Equal(chOpt3))
+
+	close(ch1)
+	close(ch2)
+}

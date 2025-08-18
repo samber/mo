@@ -361,3 +361,32 @@ func ExampleOption_UnmarshalJSON_none() {
 	// false
 	// <nil>
 }
+
+func ExampleOption_Equal() {
+	none1 := None[int]()
+	none2 := None[int]()
+	some42a := Some(42)
+	some42b := Some(42)
+	some24 := Some(24)
+
+	fmt.Println(none1.Equal(none2))     // None == None
+	fmt.Println(some42a.Equal(some42b)) // Some(42) == Some(42)
+	fmt.Println(some42a.Equal(some24))  // Some(42) == Some(24)
+	fmt.Println(none1.Equal(some42a))   // None == Some(42)
+
+	// String comparison
+	hello1 := Some("hello")
+	hello2 := Some("hello")
+	world := Some("world")
+
+	fmt.Println(hello1.Equal(hello2)) // Some("hello") == Some("hello")
+	fmt.Println(hello1.Equal(world))  // Some("hello") == Some("world")
+
+	// Output:
+	// true
+	// true
+	// false
+	// false
+	// true
+	// false
+}

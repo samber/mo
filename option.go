@@ -355,6 +355,19 @@ func (o Option[T]) Value() (driver.Value, error) {
 	return driver.DefaultParameterConverter.ConvertValue(o.value)
 }
 
+// Equal compares two Option[T] instances for equality
+func (o Option[T]) Equal(other Option[T]) bool {
+	if !o.isPresent && !other.isPresent {
+		return true
+	}
+
+	if o.isPresent != other.isPresent {
+		return false
+	}
+
+	return reflect.DeepEqual(o.value, other.value)
+}
+
 // leftValue returns an error if the Option is None, otherwise nil
 //
 //nolint:unused
