@@ -1,6 +1,7 @@
 package either
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/samber/mo"
@@ -10,17 +11,17 @@ import (
 func TestMapLeft(t *testing.T) {
 	is := assert.New(t)
 
-	// Left should map to Right using the provided function
-	out1 := MapLeft[int, string](func(i int) string { return "n=" + string(rune('0'+i)) })(mo.Left[int, string](3))
-	r1, ok1 := out1.Right()
+	// Left should map to Left using the provided function
+	out1 := MapLeft[int, string](func(i int) string { return fmt.Sprintf("n=%d", i) })(mo.Left[int, string](3))
+	l1, ok1 := out1.Left()
 	is.True(ok1)
-	is.Equal("n=3", r1)
+	is.Equal("n=3", l1)
 
-	// Right should become Left carrying the right value
+	// Right should stay Right carrying the right value
 	out2 := MapLeft[int, string](func(i int) string { return "ignored" })(mo.Right[int, string]("x"))
-	l2, ok2 := out2.Left()
+	r2, ok2 := out2.Right()
 	is.True(ok2)
-	is.Equal("x", l2)
+	is.Equal("x", r2)
 }
 
 func TestMapRight(t *testing.T) {

@@ -10,35 +10,35 @@ import (
 )
 
 // MapLeft returns a new `mo.Either` wrapping the result of applying `f` to the left value of the either.
-func MapLeft[I any, O any](f func(I) O) func(either mo.Either[I, O]) mo.Either[O, O] {
-	return func(either mo.Either[I, O]) mo.Either[O, O] {
+func MapLeft[Lin any, R any, Lout any](f func(Lin) Lout) func(either mo.Either[Lin, R]) mo.Either[Lout, R] {
+	return func(either mo.Either[Lin, R]) mo.Either[Lout, R] {
 		if either.IsLeft() {
-			return mo.Right[O](f(either.MustLeft()))
+			return mo.Left[Lout, R](f(either.MustLeft()))
 		}
 
-		return mo.Left[O, O](either.MustRight())
+		return mo.Right[Lout, R](either.MustRight())
 	}
 }
 
 // MapRight returns a new `mo.Either` wrapping the result of applying `f` to the right value of the either.
-func MapRight[I any, O any](f func(O) O) func(either mo.Either[I, O]) mo.Either[I, O] {
-	return func(either mo.Either[I, O]) mo.Either[I, O] {
+func MapRight[L any, Rin any, Rout any](f func(Rin) Rout) func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
+	return func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
 		if either.IsRight() {
-			return mo.Right[I](f(either.MustRight()))
+			return mo.Right[L, Rout](f(either.MustRight()))
 		}
 
-		return mo.Left[I, O](either.MustLeft())
+		return mo.Left[L, Rout](either.MustLeft())
 	}
 }
 
 // Match returns the result of applying `onLeft` to the left value of the either or `onRight` to the right value of the either.
-func Match[ILeft any, IRight any, OLeft any, ORight any](onLeft func(ILeft) OLeft, onRight func(IRight) ORight) func(either mo.Either[ILeft, IRight]) mo.Either[OLeft, ORight] {
-	return func(either mo.Either[ILeft, IRight]) mo.Either[OLeft, ORight] {
+func Match[Lin any, Rin any, Lout any, Rout any](onLeft func(Lin) Lout, onRight func(Rin) Rout) func(either mo.Either[Lin, Rin]) mo.Either[Lout, Rout] {
+	return func(either mo.Either[Lin, Rin]) mo.Either[Lout, Rout] {
 		if either.IsLeft() {
-			return mo.Left[OLeft, ORight](onLeft(either.MustLeft()))
+			return mo.Left[Lout, Rout](onLeft(either.MustLeft()))
 		}
 
-		return mo.Right[OLeft](onRight(either.MustRight()))
+		return mo.Right[Lout](onRight(either.MustRight()))
 	}
 }
 
