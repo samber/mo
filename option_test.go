@@ -250,6 +250,7 @@ func TestOptionMarshalJSON(t *testing.T) {
 
 	type testStruct struct {
 		Field Option[string]
+		OptionalField Option[string] `json:"optional_field,omitzero"`
 	}
 
 	optionInStruct := testStruct{
