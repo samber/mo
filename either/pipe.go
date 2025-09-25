@@ -1,6 +1,13 @@
 package either
 
-import "github.com/samber/mo"
+import (
+	"fmt"
+	"strconv"
+	"testing"
+
+	"github.com/samber/mo"
+	"github.com/stretchr/testify/assert"
+)
 
 func Pipe1[A1 any, A2 any, B1 any, B2 any](
 	source mo.Either[A1, A2],
@@ -224,4 +231,26 @@ func Pipe10[A1 any, A2 any, B1 any, B2 any, C1 any, C2 any, D1 any, D2 any, E1 a
 			),
 		),
 	)
+}
+
+func TestPipeTypeTransformations(t *testing.T) {
+	is := assert.New(t)
+
+	out := Pipe3(
+		mo.Left[string, error]("42"),
+		FlatMapLeft(func(str string) mo.Either[int, error] {
+			v, err := strconv.Atoi(str)
+			if err != nil {
+				mo.Right[int](err)
+			}
+			return mo.Left[int, error](v)
+		}),
+		MapLeft[int, error](func(n int) float64 {
+			return float64(n)
+		}),
+		MapLeft[float64, error](func(n float64) string {
+			return fmt.Sprintf("%.2f", n)
+		}),
+	)
+	is.Equal(mo.Left[string, error]("42.00"), out)
 }

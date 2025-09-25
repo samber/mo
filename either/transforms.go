@@ -16,7 +16,7 @@ func MapLeft[Lin any, R any, Lout any](f func(Lin) Lout) func(either mo.Either[L
 			return mo.Left[Lout, R](f(either.MustLeft()))
 		}
 
-		return mo.Right[Lout, R](either.MustRight())
+		return mo.Right[Lout](either.MustRight())
 	}
 }
 
@@ -24,7 +24,29 @@ func MapLeft[Lin any, R any, Lout any](f func(Lin) Lout) func(either mo.Either[L
 func MapRight[L any, Rin any, Rout any](f func(Rin) Rout) func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
 	return func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
 		if either.IsRight() {
-			return mo.Right[L, Rout](f(either.MustRight()))
+			return mo.Right[L](f(either.MustRight()))
+		}
+
+		return mo.Left[L, Rout](either.MustLeft())
+	}
+}
+
+// FlatMapLeft returns a new `mo.Either` wrapping the result of applying `f` to the left value of the either.
+func FlatMapLeft[Lin any, R any, Lout any](f func(Lin) mo.Either[Lout, R]) func(either mo.Either[Lin, R]) mo.Either[Lout, R] {
+	return func(either mo.Either[Lin, R]) mo.Either[Lout, R] {
+		if either.IsLeft() {
+			return f(either.MustLeft())
+		}
+
+		return mo.Right[Lout](either.MustRight())
+	}
+}
+
+// FlatMapRight returns a new `mo.Either` wrapping the result of applying `f` to the right value of the either.
+func FlatMapRight[L any, Rin any, Rout any](f func(Rin) mo.Either[L, Rout]) func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
+	return func(either mo.Either[L, Rin]) mo.Either[L, Rout] {
+		if either.IsRight() {
+			return f(either.MustRight())
 		}
 
 		return mo.Left[L, Rout](either.MustLeft())

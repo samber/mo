@@ -1,6 +1,8 @@
 package option
 
 import (
+	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/samber/mo"
@@ -128,4 +130,23 @@ func TestPipe10(t *testing.T) {
 	r, ok := Pipe10(some, id, id, id, id, id, id, id, id, id, id).Get()
 	is.True(ok)
 	is.Equal("v", r)
+}
+
+func TestPipeTypeTransformations(t *testing.T) {
+	is := assert.New(t)
+
+	out := Pipe3(
+		mo.Some("42"),
+		FlatMap(func(str string) mo.Option[int] {
+			v, err := strconv.Atoi(str)
+			return mo.TupleToOption(v, err == nil)
+		}),
+		Map(func(n int) float64 {
+			return float64(n)
+		}),
+		Map(func(n float64) string {
+			return fmt.Sprintf("%.2f", n)
+		}),
+	)
+	is.Equal(mo.Some("42.00"), out)
 }
