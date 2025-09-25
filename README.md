@@ -5,7 +5,7 @@
 [![GoDoc](https://godoc.org/github.com/samber/mo?status.svg)](https://pkg.go.dev/github.com/samber/mo)
 ![Build Status](https://github.com/samber/mo/actions/workflows/test.yml/badge.svg)
 [![Go report](https://goreportcard.com/badge/github.com/samber/mo)](https://goreportcard.com/report/github.com/samber/mo)
-[![Coverage](https://img.shields.io/codecov/c/github/samber/do)](https://codecov.io/gh/samber/mo)
+[![Coverage](https://img.shields.io/codecov/c/github/samber/mo)](https://codecov.io/gh/samber/mo)
 [![License](https://img.shields.io/github/license/samber/mo)](./LICENSE)
 
 🦄 **`samber/mo` brings monads and popular FP abstractions to Go projects. `samber/mo` uses the recent Go 1.18+ Generics.**
@@ -62,6 +62,23 @@ You can import `mo` using:
 import (
     "github.com/samber/mo"
 )
+```
+
+Quick example using the `option` sub-package `Pipe3` to compose transformations:
+
+```go
+import (
+    "github.com/samber/mo"
+    "github.com/samber/mo/option"
+)
+
+out := option.Pipe3(
+    mo.Some(21),
+    option.Map(func(v int) int { return v * 2 }),
+    option.FlatMap(func(v int) mo.Option[int] { return mo.None[int]() }),
+    option.Map(func(v int) int { return v + 21 }),
+)
+// out == None[int]
 ```
 
 Then use one of the helpers below:
@@ -168,6 +185,14 @@ Other:
 
 - `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
 
+Sub-package `option` (transformations and pipes):
+
+- `option.Map()()` [doc](https://pkg.go.dev/github.com/samber/mo/option#Map)
+- `option.FlatMap()()` [doc](https://pkg.go.dev/github.com/samber/mo/option#FlatMap)
+- `option.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/option#Match)
+- `option.FlatMatch()()` [doc](https://pkg.go.dev/github.com/samber/mo/option#FlatMatch)
+- `option.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/option#Pipe1)
+
 ### Result[T any]
 
 `Result` respresent a result of an action having one of the following output: success or failure. An instance of `Result` is an instance of either `Ok` or `Err`. It could be compared to `Either[error, T]`.
@@ -205,6 +230,14 @@ Other:
 - `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
 - `mo.Do[T any](fn func() T) (result mo.Result[T])` [doc](https://pkg.go.dev/github.com/samber/mo#Do)
 
+Sub-package `result` (transformations and pipes):
+
+- `result.Map()()` [doc](https://pkg.go.dev/github.com/samber/mo/result#Map)
+- `result.FlatMap()()` [doc](https://pkg.go.dev/github.com/samber/mo/result#FlatMap)
+- `result.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/result#Match)
+- `result.FlatMatch()()` [doc](https://pkg.go.dev/github.com/samber/mo/result#FlatMatch)
+- `result.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/result#Pipe1)
+
 ### Either[L any, R any]
 
 `Either` represents a value of 2 possible types. An instance of `Either` is an instance of either `A` or `B`.
@@ -240,6 +273,14 @@ Other:
 
 - `mo.Fold[T, U, R any](f Foldable[T, U], successFunc func(U) R, failureFunc func(T) R) R` [doc](https://pkg.go.dev/github.com/samber/mo#Fold)
 
+Sub-package `either` (transformations and pipes):
+
+- `either.MapLeft()()` [doc](https://pkg.go.dev/github.com/samber/mo/either#MapLeft)
+- `either.MapRight()()` [doc](https://pkg.go.dev/github.com/samber/mo/either#MapRight)
+- `either.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/either#Match)
+- `either.Swap()()` [doc](https://pkg.go.dev/github.com/samber/mo/either#Swap)
+- `either.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/either#Pipe1)
+
 ### EitherX[T1, ..., TX] (With X between 3 and 5)
 
 `EitherX` respresents a value of X possible types. For example, an `Either3` value is either `T1`, `T2` or `T3`.
@@ -265,6 +306,29 @@ Methods:
 - `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.ForEach)
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.Match)
 - `.MapArgX()` [doc](https://pkg.go.dev/github.com/samber/mo#Either5.MapArg1)
+
+Sub-packages `either3`, `either4`, `either5` (transformations and pipes):
+
+- either3 docs: https://pkg.go.dev/github.com/samber/mo/either3
+  - `either3.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/either3#Match)
+  - `either3.MapArg1()()` [doc](https://pkg.go.dev/github.com/samber/mo/either3#MapArg1)
+  - `either3.MapArg2()()` [doc](https://pkg.go.dev/github.com/samber/mo/either3#MapArg2)
+  - `either3.MapArg3()()` [doc](https://pkg.go.dev/github.com/samber/mo/either3#MapArg3)
+  - `either3.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/either3#Pipe1)
+
+- either4 docs: https://pkg.go.dev/github.com/samber/mo/either4
+  - `either4.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/either4#Match)
+  - `either4.MapArg1()()` [doc](https://pkg.go.dev/github.com/samber/mo/either4#MapArg1)
+  - `either4.MapArg2()()` [doc](https://pkg.go.dev/github.com/samber/mo/either4#MapArg2)
+  - `either4.MapArg3()()` [doc](https://pkg.go.dev/github.com/samber/mo/either4#MapArg3)
+  - `either4.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/either4#Pipe1)
+
+- either5 docs: https://pkg.go.dev/github.com/samber/mo/either5
+  - `either5.Match()()` [doc](https://pkg.go.dev/github.com/samber/mo/either5#Match)
+  - `either5.MapArg1()()` [doc](https://pkg.go.dev/github.com/samber/mo/either5#MapArg1)
+  - `either5.MapArg2()()` [doc](https://pkg.go.dev/github.com/samber/mo/either5#MapArg2)
+  - `either5.MapArg3()()` [doc](https://pkg.go.dev/github.com/samber/mo/either5#MapArg3)
+  - `either5.Pipe1..Pipe10()` [docs](https://pkg.go.dev/github.com/samber/mo/either5#Pipe1)
 
 ### Future[T any]
 
