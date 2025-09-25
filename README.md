@@ -394,14 +394,6 @@ This library does not use `reflect` package. We don't expect overhead.
 
 Don't hesitate ;)
 
-### With Docker
-
-```bash
-docker-compose run --rm dev
-```
-
-### Without Docker
-
 ```bash
 # Install some dev dependencies
 make tools
