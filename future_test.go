@@ -2,6 +2,7 @@ package mo
 
 import (
 	"fmt"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -9,12 +10,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func assertAndIncrement(is *assert.Assertions, expected int, i *int32) {
-	got := atomic.LoadInt32(i)
+type atomicInt32 struct {
+	v  int32
+	mu sync.Mutex
+}
 
-	is.Equal(int32(expected), got)
+func (a *atomicInt32) Add(n int32) int32 {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return atomic.AddInt32(&a.v, n)
+}
 
-	atomic.AddInt32(i, 1)
+func assertAndIncrement(t *testing.T, is *assert.Assertions, expected int, i *atomicInt32) {
+	got := i.Add(1)
+	is.Equal(int32(expected), got-1)
 }
 
 func TestFuture(t *testing.T) {
@@ -159,131 +168,135 @@ func TestFutureFinallyReject(t *testing.T) {
 func TestFutureOrder(t *testing.T) {
 	is := assert.New(t)
 
-	var i int32 = 0
+	var i atomicInt32
 
-	_ = NewFuture[int](func(resolve func(int), reject func(error)) {
-		assertAndIncrement(is, 1, &i)
+	fut := NewFuture[int](func(resolve func(int), reject func(error)) {
+		assertAndIncrement(t, is, 1, &i)
 
 		resolve(42)
 	}).Then(func(value int) (int, error) {
-		assertAndIncrement(is, 2, &i)
+		assertAndIncrement(t, is, 2, &i)
 
 		return 21, assert.AnError
 	}).Catch(func(err error) (int, error) {
-		assertAndIncrement(is, 3, &i)
+		assertAndIncrement(t, is, 3, &i)
 
 		return 1, nil
 	}).Finally(func(value int, err error) (int, error) {
-		assertAndIncrement(is, 4, &i)
+		assertAndIncrement(t, is, 4, &i)
 
 		return 21, nil
 	})
 
-	assertAndIncrement(is, 0, &i)
+	assertAndIncrement(t, is, 0, &i)
+
+	_, _ = fut.Collect()
+
+	assertAndIncrement(t, is, 5, &i)
 }
 
 func TestFutureOrderCollect(t *testing.T) {
 	is := assert.New(t)
 
-	var i int32 = 0
+	var i atomicInt32
 
 	_, _ = NewFuture[int](func(resolve func(int), reject func(error)) {
-		assertAndIncrement(is, 0, &i)
+		assertAndIncrement(t, is, 0, &i)
 
 		resolve(42)
 	}).Then(func(value int) (int, error) {
-		assertAndIncrement(is, 1, &i)
+		assertAndIncrement(t, is, 1, &i)
 
 		return 21, assert.AnError
 	}).Catch(func(err error) (int, error) {
-		assertAndIncrement(is, 2, &i)
+		assertAndIncrement(t, is, 2, &i)
 
 		return 1, nil
 	}).Finally(func(value int, err error) (int, error) {
-		assertAndIncrement(is, 3, &i)
+		assertAndIncrement(t, is, 3, &i)
 
 		return 1, nil
 	}).Collect()
 
-	assertAndIncrement(is, 4, &i)
+	assertAndIncrement(t, is, 4, &i)
 }
 
 func TestFutureCancel(t *testing.T) {
 	is := assert.New(t)
 
-	var i int32 = 0
+	var i atomicInt32
 
 	future := NewFuture[int](func(resolve func(int), reject func(error)) {
-		assertAndIncrement(is, 0, &i)
+		assertAndIncrement(t, is, 0, &i)
 
 		time.Sleep(5 * time.Millisecond)
 
 		resolve(42)
 	}).Then(func(value int) (int, error) {
-		assertAndIncrement(is, 3, &i)
+		assertAndIncrement(t, is, 3, &i)
 		is.Fail("should not enter here")
 
 		return 21, assert.AnError
 	})
 
 	time.Sleep(1 * time.Millisecond)
-	assertAndIncrement(is, 1, &i)
+	assertAndIncrement(t, is, 1, &i)
 	future.Cancel()
 
 	time.Sleep(10 * time.Millisecond)
-	assertAndIncrement(is, 2, &i)
+	assertAndIncrement(t, is, 2, &i)
 }
 
 func TestFutureCancelDelayed(t *testing.T) {
 	is := assert.New(t)
 
-	var i int32 = 0
+	var i atomicInt32
 
 	future := NewFuture[int](func(resolve func(int), reject func(error)) {
 		time.Sleep(1 * time.Millisecond)
-		assertAndIncrement(is, 1, &i)
+		assertAndIncrement(t, is, 1, &i)
 
 		resolve(42)
 	}).Then(func(value int) (int, error) {
-		assertAndIncrement(is, 2, &i)
+		assertAndIncrement(t, is, 2, &i)
 
 		return 21, assert.AnError
 	})
 
-	assertAndIncrement(is, 0, &i)
+	assertAndIncrement(t, is, 0, &i)
 
 	time.Sleep(10 * time.Millisecond)
 
 	future.Cancel()
 
-	assertAndIncrement(is, 3, &i)
+	assertAndIncrement(t, is, 3, &i)
 }
 
 func TestFutureCancelTerminated(t *testing.T) {
 	is := assert.New(t)
 
-	var i int32 = 0
+	var i atomicInt32
 
 	future := NewFuture[int](func(resolve func(int), reject func(error)) {
 		time.Sleep(1 * time.Millisecond)
-		assertAndIncrement(is, 1, &i)
+		assertAndIncrement(t, is, 1, &i)
 
 		resolve(42)
 	}).Then(func(value int) (int, error) {
-		assertAndIncrement(is, 2, &i)
+		assertAndIncrement(t, is, 2, &i)
 
 		return 21, assert.AnError
 	})
 
-	assertAndIncrement(is, 0, &i)
+	assertAndIncrement(t, is, 0, &i)
 
 	_, _ = future.Collect()
 
-	assertAndIncrement(is, 3, &i)
+	assertAndIncrement(t, is, 3, &i)
 
 	future.Cancel()
 
-	assertAndIncrement(is, 4, &i)
+	assertAndIncrement(t, is, 4, &i)
 }
 
 func TestFutureResultResult(t *testing.T) {

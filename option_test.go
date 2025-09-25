@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -249,7 +251,7 @@ func TestOptionMarshalJSON(t *testing.T) {
 	is.Equal(`""`, string(value))
 
 	type testStruct struct {
-		Field Option[string]
+		Field         Option[string]
 		OptionalField Option[string] `json:"optional_field,omitzero"`
 	}
 
@@ -259,7 +261,27 @@ func TestOptionMarshalJSON(t *testing.T) {
 	var marshalled []byte
 	marshalled, err = json.Marshal(optionInStruct)
 	is.NoError(err)
-	is.Equal(`{"Field":"foo"}`, string(marshalled))
+
+	major, minor, _ := decomposeGoVersion()
+	if major >= 1 && minor >= 24 {
+		is.Equal(`{"Field":"foo"}`, string(marshalled))
+	} else {
+		is.Equal(`{"Field":"foo","optional_field":null}`, string(marshalled))
+	}
+}
+
+func decomposeGoVersion() (int, int, int) {
+	version := runtime.Version() // e.g., "go1.21.0"
+
+	version = strings.TrimPrefix(version, "go")
+
+	// Split major, minor version, and patch
+	parts := strings.Split(version, ".")
+	major, _ := strconv.Atoi(parts[0])
+	minor, _ := strconv.Atoi(parts[1])
+	patch, _ := strconv.Atoi(parts[2])
+
+	return major, minor, patch
 }
 
 func TestOptionUnmarshalJSON(t *testing.T) {
