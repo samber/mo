@@ -25,7 +25,11 @@
 
 <h3 align="center">💖 Support This Project</h3>
 
-<p align="center">Help sustain development: Become an <a href="http://github.com/sponsors/samber">individual sponsor</a> or join as a <a href="mailto:hey@samuel-berthe.fr">corporate sponsor</a>.</p>
+<p align="center">
+	I’m going all-in on open-source for the coming months.
+	<br>
+	Help sustain development: Become an <a href="http://github.com/sponsors/samber">individual sponsor</a> or join as a <a href="mailto:hey@samuel-berthe.fr">corporate sponsor</a>.
+</p>
 
 ----
 
