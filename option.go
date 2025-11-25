@@ -199,7 +199,7 @@ func (o Option[T]) MapValue(mapper func(value T) T) Option[T] {
 }
 
 // ToPointer returns value if present or a nil pointer.
-// Play: https://go.dev/play/p/N43w92SM-Bs
+// Play: https://go.dev/play/p/KJc2Pv3KNPW
 func (o Option[T]) ToPointer() *T {
 	if !o.isPresent {
 		return nil

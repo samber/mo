@@ -176,7 +176,7 @@ Methods:
 - `.MustGet()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.MustGet) - [play](https://go.dev/play/p/RVBckjdi5WR)
 - `.OrElse()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.OrElse) - [play](https://go.dev/play/p/TrGByFWCzXS)
 - `.OrEmpty()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.OrEmpty) - [play](https://go.dev/play/p/SpSUJcE-tQm)
-- `.ToPointer()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.ToPointer) - [play](https://go.dev/play/p/N43w92SM-Bs)
+- `.ToPointer()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.ToPointer) - [play](https://go.dev/play/p/KJc2Pv3KNPW)
 - `.ForEach()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.ForEach)
 - `.Match()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Match) - [play](https://go.dev/play/p/1V6st3LDJsM)
 - `.Map()` [doc](https://pkg.go.dev/github.com/samber/mo#Option.Map) - [play](https://go.dev/play/p/mvfP3pcP_eJ)
