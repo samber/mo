@@ -15,7 +15,7 @@ jobs:
           go-version-file: 'go.mod'
           stable: false
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           args: --timeout 120s --max-same-issues 50
 
