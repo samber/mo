@@ -65,6 +65,9 @@ We currently support the following data types:
 
 ```sh
 go get github.com/samber/mo@v1
+
+# AI Agent Skill
+npx skills add https://github.com/samber/cc-skills-golang --skill golang-samber-mo
 ```
 
 This library is v1 and follows SemVer strictly.
