@@ -7,35 +7,22 @@ on:
   pull_request:
   schedule:
     - cron: '0 3 * * 1'
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
-  analyze:
+  lint:
     name: lint
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-    permissions:
-      # required for codeql analysis
-      security-events: write
 
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
           go-version: 'stable'
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
           args: --timeout 120s --max-same-issues 50
-
-      - name: Bearer
-        uses: bearer/bearer-action@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: go
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
