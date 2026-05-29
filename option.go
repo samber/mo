@@ -142,7 +142,7 @@ func (o Option[T]) OrEmpty() T {
 	return o.value
 }
 
-// ForEach executes the given side-effecting function of value is present.
+// ForEach executes the given side-effecting function if value is present.
 func (o Option[T]) ForEach(onValue func(value T)) {
 	if o.isPresent {
 		onValue(o.value)
@@ -324,7 +324,7 @@ func (o *Option[T]) Scan(src any) error {
 		return nil
 	}
 
-	// is is only possible to assert interfaces, so convert first
+	// it is only possible to assert interfaces, so convert first
 	// https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#why-not-permit-type-assertions-on-values-whose-type-is-a-type-parameter
 	var t T
 	if tScanner, ok := interface{}(&t).(sql.Scanner); ok {
