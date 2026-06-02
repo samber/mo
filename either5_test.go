@@ -645,3 +645,65 @@ func TestEither5MapArg(t *testing.T) {
 	})
 	is.Equal(NewEither5Arg5[int, bool, float64, string, byte](10), result5_5)
 }
+
+func TestEither5GobEncode(t *testing.T) {
+	is := assert.New(t)
+
+	arg1 := NewEither5Arg1[int, bool, float64, string, byte](42)
+	arg2 := NewEither5Arg2[int, bool, float64, string, byte](true)
+	arg3 := NewEither5Arg3[int, bool, float64, string, byte](1.5)
+	arg4 := NewEither5Arg4[int, bool, float64, string, byte]("hello")
+	arg5 := NewEither5Arg5[int, bool, float64, string, byte](byte(5))
+
+	bin1, err1 := arg1.GobEncode()
+	bin2, err2 := arg2.GobEncode()
+	bin3, err3 := arg3.GobEncode()
+	bin4, err4 := arg4.GobEncode()
+	bin5, err5 := arg5.GobEncode()
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Nil(err4)
+	is.Nil(err5)
+	is.Equal(byte(either5ArgId1), bin1[0])
+	is.Equal(byte(either5ArgId2), bin2[0])
+	is.Equal(byte(either5ArgId3), bin3[0])
+	is.Equal(byte(either5ArgId4), bin4[0])
+	is.Equal(byte(either5ArgId5), bin5[0])
+}
+
+func TestEither5GobDecode(t *testing.T) {
+	is := assert.New(t)
+
+	original1 := NewEither5Arg1[int, bool, float64, string, byte](42)
+	original2 := NewEither5Arg2[int, bool, float64, string, byte](true)
+	original3 := NewEither5Arg3[int, bool, float64, string, byte](1.5)
+	original4 := NewEither5Arg4[int, bool, float64, string, byte]("hello")
+	original5 := NewEither5Arg5[int, bool, float64, string, byte](byte(5))
+
+	bin1, _ := original1.GobEncode()
+	bin2, _ := original2.GobEncode()
+	bin3, _ := original3.GobEncode()
+	bin4, _ := original4.GobEncode()
+	bin5, _ := original5.GobEncode()
+
+	var decoded1, decoded2, decoded3, decoded4, decoded5 Either5[int, bool, float64, string, byte]
+
+	err1 := decoded1.GobDecode(bin1)
+	err2 := decoded2.GobDecode(bin2)
+	err3 := decoded3.GobDecode(bin3)
+	err4 := decoded4.GobDecode(bin4)
+	err5 := decoded5.GobDecode(bin5)
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Nil(err4)
+	is.Nil(err5)
+	is.Equal(original1, decoded1)
+	is.Equal(original2, decoded2)
+	is.Equal(original3, decoded3)
+	is.Equal(original4, decoded4)
+	is.Equal(original5, decoded5)
+}

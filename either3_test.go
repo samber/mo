@@ -295,3 +295,47 @@ func TestEither3MapArg(t *testing.T) {
 	})
 	is.Equal(NewEither3Arg3[int, bool, float64](2.1), result3_3)
 }
+
+func TestEither3GobEncode(t *testing.T) {
+	is := assert.New(t)
+
+	arg1 := NewEither3Arg1[int, bool, float64](42)
+	arg2 := NewEither3Arg2[int, bool, float64](true)
+	arg3 := NewEither3Arg3[int, bool, float64](1.5)
+
+	bin1, err1 := arg1.GobEncode()
+	bin2, err2 := arg2.GobEncode()
+	bin3, err3 := arg3.GobEncode()
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Equal(byte(either3ArgId1), bin1[0])
+	is.Equal(byte(either3ArgId2), bin2[0])
+	is.Equal(byte(either3ArgId3), bin3[0])
+}
+
+func TestEither3GobDecode(t *testing.T) {
+	is := assert.New(t)
+
+	original1 := NewEither3Arg1[int, bool, float64](42)
+	original2 := NewEither3Arg2[int, bool, float64](true)
+	original3 := NewEither3Arg3[int, bool, float64](1.5)
+
+	bin1, _ := original1.GobEncode()
+	bin2, _ := original2.GobEncode()
+	bin3, _ := original3.GobEncode()
+
+	var decoded1, decoded2, decoded3 Either3[int, bool, float64]
+
+	err1 := decoded1.GobDecode(bin1)
+	err2 := decoded2.GobDecode(bin2)
+	err3 := decoded3.GobDecode(bin3)
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Equal(original1, decoded1)
+	is.Equal(original2, decoded2)
+	is.Equal(original3, decoded3)
+}

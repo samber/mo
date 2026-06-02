@@ -451,3 +451,56 @@ func TestEither4MapArg(t *testing.T) {
 	})
 	is.Equal(NewEither4Arg4[int, bool, float64, string]("Bye"), result4_4)
 }
+
+func TestEither4GobEncode(t *testing.T) {
+	is := assert.New(t)
+
+	arg1 := NewEither4Arg1[int, bool, float64, string](42)
+	arg2 := NewEither4Arg2[int, bool, float64, string](true)
+	arg3 := NewEither4Arg3[int, bool, float64, string](1.5)
+	arg4 := NewEither4Arg4[int, bool, float64, string]("hello")
+
+	bin1, err1 := arg1.GobEncode()
+	bin2, err2 := arg2.GobEncode()
+	bin3, err3 := arg3.GobEncode()
+	bin4, err4 := arg4.GobEncode()
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Nil(err4)
+	is.Equal(byte(either4ArgId1), bin1[0])
+	is.Equal(byte(either4ArgId2), bin2[0])
+	is.Equal(byte(either4ArgId3), bin3[0])
+	is.Equal(byte(either4ArgId4), bin4[0])
+}
+
+func TestEither4GobDecode(t *testing.T) {
+	is := assert.New(t)
+
+	original1 := NewEither4Arg1[int, bool, float64, string](42)
+	original2 := NewEither4Arg2[int, bool, float64, string](true)
+	original3 := NewEither4Arg3[int, bool, float64, string](1.5)
+	original4 := NewEither4Arg4[int, bool, float64, string]("hello")
+
+	bin1, _ := original1.GobEncode()
+	bin2, _ := original2.GobEncode()
+	bin3, _ := original3.GobEncode()
+	bin4, _ := original4.GobEncode()
+
+	var decoded1, decoded2, decoded3, decoded4 Either4[int, bool, float64, string]
+
+	err1 := decoded1.GobDecode(bin1)
+	err2 := decoded2.GobDecode(bin2)
+	err3 := decoded3.GobDecode(bin3)
+	err4 := decoded4.GobDecode(bin4)
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Nil(err3)
+	is.Nil(err4)
+	is.Equal(original1, decoded1)
+	is.Equal(original2, decoded2)
+	is.Equal(original3, decoded3)
+	is.Equal(original4, decoded4)
+}
