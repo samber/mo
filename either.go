@@ -1,6 +1,11 @@
 package mo
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/gob"
+	"errors"
+	"fmt"
+)
 
 var errEitherShouldBeLeftOrRight = fmt.Errorf("either should be Left or Right")
 var errEitherMissingLeftValue = fmt.Errorf("no such Left value")
@@ -186,4 +191,58 @@ func (e Either[L, R]) rightValue() R {
 //nolint:unused
 func (e Either[L, R]) hasLeftValue() bool {
 	return e.isLeft
+}
+
+// MarshalBinary encodes Either into binary form.
+func (e Either[L, R]) MarshalBinary() ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+
+	if e.isLeft {
+		if err := enc.Encode(e.left); err != nil {
+			return []byte{}, err
+		}
+		return append([]byte{1}, buf.Bytes()...), nil
+	}
+
+	if err := enc.Encode(e.right); err != nil {
+		return []byte{}, err
+	}
+	return append([]byte{0}, buf.Bytes()...), nil
+}
+
+// UnmarshalBinary decodes Either from binary form.
+func (e *Either[L, R]) UnmarshalBinary(data []byte) error {
+	if len(data) == 0 {
+		return errors.New("Either[L, R].UnmarshalBinary: no data")
+	}
+
+	buf := bytes.NewBuffer(data[1:])
+	dec := gob.NewDecoder(buf)
+
+	if data[0] == 1 {
+		if err := dec.Decode(&e.left); err != nil {
+			return err
+		}
+		e.isLeft = true
+		e.right = empty[R]()
+		return nil
+	}
+
+	if err := dec.Decode(&e.right); err != nil {
+		return err
+	}
+	e.isLeft = false
+	e.left = empty[L]()
+	return nil
+}
+
+// GobEncode implements the gob.GobEncoder interface.
+func (e Either[L, R]) GobEncode() ([]byte, error) {
+	return e.MarshalBinary()
+}
+
+// GobDecode implements the gob.GobDecoder interface.
+func (e *Either[L, R]) GobDecode(data []byte) error {
+	return e.UnmarshalBinary(data)
 }

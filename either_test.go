@@ -251,3 +251,38 @@ func TestEitherFoldFailure(t *testing.T) {
 
 	is.Equal(expected, folded)
 }
+
+func TestEitherGobEncode(t *testing.T) {
+	is := assert.New(t)
+
+	left := Left[int, string](42)
+	right := Right[int, string]("foobar")
+
+	bin1, err1 := left.GobEncode()
+	bin2, err2 := right.GobEncode()
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Equal(byte(1), bin1[0]) // isLeft flag
+	is.Equal(byte(0), bin2[0]) // isRight flag
+}
+
+func TestEitherGobDecode(t *testing.T) {
+	is := assert.New(t)
+
+	original1 := Left[int, string](42)
+	original2 := Right[int, string]("foobar")
+
+	bin1, _ := original1.GobEncode()
+	bin2, _ := original2.GobEncode()
+
+	var decoded1, decoded2 Either[int, string]
+
+	err1 := decoded1.GobDecode(bin1)
+	err2 := decoded2.GobDecode(bin2)
+
+	is.Nil(err1)
+	is.Nil(err2)
+	is.Equal(original1, decoded1)
+	is.Equal(original2, decoded2)
+}
