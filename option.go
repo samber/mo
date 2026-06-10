@@ -276,14 +276,17 @@ func (o Option[T]) MarshalBinary() ([]byte, error) {
 		return []byte{0}, nil
 	}
 
+	// the presence byte is written into the buffer up front, so the gob
+	// payload does not need to be copied with append afterwards
 	var buf bytes.Buffer
+	buf.WriteByte(1)
 
 	enc := gob.NewEncoder(&buf)
 	if err := enc.Encode(o.value); err != nil {
 		return []byte{}, err
 	}
 
-	return append([]byte{1}, buf.Bytes()...), nil
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary is the interface implemented by an object that can unmarshal a binary representation of itself.
