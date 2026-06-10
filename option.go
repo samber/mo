@@ -373,6 +373,21 @@ func (o Option[T]) Equal(other Option[T]) bool {
 		return false
 	}
 
+	// fast path for scalar kinds, where == matches reflect.DeepEqual exactly.
+	// Pointers, structs, arrays, maps, slices and interfaces keep DeepEqual
+	// semantics (e.g. DeepEqual follows pointers, == does not).
+	if t := reflect.TypeOf(o.value); t != nil {
+		switch t.Kind() {
+		case reflect.Bool,
+			reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr,
+			reflect.Float32, reflect.Float64,
+			reflect.Complex64, reflect.Complex128,
+			reflect.String:
+			return any(o.value) == any(other.value)
+		}
+	}
+
 	return reflect.DeepEqual(o.value, other.value)
 }
 
