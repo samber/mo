@@ -217,7 +217,8 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 		return json.Marshal(o.value)
 	}
 
-	return json.Marshal(nil)
+	// fresh slice on each call, since callers may mutate the result
+	return []byte("null"), nil
 }
 
 // UnmarshalJSON decodes Option from json.
