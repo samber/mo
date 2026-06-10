@@ -230,6 +230,7 @@ func (e Either3[T1, T2, T3]) MapArg3(mapper func(T3) Either3[T1, T2, T3]) Either
 // MarshalBinary encodes Either3 into binary form.
 func (e Either3[T1, T2, T3]) MarshalBinary() ([]byte, error) {
 	var buf bytes.Buffer
+	buf.WriteByte(byte(e.argId))
 	enc := gob.NewEncoder(&buf)
 
 	switch e.argId {
@@ -248,7 +249,7 @@ func (e Either3[T1, T2, T3]) MarshalBinary() ([]byte, error) {
 	default:
 		return []byte{}, errEither3InvalidArgumentId
 	}
-	return append([]byte{byte(e.argId)}, buf.Bytes()...), nil
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary decodes Either3 from binary form.

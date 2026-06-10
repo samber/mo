@@ -292,6 +292,7 @@ func (e Either4[T1, T2, T3, T4]) MapArg4(mapper func(T4) Either4[T1, T2, T3, T4]
 // MarshalBinary encodes Either4 into binary form.
 func (e Either4[T1, T2, T3, T4]) MarshalBinary() ([]byte, error) {
 	var buf bytes.Buffer
+	buf.WriteByte(byte(e.argId))
 	enc := gob.NewEncoder(&buf)
 
 	switch e.argId {
@@ -314,7 +315,7 @@ func (e Either4[T1, T2, T3, T4]) MarshalBinary() ([]byte, error) {
 	default:
 		return []byte{}, errEither4InvalidArgumentId
 	}
-	return append([]byte{byte(e.argId)}, buf.Bytes()...), nil
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary decodes Either4 from binary form.

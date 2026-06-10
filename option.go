@@ -217,7 +217,8 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 		return json.Marshal(o.value)
 	}
 
-	return json.Marshal(nil)
+	// fresh slice on each call, since callers may mutate the result
+	return []byte("null"), nil
 }
 
 // UnmarshalJSON decodes Option from json.
@@ -225,7 +226,9 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 	o.value = empty[T]() // reset the value if not set later.
 
 	// If user manually set the field to be `null`, then it either means the option is absent or present with a zero value.
-	if bytes.Equal([]byte("null"), bytes.ToLower(b)) {
+	// bytes.EqualFold is case-insensitive like the previous bytes.ToLower comparison,
+	// but does not copy the whole payload on every call.
+	if bytes.EqualFold(b, []byte("null")) {
 		// // If the type is a pointer, then it means the option is present with a zero value.
 		// o.isPresent = reflect.TypeOf(o.value).Kind() == reflect.Ptr
 		// return nil
@@ -274,13 +277,14 @@ func (o Option[T]) MarshalBinary() ([]byte, error) {
 	}
 
 	var buf bytes.Buffer
+	buf.WriteByte(1)
 
 	enc := gob.NewEncoder(&buf)
 	if err := enc.Encode(o.value); err != nil {
 		return []byte{}, err
 	}
 
-	return append([]byte{1}, buf.Bytes()...), nil
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary is the interface implemented by an object that can unmarshal a binary representation of itself.
@@ -365,6 +369,21 @@ func (o Option[T]) Equal(other Option[T]) bool {
 
 	if o.isPresent != other.isPresent {
 		return false
+	}
+
+	// fast path for scalar kinds, where == matches reflect.DeepEqual exactly.
+	// Pointers, structs, arrays, maps, slices and interfaces keep DeepEqual
+	// semantics (e.g. DeepEqual follows pointers, == does not).
+	if t := reflect.TypeOf(o.value); t != nil {
+		switch t.Kind() {
+		case reflect.Bool,
+			reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr,
+			reflect.Float32, reflect.Float64,
+			reflect.Complex64, reflect.Complex128,
+			reflect.String:
+			return any(o.value) == any(other.value)
+		}
 	}
 
 	return reflect.DeepEqual(o.value, other.value)
