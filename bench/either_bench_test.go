@@ -6,23 +6,20 @@ import (
 	mo "github.com/samber/mo"
 )
 
-var (
-	sinkEither  mo.Either[error, int]
-	sinkEither2 mo.Either[string, int]
-)
+var sinkEither mo.Either[string, int]
 
 func BenchmarkEitherConstructors(b *testing.B) {
 	b.Run("Left", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkEither2 = mo.Left[string, int]("hello")
+			sinkEither = mo.Left[string, int]("hello")
 		}
 	})
 
 	b.Run("Right", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkEither2 = mo.Right[string, int](i)
+			sinkEither = mo.Right[string, int](i)
 		}
 	})
 }
@@ -33,7 +30,7 @@ func BenchmarkEitherAccessors(b *testing.B) {
 	b.Run("Match", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkEither2 = right.Match(
+			sinkEither = right.Match(
 				func(l string) mo.Either[string, int] { return mo.Left[string, int](l) },
 				func(r int) mo.Either[string, int] { return mo.Right[string, int](r * 2) },
 			)
@@ -43,7 +40,7 @@ func BenchmarkEitherAccessors(b *testing.B) {
 	b.Run("MapRight", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkEither2 = right.MapRight(func(r int) mo.Either[string, int] { return mo.Right[string, int](r * 2) })
+			sinkEither = right.MapRight(func(r int) mo.Either[string, int] { return mo.Right[string, int](r * 2) })
 		}
 	})
 
