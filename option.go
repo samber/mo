@@ -225,7 +225,9 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 	o.value = empty[T]() // reset the value if not set later.
 
 	// If user manually set the field to be `null`, then it either means the option is absent or present with a zero value.
-	if bytes.Equal([]byte("null"), bytes.ToLower(b)) {
+	// bytes.EqualFold is case-insensitive like the previous bytes.ToLower comparison,
+	// but does not copy the whole payload on every call.
+	if bytes.EqualFold(b, []byte("null")) {
 		// // If the type is a pointer, then it means the option is present with a zero value.
 		// o.isPresent = reflect.TypeOf(o.value).Kind() == reflect.Ptr
 		// return nil
