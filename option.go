@@ -276,8 +276,6 @@ func (o Option[T]) MarshalBinary() ([]byte, error) {
 		return []byte{0}, nil
 	}
 
-	// the presence byte is written into the buffer up front, so the gob
-	// payload does not need to be copied with append afterwards
 	var buf bytes.Buffer
 	buf.WriteByte(1)
 

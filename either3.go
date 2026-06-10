@@ -229,8 +229,6 @@ func (e Either3[T1, T2, T3]) MapArg3(mapper func(T3) Either3[T1, T2, T3]) Either
 
 // MarshalBinary encodes Either3 into binary form.
 func (e Either3[T1, T2, T3]) MarshalBinary() ([]byte, error) {
-	// the argId byte is written into the buffer up front, so the gob
-	// payload does not need to be copied with append afterwards
 	var buf bytes.Buffer
 	buf.WriteByte(byte(e.argId))
 	enc := gob.NewEncoder(&buf)

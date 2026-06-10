@@ -1,13 +1,15 @@
-package mo
+package bench
 
 import (
 	"strings"
 	"testing"
+
+	mo "github.com/samber/mo"
 )
 
 var (
-	sinkOptionInt    Option[int]
-	sinkOptionString Option[string]
+	sinkOptionInt    mo.Option[int]
+	sinkOptionString mo.Option[string]
 	sinkBytes        []byte
 	sinkBool         bool
 	sinkInt          int
@@ -18,28 +20,28 @@ func BenchmarkOptionConstructors(b *testing.B) {
 	b.Run("Some", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = Some(i)
+			sinkOptionInt = mo.Some(i)
 		}
 	})
 
 	b.Run("None", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = None[int]()
+			sinkOptionInt = mo.None[int]()
 		}
 	})
 
 	b.Run("TupleToOption", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = TupleToOption(i, i%2 == 0)
+			sinkOptionInt = mo.TupleToOption(i, i%2 == 0)
 		}
 	})
 
 	b.Run("EmptyableToOption", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = EmptyableToOption(i)
+			sinkOptionInt = mo.EmptyableToOption(i)
 		}
 	})
 
@@ -47,14 +49,14 @@ func BenchmarkOptionConstructors(b *testing.B) {
 		v := 42
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = PointerToOption(&v)
+			sinkOptionInt = mo.PointerToOption(&v)
 		}
 	})
 }
 
 func BenchmarkOptionAccessors(b *testing.B) {
-	some := Some(42)
-	none := None[int]()
+	some := mo.Some(42)
+	none := mo.None[int]()
 
 	b.Run("Get", func(b *testing.B) {
 		b.ReportAllocs()
@@ -90,14 +92,14 @@ func BenchmarkOptionAccessors(b *testing.B) {
 	b.Run("FlatMap", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkOptionInt = some.FlatMap(func(v int) Option[int] { return Some(v * 2) })
+			sinkOptionInt = some.FlatMap(func(v int) mo.Option[int] { return mo.Some(v * 2) })
 		}
 	})
 }
 
 func BenchmarkOptionMarshalJSON(b *testing.B) {
-	some := Some("hello world")
-	none := None[string]()
+	some := mo.Some("hello world")
+	none := mo.None[string]()
 
 	b.Run("Some", func(b *testing.B) {
 		b.ReportAllocs()
@@ -142,7 +144,7 @@ func BenchmarkOptionUnmarshalJSON(b *testing.B) {
 }
 
 func BenchmarkOptionBinary(b *testing.B) {
-	some := Some("hello world")
+	some := mo.Some("hello world")
 	encoded, err := some.MarshalBinary()
 	if err != nil {
 		b.Fatal(err)
@@ -164,8 +166,8 @@ func BenchmarkOptionBinary(b *testing.B) {
 }
 
 func BenchmarkOptionIsZero(b *testing.B) {
-	some := Some(42)
-	none := None[int]()
+	some := mo.Some(42)
+	none := mo.None[int]()
 
 	b.Run("Some", func(b *testing.B) {
 		b.ReportAllocs()
@@ -184,8 +186,8 @@ func BenchmarkOptionIsZero(b *testing.B) {
 
 func BenchmarkOptionEqual(b *testing.B) {
 	b.Run("Int", func(b *testing.B) {
-		x := Some(42)
-		y := Some(42)
+		x := mo.Some(42)
+		y := mo.Some(42)
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			sinkBool = x.Equal(y)
@@ -193,8 +195,8 @@ func BenchmarkOptionEqual(b *testing.B) {
 	})
 
 	b.Run("String", func(b *testing.B) {
-		x := Some("hello world")
-		y := Some("hello world")
+		x := mo.Some("hello world")
+		y := mo.Some("hello world")
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			sinkBool = x.Equal(y)
@@ -206,8 +208,8 @@ func BenchmarkOptionEqual(b *testing.B) {
 			A int
 			B string
 		}
-		x := Some(payload{A: 42, B: "hello"})
-		y := Some(payload{A: 42, B: "hello"})
+		x := mo.Some(payload{A: 42, B: "hello"})
+		y := mo.Some(payload{A: 42, B: "hello"})
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			sinkBool = x.Equal(y)
@@ -217,7 +219,7 @@ func BenchmarkOptionEqual(b *testing.B) {
 
 func BenchmarkOptionScan(b *testing.B) {
 	b.Run("Int64", func(b *testing.B) {
-		var o Option[int64]
+		var o mo.Option[int64]
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			sinkErr = o.Scan(int64(42))
@@ -225,7 +227,7 @@ func BenchmarkOptionScan(b *testing.B) {
 	})
 
 	b.Run("String", func(b *testing.B) {
-		var o Option[string]
+		var o mo.Option[string]
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			sinkErr = o.Scan("hello world")

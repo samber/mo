@@ -1,13 +1,15 @@
-package mo
+package bench
 
 import (
 	"errors"
 	"testing"
+
+	mo "github.com/samber/mo"
 )
 
 var (
-	sinkResultInt    Result[int]
-	sinkResultString Result[string]
+	sinkResultInt    mo.Result[int]
+	sinkResultString mo.Result[string]
 )
 
 func BenchmarkResultConstructors(b *testing.B) {
@@ -16,28 +18,28 @@ func BenchmarkResultConstructors(b *testing.B) {
 	b.Run("Ok", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkResultInt = Ok(i)
+			sinkResultInt = mo.Ok(i)
 		}
 	})
 
 	b.Run("Err", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkResultInt = Err[int](err)
+			sinkResultInt = mo.Err[int](err)
 		}
 	})
 
 	b.Run("TupleToResult", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkResultInt = TupleToResult(i, nil)
+			sinkResultInt = mo.TupleToResult(i, nil)
 		}
 	})
 }
 
 func BenchmarkResultAccessors(b *testing.B) {
-	ok := Ok(42)
-	ko := Err[int](errors.New("an error"))
+	ok := mo.Ok(42)
+	ko := mo.Err[int](errors.New("an error"))
 
 	b.Run("Get", func(b *testing.B) {
 		b.ReportAllocs()
@@ -73,14 +75,14 @@ func BenchmarkResultAccessors(b *testing.B) {
 	b.Run("FlatMap", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			sinkResultInt = ok.FlatMap(func(v int) Result[int] { return Ok(v * 2) })
+			sinkResultInt = ok.FlatMap(func(v int) mo.Result[int] { return mo.Ok(v * 2) })
 		}
 	})
 }
 
 func BenchmarkResultMarshalJSON(b *testing.B) {
-	ok := Ok("hello world")
-	ko := Err[string](errors.New("an error"))
+	ok := mo.Ok("hello world")
+	ko := mo.Err[string](errors.New("an error"))
 
 	b.Run("Ok", func(b *testing.B) {
 		b.ReportAllocs()

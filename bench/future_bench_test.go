@@ -1,14 +1,16 @@
-package mo
+package bench
 
 import (
 	"testing"
+
+	mo "github.com/samber/mo"
 )
 
 func BenchmarkFuture(b *testing.B) {
 	b.Run("NewFutureCollect", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			f := NewFuture(func(resolve func(int), reject func(error)) {
+			f := mo.NewFuture(func(resolve func(int), reject func(error)) {
 				resolve(42)
 			})
 			sinkInt, sinkErr = f.Collect()
@@ -18,7 +20,7 @@ func BenchmarkFuture(b *testing.B) {
 	b.Run("ThenChainCollect", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
-			f := NewFuture(func(resolve func(int), reject func(error)) {
+			f := mo.NewFuture(func(resolve func(int), reject func(error)) {
 				resolve(42)
 			}).
 				Then(func(v int) (int, error) { return v + 1, nil }).
@@ -30,8 +32,8 @@ func BenchmarkFuture(b *testing.B) {
 }
 
 func BenchmarkTask(b *testing.B) {
-	task := NewTask(func() *Future[int] {
-		return NewFuture(func(resolve func(int), reject func(error)) {
+	task := mo.NewTask(func() *mo.Future[int] {
+		return mo.NewFuture(func(resolve func(int), reject func(error)) {
 			resolve(42)
 		})
 	})

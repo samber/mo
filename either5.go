@@ -353,8 +353,6 @@ func (e Either5[T1, T2, T3, T4, T5]) MapArg5(mapper func(T5) Either5[T1, T2, T3,
 
 // MarshalBinary encodes Either5 into binary form.
 func (e Either5[T1, T2, T3, T4, T5]) MarshalBinary() ([]byte, error) {
-	// the argId byte is written into the buffer up front, so the gob
-	// payload does not need to be copied with append afterwards
 	var buf bytes.Buffer
 	buf.WriteByte(byte(e.argId))
 	enc := gob.NewEncoder(&buf)

@@ -195,8 +195,6 @@ func (e Either[L, R]) hasLeftValue() bool {
 
 // MarshalBinary encodes Either into binary form.
 func (e Either[L, R]) MarshalBinary() ([]byte, error) {
-	// the side byte is written into the buffer up front, so the gob
-	// payload does not need to be copied with append afterwards
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 
