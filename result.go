@@ -181,15 +181,25 @@ func (r Result[T]) FlatMap(mapper func(value T) Result[T]) Result[T] {
 // Reference: https://www.jsonrpc.org/specification
 func (o Result[T]) MarshalJSON() ([]byte, error) {
 	if o.isErr {
-		return json.Marshal(map[string]any{
-			"error": map[string]any{
-				"message": o.err.Error(),
+		// structs are cheaper to encode than map[string]any: no map allocation,
+		// no interface boxing and no key sorting in the encoder
+		return json.Marshal(struct {
+			Error struct {
+				Message string `json:"message"`
+			} `json:"error"`
+		}{
+			Error: struct {
+				Message string `json:"message"`
+			}{
+				Message: o.err.Error(),
 			},
 		})
 	}
 
-	return json.Marshal(map[string]any{
-		"result": o.value,
+	return json.Marshal(struct {
+		Result T `json:"result"`
+	}{
+		Result: o.value,
 	})
 }
 
