@@ -178,12 +178,12 @@ func TestOptionMatch(t *testing.T) {
 func TestOptionMap(t *testing.T) {
 	is := assert.New(t)
 
-	opt1 := Some(21).Map(func(i int) (int, bool) {
-		return i * 2, true
+	opt1 := Some(21).Map(func(i int) int {
+		return i * 2
 	})
-	opt2 := None[int]().Map(func(i int) (int, bool) {
+	opt2 := None[int]().Map(func(i int) int {
 		is.Fail("should not be called")
-		return 42, true
+		return 42
 	})
 
 	is.Equal(Option[int]{value: 42, isPresent: true}, opt1)
