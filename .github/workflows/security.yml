@@ -21,7 +21,7 @@ jobs:
   #   strategy:
   #     fail-fast: false
   #   steps:
-  #     - uses: actions/checkout@v6
+  #     - uses: actions/checkout@v7
   #     - uses: actions/setup-go@v6
 
   #     - name: Install govulncheck
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Bearer
         uses: bearer/bearer-action@v2
         with:
@@ -48,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
 
       - name: Initialize CodeQL
@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
 
       - name: Run Trivy vulnerability scanner (source code)
@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
 
       - name: Run Trivy scanner (table output for logs)
