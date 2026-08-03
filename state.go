@@ -43,10 +43,10 @@ func (s State[S, A]) Modify(f func(state S) S) State[S, A] {
 }
 
 // Put set the state.
-func (s State[S, A]) Put(state S) State[S, A] {
+func (s State[S, A]) Put(newState S) State[S, A] {
 	return State[S, A]{
-		run: func(state S) (A, S) {
-			return empty[A](), state
+		run: func(_ S) (A, S) {
+			return empty[A](), newState
 		},
 	}
 }
