@@ -736,3 +736,19 @@ func TestOption_Equal(t *testing.T) {
 	close(ch1)
 	close(ch2)
 }
+
+func TestOptionIsZero(t *testing.T) {
+	is := assert.New(t)
+
+	is.True(None[int]().IsZero())
+	is.True(Some(0).IsZero())
+	is.False(Some(42).IsZero())
+	is.True(Some[*int](nil).IsZero())
+
+	// T is an interface type: a nil value is the zero value of T.
+	is.True(None[any]().IsZero())
+	is.True(Some[any](nil).IsZero())
+	is.False(Some[any](42).IsZero())
+	is.True(Some[error](nil).IsZero())
+	is.False(Some[error](errOptionNoSuchElement).IsZero())
+}

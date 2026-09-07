@@ -257,7 +257,9 @@ func (o Option[T]) IsZero() bool {
 		return v.IsZero()
 	}
 
-	return reflect.ValueOf(o.value).IsZero()
+	// a nil interface yields an invalid reflect.Value, on which IsZero panics
+	rv := reflect.ValueOf(o.value)
+	return !rv.IsValid() || rv.IsZero()
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.
