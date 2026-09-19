@@ -310,6 +310,51 @@ func TestResultUnmarshalJSON(t *testing.T) {
 	is.Error(err)
 }
 
+func TestResultUnmarshalJSONReuse(t *testing.T) {
+	for _, tt := range []struct {
+		name    string
+		initial Result[int]
+		input   string
+		value   int
+		err     string
+	}{
+		{"error to success", Err[int](assert.AnError), `{"result":42}`, 42, ""},
+		{"success to error", Ok(42), `{"error":{"message":"failed"}}`, 0, "failed"},
+		{"error to empty", Err[int](assert.AnError), `{}`, 0, ""},
+		{"error takes precedence", Ok(42), `{"result":123,"error":{"message":"failed"}}`, 0, "failed"},
+		{"success to success", Ok(42), `{"result":123}`, 123, ""},
+		{"error to error", Err[int](assert.AnError), `{"error":{"message":"failed"}}`, 0, "failed"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			is := assert.New(t)
+			result := tt.initial
+			if !is.NoError(json.Unmarshal([]byte(tt.input), &result)) {
+				return
+			}
+
+			is.Equal(tt.err == "", result.IsOk())
+			is.Equal(tt.value, result.OrEmpty())
+			value, err := result.Get()
+			is.Equal(tt.value, value)
+			if tt.err == "" {
+				is.NoError(result.Error())
+				is.NoError(err)
+			} else {
+				is.EqualError(result.Error(), tt.err)
+				is.EqualError(err, tt.err)
+			}
+		})
+	}
+}
+
+func TestResultUnmarshalJSONFailurePreservesValue(t *testing.T) {
+	for _, initial := range []Result[int]{Ok(42), Err[int](assert.AnError)} {
+		result := initial
+		assert.Error(t, json.Unmarshal([]byte(`{"result":"not an integer"}`), &result))
+		assert.Equal(t, initial, result)
+	}
+}
+
 // TestResultFoldSuccess tests the Fold method with a successful result.
 func TestResultFoldSuccess(t *testing.T) {
 	is := assert.New(t)

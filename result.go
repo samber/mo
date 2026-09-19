@@ -223,13 +223,11 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 	}
 
 	if result.Error.Message != "" {
-		o.err = errors.New(result.Error.Message)
-		o.isErr = true
+		*o = Err[T](errors.New(result.Error.Message))
 		return nil
 	}
 
-	o.value = result.Result
-	o.isErr = false
+	*o = Ok(result.Result)
 	return nil
 }
 
