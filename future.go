@@ -39,29 +39,26 @@ func (f *Future[T]) activeSync() {
 }
 
 func (f *Future[T]) resolve(value T) {
-	f.doneOnce.Do(func() {
-		f.mu.Lock()
-		defer f.mu.Unlock()
-
-		f.result = Ok(value)
-		if f.next != nil {
-			f.next.activeSync()
-		}
-		close(f.done)
-	})
+	f.complete(Ok(value))
 }
 
 func (f *Future[T]) reject(err error) {
+	f.complete(Err[T](err))
+}
+
+func (f *Future[T]) complete(result Result[T]) {
+	var next *Future[T]
 	f.doneOnce.Do(func() {
 		f.mu.Lock()
-		defer f.mu.Unlock()
-
-		f.result = Err[T](err)
-		if f.next != nil {
-			f.next.activeSync()
-		}
+		f.result = result
+		next = f.next
 		close(f.done)
+		f.mu.Unlock()
 	})
+	// A callback may re-enter this Future, including resolve or reject.
+	if next != nil {
+		next.activeSync()
+	}
 }
 
 // Then is called when Future is resolved. It returns a new Future.
