@@ -263,23 +263,29 @@ func (e *Either3[T1, T2, T3]) UnmarshalBinary(data []byte) error {
 
 	switch int8(data[0]) {
 	case either3ArgId1:
-		if err := dec.Decode(&e.arg1); err != nil {
+		var value T1
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg1 = value
 		e.argId = either3ArgId1
 		e.arg2 = empty[T2]()
 		e.arg3 = empty[T3]()
 	case either3ArgId2:
-		if err := dec.Decode(&e.arg2); err != nil {
+		var value T2
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg2 = value
 		e.argId = either3ArgId2
 		e.arg1 = empty[T1]()
 		e.arg3 = empty[T3]()
 	case either3ArgId3:
-		if err := dec.Decode(&e.arg3); err != nil {
+		var value T3
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg3 = value
 		e.argId = either3ArgId3
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()

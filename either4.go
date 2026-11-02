@@ -329,33 +329,41 @@ func (e *Either4[T1, T2, T3, T4]) UnmarshalBinary(data []byte) error {
 
 	switch int8(data[0]) {
 	case either4ArgId1:
-		if err := dec.Decode(&e.arg1); err != nil {
+		var value T1
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg1 = value
 		e.argId = either4ArgId1
 		e.arg2 = empty[T2]()
 		e.arg3 = empty[T3]()
 		e.arg4 = empty[T4]()
 	case either4ArgId2:
-		if err := dec.Decode(&e.arg2); err != nil {
+		var value T2
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg2 = value
 		e.argId = either4ArgId2
 		e.arg1 = empty[T1]()
 		e.arg3 = empty[T3]()
 		e.arg4 = empty[T4]()
 	case either4ArgId3:
-		if err := dec.Decode(&e.arg3); err != nil {
+		var value T3
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg3 = value
 		e.argId = either4ArgId3
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()
 		e.arg4 = empty[T4]()
 	case either4ArgId4:
-		if err := dec.Decode(&e.arg4); err != nil {
+		var value T4
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg4 = value
 		e.argId = either4ArgId4
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()

@@ -303,11 +303,13 @@ func (o *Option[T]) UnmarshalBinary(data []byte) error {
 
 	buf := bytes.NewBuffer(data[1:])
 	dec := gob.NewDecoder(buf)
-	err := dec.Decode(&o.value)
+	var value T
+	err := dec.Decode(&value)
 	if err != nil {
 		return err
 	}
 
+	o.value = value
 	o.isPresent = true
 	return nil
 }

@@ -395,45 +395,55 @@ func (e *Either5[T1, T2, T3, T4, T5]) UnmarshalBinary(data []byte) error {
 
 	switch int8(data[0]) {
 	case either5ArgId1:
-		if err := dec.Decode(&e.arg1); err != nil {
+		var value T1
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg1 = value
 		e.argId = either5ArgId1
 		e.arg2 = empty[T2]()
 		e.arg3 = empty[T3]()
 		e.arg4 = empty[T4]()
 		e.arg5 = empty[T5]()
 	case either5ArgId2:
-		if err := dec.Decode(&e.arg2); err != nil {
+		var value T2
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg2 = value
 		e.argId = either5ArgId2
 		e.arg1 = empty[T1]()
 		e.arg3 = empty[T3]()
 		e.arg4 = empty[T4]()
 		e.arg5 = empty[T5]()
 	case either5ArgId3:
-		if err := dec.Decode(&e.arg3); err != nil {
+		var value T3
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg3 = value
 		e.argId = either5ArgId3
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()
 		e.arg4 = empty[T4]()
 		e.arg5 = empty[T5]()
 	case either5ArgId4:
-		if err := dec.Decode(&e.arg4); err != nil {
+		var value T4
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg4 = value
 		e.argId = either5ArgId4
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()
 		e.arg3 = empty[T3]()
 		e.arg5 = empty[T5]()
 	case either5ArgId5:
-		if err := dec.Decode(&e.arg5); err != nil {
+		var value T5
+		if err := dec.Decode(&value); err != nil {
 			return err
 		}
+		e.arg5 = value
 		e.argId = either5ArgId5
 		e.arg1 = empty[T1]()
 		e.arg2 = empty[T2]()
