@@ -252,14 +252,19 @@ func (o Option[T]) IsZero() bool {
 		return true
 	}
 
+	// A nil pointer can implement zeroer through a value-receiver method,
+	// which cannot be called without dereferencing the nil pointer.
+	rv := reflect.ValueOf(o.value)
+	if !rv.IsValid() || rv.Kind() == reflect.Ptr && rv.IsNil() {
+		return true
+	}
+
 	var v any = o.value
 	if v, ok := v.(zeroer); ok {
 		return v.IsZero()
 	}
 
-	// a nil interface yields an invalid reflect.Value, on which IsZero panics
-	rv := reflect.ValueOf(o.value)
-	return !rv.IsValid() || rv.IsZero()
+	return rv.IsZero()
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.
