@@ -214,7 +214,7 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 	var result struct {
 		Result T `json:"result"`
 		Error  struct {
-			Message string `json:"message"`
+			Message *string `json:"message"`
 		} `json:"error"`
 	}
 
@@ -222,8 +222,8 @@ func (o *Result[T]) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if result.Error.Message != "" {
-		*o = Err[T](errors.New(result.Error.Message))
+	if result.Error.Message != nil {
+		*o = Err[T](errors.New(*result.Error.Message))
 		return nil
 	}
 

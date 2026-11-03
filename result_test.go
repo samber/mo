@@ -310,6 +310,27 @@ func TestResultUnmarshalJSON(t *testing.T) {
 	is.Error(err)
 }
 
+func TestResultUnmarshalJSONEmptyErrorMessage(t *testing.T) {
+	encoded, err := json.Marshal(Err[int](errors.New("")))
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	for _, input := range []string{string(encoded), `{"result":42,"error":{"message":""}}`} {
+		t.Run(input, func(t *testing.T) {
+			result := Ok(123)
+			if !assert.NoError(t, json.Unmarshal([]byte(input), &result)) {
+				return
+			}
+			assert.True(t, result.IsError())
+			assert.Equal(t, 0, result.OrEmpty())
+			if assert.NotNil(t, result.Error()) {
+				assert.Equal(t, "", result.Error().Error())
+			}
+		})
+	}
+}
+
 func TestResultUnmarshalJSONReuse(t *testing.T) {
 	for _, tt := range []struct {
 		name    string
