@@ -240,8 +240,8 @@ func ExampleOption_Match_none() {
 
 func ExampleOption_Map_some() {
 	some := Some(42)
-	result := some.Map(func(i int) (int, bool) {
-		return 1234, true
+	result := some.Map(func(i int) int {
+		return 1234
 	})
 
 	fmt.Println(result.IsPresent(), result.OrEmpty())
@@ -250,8 +250,8 @@ func ExampleOption_Map_some() {
 
 func ExampleOption_Map_none() {
 	none := None[int]()
-	result := none.Map(func(i int) (int, bool) {
-		return 1234, true
+	result := none.Map(func(i int) int {
+		return 1234
 	})
 
 	fmt.Println(result.IsPresent(), result.OrEmpty())
