@@ -24,7 +24,7 @@ type Future[T any] struct {
 
 	cb       func(func(T), func(error))
 	cancelCb func()
-	next     *Future[T]
+	next     []*Future[T]
 	done     chan struct{}
 	doneOnce sync.Once
 	result   Result[T]
@@ -44,8 +44,8 @@ func (f *Future[T]) resolve(value T) {
 		defer f.mu.Unlock()
 
 		f.result = Ok(value)
-		if f.next != nil {
-			f.next.activeSync()
+		for _, next := range f.next {
+			next.activeSync()
 		}
 		close(f.done)
 	})
@@ -57,8 +57,8 @@ func (f *Future[T]) reject(err error) {
 		defer f.mu.Unlock()
 
 		f.result = Err[T](err)
-		if f.next != nil {
-			f.next.activeSync()
+		for _, next := range f.next {
+			next.activeSync()
 		}
 		close(f.done)
 	})
@@ -86,7 +86,7 @@ func (f *Future[T]) Then(cb func(T) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
-	f.next = next
+	f.next = append(f.next, next)
 
 	select {
 	case <-f.done:
@@ -121,7 +121,7 @@ func (f *Future[T]) Catch(cb func(error) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
-	f.next = next
+	f.next = append(f.next, next)
 
 	select {
 	case <-f.done:
@@ -152,7 +152,7 @@ func (f *Future[T]) Finally(cb func(T, error) (T, error)) *Future[T] {
 		},
 		done: make(chan struct{}),
 	}
-	f.next = next
+	f.next = append(f.next, next)
 
 	select {
 	case <-f.done:

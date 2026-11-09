@@ -337,3 +337,44 @@ func TestFutureCompleteBeforeThen(t *testing.T) {
 		return in, nil
 	}).Collect() // deadlock
 }
+
+func TestFutureMultipleCallbacksOnPending(t *testing.T) {
+	is := assert.New(t)
+
+	collect := func(f *Future[int]) Result[int] {
+		ch := make(chan Result[int], 1)
+		go func() { ch <- f.Result() }()
+		select {
+		case r := <-ch:
+			return r
+		case <-time.After(time.Second):
+			return Err[int](fmt.Errorf("timeout"))
+		}
+	}
+
+	release := make(chan struct{})
+	resolved := NewFuture(func(resolve func(int), reject func(error)) {
+		<-release
+		resolve(10)
+	})
+	first := resolved.Then(func(v int) (int, error) { return v + 1, nil })
+	second := resolved.Then(func(v int) (int, error) { return v + 2, nil })
+	third := resolved.Finally(func(v int, err error) (int, error) { return v + 3, err })
+	close(release)
+
+	is.Equal(Ok(11), collect(first))
+	is.Equal(Ok(12), collect(second))
+	is.Equal(Ok(13), collect(third))
+
+	release = make(chan struct{})
+	rejected := NewFuture(func(resolve func(int), reject func(error)) {
+		<-release
+		reject(assert.AnError)
+	})
+	firstCatch := rejected.Catch(func(err error) (int, error) { return 1, nil })
+	secondCatch := rejected.Catch(func(err error) (int, error) { return 2, nil })
+	close(release)
+
+	is.Equal(Ok(1), collect(firstCatch))
+	is.Equal(Ok(2), collect(secondCatch))
+}
