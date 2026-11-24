@@ -529,6 +529,64 @@ func TestOptionScanWithPossibleConvert(t *testing.T) {
 	is.Equal(Some(32), dest2)
 }
 
+func TestOptionScanByteBuffers(t *testing.T) {
+	t.Run("bytes are copied", func(t *testing.T) {
+		is := assert.New(t)
+		src := []byte("ABC")
+		dest := None[[]byte]()
+		is.NoError(dest.Scan(src))
+		src[0] = 'X'
+		is.Equal(Some([]byte("ABC")), dest)
+	})
+
+	t.Run("interface bytes are copied", func(t *testing.T) {
+		is := assert.New(t)
+		src := []byte("ABC")
+		dest := None[any]()
+		is.NoError(dest.Scan(src))
+		src[0] = 'X'
+		is.Equal(Some[any]([]byte("ABC")), dest)
+	})
+
+	for _, tt := range []struct {
+		name string
+		src  []byte
+	}{
+		{"nil bytes", nil},
+		{"empty bytes", []byte{}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			is := assert.New(t)
+			bytesOption := Some([]byte("previous"))
+			anyOption := Some[any]("previous")
+			is.NoError(bytesOption.Scan(tt.src))
+			is.NoError(anyOption.Scan(tt.src))
+			is.Equal(Some(tt.src), bytesOption)
+			is.Equal(Some[any](tt.src), anyOption)
+		})
+	}
+
+	t.Run("raw bytes remain borrowed", func(t *testing.T) {
+		is := assert.New(t)
+		src := []byte("ABC")
+		dest := None[sql.RawBytes]()
+		is.NoError(dest.Scan(src))
+		src[0] = 'X'
+		is.Equal(Some(sql.RawBytes("XBC")), dest)
+	})
+
+	t.Run("custom scanner", func(t *testing.T) {
+		is := assert.New(t)
+		dest := None[sql.NullString]()
+		is.NoError(dest.Scan([]byte("ABC")))
+		is.Equal(Some(sql.NullString{String: "ABC", Valid: true}), dest)
+
+		rejecting := None[SomeScanner]()
+		is.ErrorContains(rejecting.Scan([]byte("ABC")), "cannot scan - src is not a string")
+		is.Equal(None[SomeScanner](), rejecting)
+	})
+}
+
 func TestOptionValue(t *testing.T) {
 	is := assert.New(t)
 

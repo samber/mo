@@ -343,6 +343,12 @@ func (o *Option[T]) Scan(src any) error {
 		return nil
 	}
 
+	// The SQL converter copies driver-owned byte slices, except when the
+	// destination explicitly requests borrowed memory through sql.RawBytes.
+	if _, ok := src.([]byte); ok {
+		return o.scanConvertValue(src)
+	}
+
 	if av, err := driver.DefaultParameterConverter.ConvertValue(src); err == nil {
 		if v, ok := av.(T); ok {
 			o.isPresent = true
