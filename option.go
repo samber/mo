@@ -13,10 +13,6 @@ import (
 
 var errOptionNoSuchElement = fmt.Errorf("no such element")
 
-type zeroer interface {
-	IsZero() bool
-}
-
 // Some builds an Option when value is present.
 // Play: https://go.dev/play/p/iqz2n9n0tDM
 func Some[T any](value T) Option[T] {
@@ -248,18 +244,7 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 
 // IsZero assists `omitzero` tag introduced in Go 1.24
 func (o Option[T]) IsZero() bool {
-	if !o.isPresent {
-		return true
-	}
-
-	var v any = o.value
-	if v, ok := v.(zeroer); ok {
-		return v.IsZero()
-	}
-
-	// a nil interface yields an invalid reflect.Value, on which IsZero panics
-	rv := reflect.ValueOf(o.value)
-	return !rv.IsValid() || rv.IsZero()
+	return !o.isPresent
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.

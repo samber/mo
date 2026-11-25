@@ -265,6 +265,13 @@ func TestOptionMarshalJSON(t *testing.T) {
 	major, minor, _ := decomposeGoVersion()
 	if major >= 1 && minor >= 24 {
 		is.Equal(`{"Field":"foo"}`, string(marshalled))
+
+		type zeroStruct struct {
+			OptionalField Option[int] `json:"optional_field,omitzero"`
+		}
+		marshalled, err = json.Marshal(zeroStruct{OptionalField: Some(0)})
+		is.NoError(err)
+		is.Equal(`{"optional_field":0}`, string(marshalled))
 	} else {
 		is.Equal(`{"Field":"foo","optional_field":null}`, string(marshalled))
 	}
@@ -741,14 +748,14 @@ func TestOptionIsZero(t *testing.T) {
 	is := assert.New(t)
 
 	is.True(None[int]().IsZero())
-	is.True(Some(0).IsZero())
+	is.False(Some(0).IsZero())
 	is.False(Some(42).IsZero())
-	is.True(Some[*int](nil).IsZero())
+	is.False(Some[*int](nil).IsZero())
 
 	// T is an interface type: a nil value is the zero value of T.
 	is.True(None[any]().IsZero())
-	is.True(Some[any](nil).IsZero())
+	is.False(Some[any](nil).IsZero())
 	is.False(Some[any](42).IsZero())
-	is.True(Some[error](nil).IsZero())
+	is.False(Some[error](nil).IsZero())
 	is.False(Some[error](errOptionNoSuchElement).IsZero())
 }
